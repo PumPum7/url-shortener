@@ -22,6 +22,7 @@
 .DS_Store
 *.pem
 *.http
+*.sum
 
 # debug
 npm-debug.log*
