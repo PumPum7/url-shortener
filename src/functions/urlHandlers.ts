@@ -1,11 +1,9 @@
+import { URL } from "@interfaces"
+
 export const FUNCTIONS_DOMAIN = process.env.NODE_ENV !== "production" ? "http://localhost:3000" : process.env.VERCEL_URL
 
-
-export const createShortURL = async ({
-    longURL,
-}: {
-    longURL: string;
-}): Promise<any> => {
+export const createShortURL = async (
+    longURL: string): Promise<object> => {
     return await fetch(`${FUNCTIONS_DOMAIN}/api/createUrl`, {
         method: "POST",
         body: JSON.stringify({
@@ -14,7 +12,7 @@ export const createShortURL = async ({
         }),
     })
         .then((res) => res.json())
-        .catch((err) => console.error(err));
+        .catch((err) => { console.error(err)});
 };
 
 export const getLongUrl = async ({shortUrl}: {shortUrl: string}): Promise<any> => {
