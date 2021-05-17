@@ -1,7 +1,7 @@
 export interface URL {
-    Short: string;
-	Long: string;
-	Usage: number;
-	Password?: string;
-	Protected?: boolean;
+    short: string;
+	long: string;
+	usage: number;
+	password?: string;
+	protected?: boolean;
 }

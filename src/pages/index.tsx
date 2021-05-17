@@ -70,7 +70,9 @@ export default function Home() {
                         <div className="text-center text-red-500">
                             <p>An error occurred please try again!</p>
                         </div>
-                    ) : ""}
+                    ) : (
+                        ""
+                    )}
                 </div>
             </div>
         </>
