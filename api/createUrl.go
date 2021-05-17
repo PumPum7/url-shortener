@@ -48,7 +48,12 @@ func CreateUrl(w http.ResponseWriter, r *http.Request) {
 		expiration = nowTime.Add(time.Hour * time.Duration(url.ExpirationTime))
 	}
 
-	res, err := client.Query(f.Create(f.Collection("urls"), f.Obj{"data": url, "ttl": expiration}))
+	options := f.Obj{"data": url, "ttl": expiration}
+	if url.ExpirationTime <= 0 {
+		options = f.Obj{"data": url}
+	}
+
+	res, err := client.Query(f.Create(f.Collection("urls"), options))
 	if err != nil {
 		w.WriteHeader(500)
 		fmt.Fprintf(w, "Error creating URL: %v", err)
@@ -58,15 +63,16 @@ func CreateUrl(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		returnPostError(err, w)
 	}
+
 	url.Length = length
 	url.Expiration = expiration
 	msg, _ := json.Marshal(url)
-	fmt.Fprintf(w, string(msg))
+	fmt.Fprint(w, string(msg))
 }
 
 func returnPostError(err error, w http.ResponseWriter) {
 	w.WriteHeader(500)
-	fmt.Fprintf(w, err.Error())
+	fmt.Fprint(w, err.Error())
 	log.Fatal(err)
 }
 
