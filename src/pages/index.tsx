@@ -1,7 +1,28 @@
 import Head from "next/head";
-import React from "react";
+import React, { useState, useEffect } from "react";
+
+import { createShortURL } from "@functions/urlHandlers";
+
+import { URL } from "@interfaces";
 
 export default function Home() {
+    const [inputLink, setInputLink] = useState<string>("");
+    const [shortUrl, setShortUrl] = useState<string>("");
+    const [uploadError, setUploadError] = useState<boolean>(false);
+
+    const shortenUrl = async () => {
+        try {
+            const result = (await createShortURL(inputLink)) as URL;
+            setShortUrl(result.short);
+        } catch {
+            setUploadError(true);
+        }
+    };
+
+    useEffect(() => {
+        console.log(shortUrl);
+    }, [shortUrl]);
+
     return (
         <>
             <Head>
@@ -12,16 +33,17 @@ export default function Home() {
                     Shorten your domains
                 </h1>
                 <div>
-                    <form className="flex">
+                    <form className="flex pb-6">
                         <div className="mx-auto relative w-64 pt-6">
                             <input
                                 type="text"
                                 placeholder="Paste your long URL"
                                 className="mx-auto rounded-xl shadow-lg w-full"
+                                onChange={(e) => setInputLink(e.target.value)}
                             />
                             <div
-                                className="cursor-pointer absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pt-6"
-                                onClick={(e) => alert("click")}>
+                                className="cursor-pointer absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pt-6 hover:shadow-md"
+                                onClick={async (e) => await shortenUrl()}>
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     className="h-5 w-5"
@@ -37,6 +59,18 @@ export default function Home() {
                             </div>
                         </div>
                     </form>
+                    {shortUrl !== "" ? (
+                        <div className="text-center">
+                            <p>{shortUrl}</p>
+                        </div>
+                    ) : (
+                        ""
+                    )}
+                    {uploadError ? (
+                        <div className="text-center text-red-500">
+                            <p>An error occurred please try again!</p>
+                        </div>
+                    ) : ""}
                 </div>
             </div>
         </>
