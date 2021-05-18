@@ -37,7 +37,6 @@ func GetURL(w http.ResponseWriter, r *http.Request) {
 
 	}
 	client := f.NewFaunaClient(key)
-
 	res, err := client.Query(f.Get(f.MatchTerm(f.Index("url_short"), shortUrl)))
 	if err != nil {
 		returnGetError(err, w)
