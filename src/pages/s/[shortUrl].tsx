@@ -12,6 +12,10 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
 
     const data = await getLongUrl({ shortUrl });
     if (data !== undefined) {
+        if (!data.long.startsWith("http")) {
+            data.long = "http://" + data.long;
+            console.log(data.long)
+        }
         return {
             redirect: {
                 destination: data.long,
