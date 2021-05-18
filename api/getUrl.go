@@ -56,10 +56,19 @@ func GetURL(w http.ResponseWriter, r *http.Request) {
 	msg, _ := json.Marshal(url)
 
 	w.Header().Add("Content-Type", "application/json")
-	fmt.Fprintf(w, string(msg))
+	fmt.Fprint(w, string(msg))
+}
+
+type getError struct {
+	Error string `json:"error"`
 }
 
 func returnGetError(err error, w http.ResponseWriter) {
-	fmt.Fprintf(w, err.Error())
+	errorGet := getError{
+		Error: err.Error(),
+	}
+	msg, _ := json.Marshal(errorGet)
+	w.WriteHeader(500)
+	fmt.Fprint(w, string(msg))
 	log.Fatal(err)
 }

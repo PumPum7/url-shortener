@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	f "github.com/fauna/faunadb-go/v4/faunadb"
@@ -26,6 +27,10 @@ func CreateUrl(w http.ResponseWriter, r *http.Request) {
 	var url postUrl
 	err := json.NewDecoder(r.Body).Decode(&url)
 	if err != nil {
+		returnPostError(err, w)
+	}
+
+	if !strings.HasPrefix(url.Long, "http") {
 		returnPostError(err, w)
 	}
 
@@ -70,9 +75,17 @@ func CreateUrl(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, string(msg))
 }
 
+type postError struct {
+	Error string `json:"error"`
+}
+
 func returnPostError(err error, w http.ResponseWriter) {
+	errorPost := postError{
+		Error: err.Error(),
+	}
+	msg, _ := json.Marshal(errorPost)
 	w.WriteHeader(500)
-	fmt.Fprint(w, err.Error())
+	fmt.Fprint(w, string(msg))
 	log.Fatal(err)
 }
 
