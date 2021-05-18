@@ -11,7 +11,6 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     console.log(shortUrl);
 
     const data = await getLongUrl({ shortUrl });
-    console.log(data);
     if (data !== undefined) {
         return {
             redirect: {
