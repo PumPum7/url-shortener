@@ -1,6 +1,8 @@
 import Head from "next/head";
 import React, { useState, useEffect } from "react";
 
+import { Scissors, Loading} from "@components/Icons"
+
 import { createShortURL, FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
 
 import { URL } from "@interfaces";
@@ -9,19 +11,34 @@ export default function Home() {
     const [inputLink, setInputLink] = useState<string>("");
     const [shortUrl, setShortUrl] = useState<string>("");
     const [uploadError, setUploadError] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setUploadError(false)
+        }, 5000)
+    }, [uploadError])
 
     const shortenUrl = async () => {
         try {
-            const result = (await createShortURL(inputLink)) as URL;
-            setShortUrl(result.short);
+            setLoading(true);
+            if (inputLink.replaceAll(" ", "") === "" || !inputLink.includes(".")) {
+                setLoading(false)
+                setUploadError(true)
+            } else {
+                if (!inputLink.startsWith("http")) {
+                    setInputLink("https://" + inputLink);
+                }
+                const result = (await createShortURL(
+                    inputLink
+                )) as URL;
+                setShortUrl(result.short);
+                setLoading(false);
+            }
         } catch {
             setUploadError(true);
         }
     };
-
-    useEffect(() => {
-        console.log(shortUrl);
-    }, [shortUrl]);
 
     return (
         <>
@@ -30,45 +47,54 @@ export default function Home() {
             </Head>
             <div className="container">
                 <h1 className="text-center text-2xl pt-2">
-                    Shorten your domains
+                    Make your links <span className="underline">short</span>
                 </h1>
                 <div>
-                    <form className="flex pb-6">
-                        <div className="mx-auto relative w-64 pt-6">
+                    <form
+                        className="flex pb-6"
+                        onSubmit={async (e) => {
+                            e.preventDefault();
+                            await shortenUrl();
+                        }}>
+                        <div className="relative mt-6 mx-auto rounded-xl border-b-2 shadow-lg w-full">
                             <input
                                 type="text"
                                 placeholder="Paste your long URL"
-                                className="mx-auto rounded-xl shadow-lg w-full"
+                                className="w-full border-transparent bg-transparent rounded-xl"
                                 onChange={(e) => setInputLink(e.target.value)}
                             />
-                            <div
-                                className="cursor-pointer absolute inset-y-0 right-0 flex items-center px-2 mt-6 rounded-xl hover:shadow-md text-gray-400 hover:text-purple-500"
-                                onClick={async (e) => await shortenUrl()}>
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-5 w-5"
-                                    viewBox="0 0 20 20"
-                                    fill="currentColor">
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M5.5 2a3.5 3.5 0 101.665 6.58L8.585 10l-1.42 1.42a3.5 3.5 0 101.414 1.414l8.128-8.127a1 1 0 00-1.414-1.414L10 8.586l-1.42-1.42A3.5 3.5 0 005.5 2zM4 5.5a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm0 9a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z"
-                                        clipRule="evenodd"
+                            {loading ? (
+                                <>
+                                    <Loading classNames="cursor-wait absolute inset-y-0 right-0 flex items-center px-2 rounded-xl text-purple-500" />
+                                </>
+                            ) : uploadError ? "" : (
+                                <>
+                                    <Scissors onClick={async () => await shortenUrl()}
+                                    classNames="cursor-pointer absolute inset-y-0 right-0 flex items-center px-2 rounded-xl hover:shadow-md text-gray-400 hover:text-purple-500" 
                                     />
-                                    <path d="M12.828 11.414a1 1 0 00-1.414 1.414l3.879 3.88a1 1 0 001.414-1.415l-3.879-3.879z" />
-                                </svg>
-                            </div>
+                                </>
+                            )}
                         </div>
                     </form>
                     {shortUrl !== "" ? (
                         <div className="text-center">
-                            <p><a href={FUNCTIONS_DOMAIN + "/s/" + shortUrl} target="_blank">{FUNCTIONS_DOMAIN}/s/{shortUrl}</a></p>
+                            <p>
+                                <a
+                                    href={FUNCTIONS_DOMAIN + "/s/" + shortUrl}
+                                    target="_blank">
+                                    {FUNCTIONS_DOMAIN}/s/{shortUrl}
+                                </a>
+                            </p>
                         </div>
                     ) : (
                         ""
                     )}
                     {uploadError ? (
                         <div className="text-center text-red-500">
-                            <p>An error occurred please try again!</p>
+                            <p>
+                                An error occurred please try again! Make sure
+                                that the input URL was valid.
+                            </p>
                         </div>
                     ) : (
                         ""
