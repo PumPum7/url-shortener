@@ -11,13 +11,19 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     console.log(shortUrl);
 
     const data = await getLongUrl({ shortUrl });
-
-    return {
-        redirect: {
-            destination: data.long,
-            permanent: true,
-        },
-    };
+    console.log(data);
+    if (data !== undefined) {
+        return {
+            redirect: {
+                destination: data.long,
+                permanent: true,
+            },
+        };
+    } else {
+        return {
+            notFound: true
+        }
+    }
 };
 
 export default Url;
