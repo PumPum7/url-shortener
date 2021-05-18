@@ -1,7 +1,7 @@
 import Head from "next/head";
 import React, { useState, useEffect } from "react";
 
-import { createShortURL } from "@functions/urlHandlers";
+import { createShortURL, FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
 
 import { URL } from "@interfaces";
 
@@ -42,7 +42,7 @@ export default function Home() {
                                 onChange={(e) => setInputLink(e.target.value)}
                             />
                             <div
-                                className="cursor-pointer absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pt-6 hover:shadow-md"
+                                className="cursor-pointer absolute inset-y-0 right-0 flex items-center px-2 mt-6 rounded-xl hover:shadow-md text-gray-400 hover:text-purple-500"
                                 onClick={async (e) => await shortenUrl()}>
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -61,7 +61,7 @@ export default function Home() {
                     </form>
                     {shortUrl !== "" ? (
                         <div className="text-center">
-                            <p>{shortUrl}</p>
+                            <p><a href={FUNCTIONS_DOMAIN + "/s/" + shortUrl} target="_blank">{FUNCTIONS_DOMAIN}/s/{shortUrl}</a></p>
                         </div>
                     ) : (
                         ""
