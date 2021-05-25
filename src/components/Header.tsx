@@ -1,6 +1,13 @@
+import { Session } from "inspector";
 import Image from "next/image";
 
+import { useSessionContext } from "supertokens-auth-react/recipe/session";
+
 export const Header = (): JSX.Element => {
+    let {
+        doesSessionExist,
+    }: { doesSessionExist: boolean } = useSessionContext();
+
     return (
         <div className="max-w-screen-lg mx-auto px-3 py-6">
             <div className="flex flex-wrap justify-between items-center">
@@ -25,9 +32,15 @@ export const Header = (): JSX.Element => {
                                 GitHub
                             </a>
                         </li>
-                        <li>
-                            <a href="/">Sign in</a>
-                        </li>
+                        {doesSessionExist ? (
+                            <li>
+                                <a href="/auth/">Sign in</a>
+                            </li>
+                        ) : (
+                            <li>
+                                <a href="/auth/">Log out</a>
+                            </li>
+                        )}
                     </ul>
                 </nav>
             </div>
