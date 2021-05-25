@@ -1,7 +1,8 @@
-export const FUNCTIONS_DOMAIN =
-    process.env.NODE_ENV !== "production"
-        ? "http://localhost:3000"
-        : process.env.VERCEL_URL;
+const port = process.env.APP_PORT || 3000;
+const FUNCTIONS_DOMAIN =
+    process.env.APP_URL ||
+    process.env.NEXT_PUBLIC_APP_URL ||
+    `http://localhost:${port}`;
 
 export const createShortURL = async (longURL: string): Promise<object> => {
     return await fetch(`${FUNCTIONS_DOMAIN}/api/createUrl`, {
