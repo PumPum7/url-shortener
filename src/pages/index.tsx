@@ -1,7 +1,9 @@
 import Head from "next/head";
 import React, { useState, useEffect } from "react";
 
-import { Scissors, Loading} from "@components/Icons"
+import { useUser } from "@auth0/nextjs-auth0";
+
+import { Scissors, Loading } from "@components/Icons";
 
 import { createShortURL, FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
 
@@ -10,28 +12,38 @@ import { URL } from "@interfaces";
 export default function Home() {
     const [inputLink, setInputLink] = useState<string>("");
     const [shortUrl, setShortUrl] = useState<string>("");
-    const [uploadError, setUploadError] = useState<boolean>(false);
+    const [uploadError, setUploadError] = useState<boolean | string>(false);
     const [loading, setLoading] = useState<boolean>(false);
+
+    const { user } = useUser();
 
     useEffect(() => {
         setTimeout(() => {
-            setUploadError(false)
-        }, 5000)
-    }, [uploadError])
+            setUploadError(false);
+        }, 5000);
+    }, [uploadError]);
 
     const shortenUrl = async () => {
+        if (!user) {
+            setUploadError("You must be logged in to shorten urls!");
+            return;
+        }
         try {
             setLoading(true);
-            if (inputLink.replaceAll(" ", "") === "" || !inputLink.includes(".")) {
-                setLoading(false)
-                setUploadError(true)
+            if (
+                inputLink.replaceAll(" ", "") === "" ||
+                !inputLink.includes(".")
+            ) {
+                setLoading(false);
+                setUploadError(true);
             } else {
                 if (!inputLink.startsWith("http")) {
-                    setInputLink("https://" + inputLink);
+                    setUploadError(
+                        "Make sure that the link starts with http or https!"
+                    );
+                    return;
                 }
-                const result = (await createShortURL(
-                    inputLink
-                )) as URL;
+                const result = (await createShortURL(inputLink)) as URL;
                 setShortUrl(result.short);
                 setLoading(false);
             }
@@ -45,7 +57,7 @@ export default function Home() {
             <Head>
                 <title>URL Shortener ✂️</title>
             </Head>
-            <div className="container">
+            <div className="md:container">
                 <h1 className="text-center text-2xl pt-2">
                     Make your links <span className="underline">short</span>
                 </h1>
@@ -56,21 +68,28 @@ export default function Home() {
                             e.preventDefault();
                             await shortenUrl();
                         }}>
-                        <div className="relative mt-6 mx-auto rounded-xl border-b-2 shadow-lg w-full">
+                        <div
+                            className={`relative mt-6 mx-auto rounded-xl border-b-5 w-full md:shadow-lg ${
+                                uploadError ? "border-2 border-red-500" : ""
+                            }`}>
                             <input
                                 type="text"
                                 placeholder="Paste your long URL"
-                                className="w-full border-transparent bg-transparent rounded-xl"
+                                className="w-full border-transparent bg-transparent rounded-xl selected pt-2"
                                 onChange={(e) => setInputLink(e.target.value)}
                             />
                             {loading ? (
                                 <>
                                     <Loading classNames="cursor-wait absolute inset-y-0 right-0 flex items-center px-2 rounded-xl text-purple-500" />
                                 </>
-                            ) : uploadError ? "" : (
+                            ) : uploadError ? (
+                                ""
+                            ) : (
                                 <>
-                                    <Scissors onClick={async () => await shortenUrl()}
-                                    classNames="cursor-pointer absolute inset-y-0 right-0 flex items-center px-2 rounded-xl hover:shadow-md text-gray-400 hover:text-purple-500" 
+                                    <Scissors
+                                        onClick={async () => await shortenUrl()}
+                                        classNames="cursor-pointer absolute inset-y-0 right-0 flex items-center px-2
+                                        rounded-xl hover:shadow-md text-gray-400 hover:text-purple-500 bg-white h-[90%]"
                                     />
                                 </>
                             )}
@@ -91,10 +110,14 @@ export default function Home() {
                     )}
                     {uploadError ? (
                         <div className="text-center text-red-500">
-                            <p>
-                                An error occurred please try again! Make sure
-                                that the input URL was valid.
-                            </p>
+                            {typeof uploadError === "string" ? (
+                                <p>{uploadError}</p>
+                            ) : (
+                                <p>
+                                    An error occurred please try again! Make
+                                    sure that the input URL was valid.
+                                </p>
+                            )}
                         </div>
                     ) : (
                         ""

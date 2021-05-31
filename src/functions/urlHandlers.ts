@@ -1,16 +1,24 @@
 const port = process.env.APP_PORT || 3000;
-const FUNCTIONS_DOMAIN =
+export const FUNCTIONS_DOMAIN =
     process.env.APP_URL ||
     process.env.NEXT_PUBLIC_APP_URL ||
     `http://localhost:${port}`;
 
-export const createShortURL = async (longURL: string): Promise<object> => {
-    return await fetch(`${FUNCTIONS_DOMAIN}/api/createUrl`, {
+export const createShortURL = async (
+    longURL: string,
+    password: string = "",
+    expiration: number = 0,
+    length: number = 5
+): Promise<object> => {
+    return await fetch(`${FUNCTIONS_DOMAIN}/api/url/create`, {
         method: "POST",
         body: JSON.stringify({
             long: longURL,
-            headers: { "Content-Type": "application/json" },
+            password: password,
+            expiration: expiration,
+            length: length,
         }),
+        headers: { "Content-Type": "application/json" },
     })
         .then((res) => res.json())
         .catch((err) => {
@@ -23,8 +31,14 @@ export const getLongUrl = async ({
 }: {
     shortUrl: string;
 }): Promise<any> => {
-    return await fetch(`${FUNCTIONS_DOMAIN}/api/getUrl?url=${shortUrl}`)
-        .then((res) => res.json())
+    return fetch(`${FUNCTIONS_DOMAIN}/api/url/${shortUrl}`)
+        .then((res) => {
+            if (res.status == 200) {
+                return res.json();
+            } else {
+                return undefined;
+            }
+        })
         .catch((e) => console.error(e));
 };
 

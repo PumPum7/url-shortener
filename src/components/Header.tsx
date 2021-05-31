@@ -1,12 +1,9 @@
-import { Session } from "inspector";
 import Image from "next/image";
-
-import { useSessionContext } from "supertokens-auth-react/recipe/session";
+import { useUser } from "@auth0/nextjs-auth0";
 
 export const Header = (): JSX.Element => {
-    let {
-        doesSessionExist,
-    }: { doesSessionExist: boolean } = useSessionContext();
+    const { user, error } = useUser();
+    if (error) return <div>{error.message}</div>;
 
     return (
         <div className="max-w-screen-lg mx-auto px-3 py-6">
@@ -17,7 +14,7 @@ export const Header = (): JSX.Element => {
                             <Image
                                 src={"/scissors.png"}
                                 width={"44"}
-                                height="44"
+                                height={"44"}
                             />
                             URL Cutter
                         </span>
@@ -25,22 +22,20 @@ export const Header = (): JSX.Element => {
                 </div>
                 <nav className="">
                     <ul className=" navbar flex items-center font-medium text-xl text-gray-800">
-                        <li className="mr-5">
+                        <li className="mr-5 hidden md:block">
                             <a
                                 href="https://github.com/PumPum7/url-shortener"
                                 target="_blank">
                                 GitHub
                             </a>
                         </li>
-                        {doesSessionExist ? (
-                            <li>
-                                <a href="/auth/">Sign in</a>
-                            </li>
-                        ) : (
-                            <li>
-                                <a href="/auth/">Log out</a>
-                            </li>
-                        )}
+                        <li className="rounded-md bg-gradient-to-r from-blue-400 to-indigo-400 py-2 px-3">
+                            {user ? (
+                                <a href={"/profile"}>{user.nickname}</a>
+                            ) : (
+                                <a href={"/api/auth/login"}>Login</a>
+                            )}
+                        </li>
                     </ul>
                 </nav>
             </div>
