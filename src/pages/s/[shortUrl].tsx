@@ -8,13 +8,15 @@ const Url = () => {
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
     const { shortUrl } = context.params;
-    console.log(shortUrl);
 
-    const data = await getLongUrl({ shortUrl });
-    if (data !== undefined) {
+    // .then because it would be a promise otherwise
+    const data = await getLongUrl({ shortUrl }).then((data) => {
+        return data;
+    });
+    if (data !== undefined && data.long !== undefined) {
         if (!data.long.startsWith("http")) {
-            data.long = "http://" + data.long;
-            console.log(data.long)
+            data.long = "https://" + data.long;
+            console.log(data.long);
         }
         return {
             redirect: {
@@ -24,8 +26,11 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
         };
     } else {
         return {
-            notFound: true
-        }
+            redirect: {
+                destination: "/",
+                permanent: true,
+            },
+        };
     }
 };
 
