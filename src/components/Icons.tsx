@@ -1,10 +1,10 @@
 export const Loading = ({
-    classNames,
+    className,
 }: {
-    classNames: string;
+    className: string;
 }): JSX.Element => {
     return (
-        <div className={classNames}>
+        <div className={className}>
             <svg
                 className="animate-spin -ml-1 mr-3 h-5 w-5"
                 xmlns="http://www.w3.org/2000/svg"
@@ -28,13 +28,13 @@ export const Loading = ({
 
 export const Scissors = ({
     onClick,
-    classNames,
+    className,
 }: {
     onClick: () => void;
-    classNames: string;
+    className: string;
 }): JSX.Element => {
     return (
-        <div className={classNames} onClick={async (e) => await onClick()}>
+        <div className={className} onClick={async (e) => await onClick()}>
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"
