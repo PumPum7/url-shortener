@@ -69,7 +69,7 @@ export default function Home() {
                             await shortenUrl();
                         }}>
                         <div
-                            className={`relative mt-6 mx-auto rounded-xl border-b-5 w-full md:shadow-lg ${
+                            className={`relative mt-6 mx-auto rounded-xl border-b-5 w-[calc(100%-1rem)] md:shadow-lg bg-white ${
                                 uploadError ? "border-2 border-red-500" : ""
                             }`}>
                             <input
@@ -80,7 +80,7 @@ export default function Home() {
                             />
                             {loading ? (
                                 <>
-                                    <Loading classNames="cursor-wait absolute inset-y-0 right-0 flex items-center px-2 rounded-xl text-purple-500" />
+                                    <Loading className="cursor-wait absolute inset-y-0 right-0 flex items-center px-2 rounded-xl text-purple-500" />
                                 </>
                             ) : uploadError ? (
                                 ""
@@ -88,8 +88,7 @@ export default function Home() {
                                 <>
                                     <Scissors
                                         onClick={async () => await shortenUrl()}
-                                        classNames="cursor-pointer absolute inset-y-0 right-0 flex items-center px-2
-                                        rounded-xl hover:shadow-md text-gray-400 hover:text-purple-500 bg-white h-[90%]"
+                                        className="cursor-pointer absolute inset-y-0 right-2 top-px flex items-center px-2 rounded-xl hover:shadow-md text-gray-400 hover:text-purple-500 bg-white h-[90%] pt-1"
                                     />
                                 </>
                             )}
