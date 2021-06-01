@@ -19,11 +19,13 @@ export default async function getUrl(
 
     try {
         const { url } = req.query;
+        console.log(url, "query")
 
         client
             .query(q.Get(q.Match(q.Index("url_short"), url)))
             .then((ret) => {
                 const data: URL = ret.data;
+                console.log(data, "data")
                 res.status(200);
                 res.send({
                     short: data.short,

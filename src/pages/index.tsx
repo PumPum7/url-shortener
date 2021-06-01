@@ -1,5 +1,6 @@
-import Head from "next/head";
 import React, { useState, useEffect } from "react";
+
+import Head from "next/head";
 
 import { useUser } from "@auth0/nextjs-auth0";
 
@@ -98,9 +99,9 @@ export default function Home() {
                         <div className="text-center">
                             <p>
                                 <a
-                                    href={FUNCTIONS_DOMAIN + "/s/" + shortUrl}
+                                    href={`${window.location.href}s/${shortUrl}`}
                                     target="_blank">
-                                    {FUNCTIONS_DOMAIN}/s/{shortUrl}
+                                    {window.location.href}s/{shortUrl}
                                 </a>
                             </p>
                         </div>

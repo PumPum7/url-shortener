@@ -8,6 +8,7 @@ const Url = () => {
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
     const { shortUrl } = context.params;
+    console.log(shortUrl, "shortUrl");
 
     // .then because it would be a promise otherwise
     const data = await getLongUrl({ shortUrl }).then((data) => {
@@ -16,8 +17,8 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     if (data !== undefined && data.long !== undefined) {
         if (!data.long.startsWith("http")) {
             data.long = "https://" + data.long;
-            console.log(data.long);
         }
+
         return {
             redirect: {
                 destination: data.long,
