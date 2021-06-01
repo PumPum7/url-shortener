@@ -1,6 +1,8 @@
 const port = process.env.APP_PORT || 3000;
-export const FUNCTIONS_DOMAIN = process.env.NEXT_PUBLIC_VERCEL_URL || `http://localhost:${port}`;
-
+export const FUNCTIONS_DOMAIN =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.NEXT_PUBLIC_VERCEL_URL ||
+    `http://localhost:${port}`;
 
 export const createShortURL = async (
     longURL: string,
