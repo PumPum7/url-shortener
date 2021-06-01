@@ -10,7 +10,7 @@ export const createShortURL = async (
     expiration: number = 0,
     length: number = 5
 ): Promise<object> => {
-    return await fetch(`${FUNCTIONS_DOMAIN}/api/url/create`, {
+    return await fetch(`/api/url/create`, {
         method: "POST",
         body: JSON.stringify({
             long: longURL,
@@ -31,7 +31,7 @@ export const getLongUrl = async ({
 }: {
     shortUrl: string;
 }): Promise<any> => {
-    return fetch(`${FUNCTIONS_DOMAIN}/api/url/${shortUrl}`)
+    return fetch(`/api/url/${shortUrl}`)
         .then((res) => {
             if (res.status == 200) {
                 return res.json();
@@ -43,7 +43,7 @@ export const getLongUrl = async ({
 };
 
 export const deleteShortURL = async (shortURL: string): Promise<object> => {
-    return await fetch(`${FUNCTIONS_DOMAIN}/api/deleteUrl`, {
+    return await fetch(`/api/deleteUrl`, {
         method: "DELETE",
         body: JSON.stringify({
             short: shortURL,
