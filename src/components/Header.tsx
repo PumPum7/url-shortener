@@ -1,9 +1,9 @@
 import Image from "next/image";
+
 import { useUser } from "@auth0/nextjs-auth0";
 
 export const Header = (): JSX.Element => {
-    const { user, error } = useUser();
-    if (error) return <div>{error.message}</div>;
+    const { user } = useUser();
 
     return (
         <div className="max-w-screen-lg mx-auto px-3 py-6">
@@ -12,36 +12,35 @@ export const Header = (): JSX.Element => {
                     <a href="/">
                         <span className="text-gray-900 inline-flex items-center font-semibold text-xl md:text-3xl">
                             <Image
-                                src={"/scissors.png"}
-                                width={"44"}
-                                height={"44"}
+                                src="/scissors.png"
+                                width="44"
+                                height="44"
                                 alt="Logo image"
                             />
-                            URL Cutter
+                            URL Shortener
                         </span>
                     </a>
                 </div>
-                <nav className="">
-                    <ul className=" navbar flex items-center font-medium text-xl text-gray-800">
+                <nav>
+                    <ul className="navbar flex items-center font-medium text-xl text-gray-800">
                         <li className="mr-5 hidden md:block">
                             <a
                                 href="https://github.com/PumPum7/url-shortener"
                                 target="_blank"
-                                rel="noreferrer"
-                                >
+                                rel="noreferrer">
                                 GitHub
                             </a>
                         </li>
                         {user && (
                             <li className="mr-5 hidden md:block">
-                                <a href={"/api/auth/logout"}>Logout</a>
+                                <a href="/api/auth/logout">Logout</a>
                             </li>
                         )}
-                        <li className="rounded-md bg-gradient-to-r from-blue-400 to-indigo-400 py-2 px-3">
+                        <li className="rounded-md bg-gradient-to-r from-blue-400 to-indigo-400 py-2 px-3 transform hover:scale-[1.10] hover:shadow-md">
                             {user ? (
-                                <a href={"/profile"}>{user.nickname}</a>
+                                <a href="/profile">{user.nickname}</a>
                             ) : (
-                                <a href={"/api/auth/login"}>Login</a>
+                                <a href="/api/auth/login">Login</a>
                             )}
                         </li>
                     </ul>

@@ -1,7 +1,7 @@
 import React from "react";
 
-import Header from "@components/Header";
 import Footer from "@components/Footer";
+import Header from "@components/Header";
 
 export const Layout = ({
     children,
@@ -9,7 +9,7 @@ export const Layout = ({
     children: React.ReactNode;
 }): JSX.Element => {
     return (
-        <div className={"mx-auto max-w-sm md:max-w-2xl lg:max-w-screen-md"}>
+        <div className="mx-auto max-w-sm md:max-w-2xl lg:max-w-screen-md">
             <Header />
             {children}
             <Footer />

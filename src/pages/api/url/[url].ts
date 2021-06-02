@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-const faunadb = require("faunadb"),
-    q = faunadb.query;
+const faunadb = require("faunadb");
+
+const q = faunadb.query;
 
 interface URL {
     short: string;
@@ -19,13 +20,11 @@ export default async function getUrl(
 
     try {
         const { url } = req.query;
-        console.log(url, "query")
 
         client
             .query(q.Get(q.Match(q.Index("url_short"), url)))
             .then((ret) => {
-                const data: URL = ret.data;
-                console.log(data, "data")
+                const { data }: { data: URL } = ret;
                 res.status(200);
                 res.send({
                     short: data.short,

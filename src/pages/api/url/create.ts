@@ -1,16 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+
 import { withApiAuthRequired, getSession } from "@auth0/nextjs-auth0";
 
-const faunadb = require("faunadb"),
-    q = faunadb.query;
+const faunadb = require("faunadb");
+
+const q = faunadb.query;
 
 export default withApiAuthRequired(async function createUrl(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
     const { user } = getSession(req, res);
-
-    console.log(user);
 
     const client = new faunadb.Client({
         secret: process.env.GO_FAUNA_SECRET_KEY_A,
@@ -23,16 +23,17 @@ export default withApiAuthRequired(async function createUrl(
         const password: string = req.body.password || "";
         const expiration: number = (req.body.expiration as number) || 0;
         const urlLength: number = (req.body.length as number) || 5;
+        const customAddress: string = req.body.customAddress || ""
         client
             .query(
                 q.Create(
                     q.Collection("urls"),
                     q.Object({
                         data: {
-                            short: generateShortUrl(urlLength),
+                            short: customAddress || generateShortUrl(urlLength), // add a handler for duplicates
                             long: url,
                             usage: 0,
-                            password: password,
+                            password,
                             user: user.user_id,
                         },
                         // adds the set expiration time to the cooldown
@@ -48,7 +49,7 @@ export default withApiAuthRequired(async function createUrl(
                 res.send(ret.data);
             })
             .catch((e) => {
-                res.status(404);
+                res.status(400);
                 res.send({ error: e });
             });
     } catch (e) {
@@ -58,7 +59,7 @@ export default withApiAuthRequired(async function createUrl(
 });
 
 function generateShortUrl(length: number): string {
-    let result = [];
+    const result = [];
     const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     const characterLength = characters.length;
     for (let i = 0; i < length; i++) {
