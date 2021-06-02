@@ -5,10 +5,14 @@ import Head from "next/head";
 import { useUser } from "@auth0/nextjs-auth0";
 
 import { Scissors, Loading } from "@components/Icons";
+import { AdvancedOptions } from "@components/homepage/Options";
 
-import { createShortURL, FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
+import { createShortURL } from "@functions/urlHandlers";
 
-import { URL } from "@interfaces";
+import { URL, AdvancedOptionsStruct } from "@interfaces";
+
+
+const DUPLICATE_NAME = "instance not unique"
 
 export default function Home() {
     const [inputLink, setInputLink] = useState<string>("");
@@ -16,13 +20,35 @@ export default function Home() {
     const [uploadError, setUploadError] = useState<boolean | string>(false);
     const [loading, setLoading] = useState<boolean>(false);
 
+    let advancedOptions: AdvancedOptionsStruct = {
+        password: "",
+        customAddress: "",
+        expiration: 0,
+        length: 5,
+        message: ""
+    }
+
     const { user } = useUser();
 
     useEffect(() => {
         setTimeout(() => {
             setUploadError(false);
-        }, 5000);
+        }, 20000);
     }, [uploadError]);
+
+    useEffect(() => {
+        advancedOptions = {
+            password: "",
+            customAddress: "",
+            expiration: 0,
+            length: 5,
+            message: ""
+        }
+        // resets the value of every advanced option field -> causes weird behaviour otherwise
+        Array.from(document.getElementsByClassName("advancedOptions")).forEach(
+            inputField => inputField["value"] = ""
+        )
+    }, [shortUrl])
 
     const shortenUrl = async () => {
         if (!user) {
@@ -44,8 +70,18 @@ export default function Home() {
                     );
                     return;
                 }
-                const result = (await createShortURL(inputLink)) as URL;
-                setShortUrl(result.short);
+                const result = (await createShortURL(inputLink, advancedOptions.password, advancedOptions.expiration, advancedOptions.length, advancedOptions.message, advancedOptions.customAddress)) as URL;
+                // handle specific errors (typescript doesnt like this)
+                if ("error" in result) {
+                    // @ts-ignore
+                    if (result.error.message === DUPLICATE_NAME) {
+                        setUploadError("This short url already exists! Please choose a different url or try again with a longer length.")
+                    } else {
+                        throw new Error()
+                    }
+                } else {
+                    setShortUrl(result.short);
+                }
                 setLoading(false);
             }
         } catch {
@@ -59,7 +95,7 @@ export default function Home() {
                 <title>URL Shortener ✂️</title>
             </Head>
             <div className="md:container">
-                <h1 className="text-center text-2xl pt-2">
+                <h1 className="text-center text-3xl md:text-[2.4rem] pt-8 pb-5 md:pt-10">
                     Make your links <span className="underline">short</span>
                 </h1>
                 <div>
@@ -78,6 +114,7 @@ export default function Home() {
                                 placeholder="Paste your long URL"
                                 className="w-full border-transparent bg-transparent rounded-xl selected pt-2"
                                 onChange={(e) => setInputLink(e.target.value)}
+                                onClick={() => setUploadError(false)}
                             />
                             {loading ? (
                                 <>
@@ -88,7 +125,7 @@ export default function Home() {
                             ) : (
                                 <>
                                     <Scissors
-                                        onClick={async () => await shortenUrl()}
+                                        onClick={async () => shortenUrl()}
                                         className="cursor-pointer absolute inset-y-0 right-2 top-px flex items-center px-2 rounded-xl hover:shadow-md text-gray-400 hover:text-purple-500 bg-white h-[90%] pt-1"
                                     />
                                 </>
@@ -100,7 +137,8 @@ export default function Home() {
                             <p>
                                 <a
                                     href={`${window.location.href}s/${shortUrl}`}
-                                    target="_blank">
+                                    target="_blank"
+                                    rel="noreferrer">
                                     {window.location.href}s/{shortUrl}
                                 </a>
                             </p>
@@ -109,7 +147,7 @@ export default function Home() {
                         ""
                     )}
                     {uploadError ? (
-                        <div className="text-center text-red-500">
+                        <div className="text-center text-red-500 pb-3">
                             {typeof uploadError === "string" ? (
                                 <p>{uploadError}</p>
                             ) : (
@@ -122,6 +160,7 @@ export default function Home() {
                     ) : (
                         ""
                     )}
+                    <AdvancedOptions advancedOptions={advancedOptions}/>
                 </div>
             </div>
         </>
