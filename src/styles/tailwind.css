@@ -8,5 +8,5 @@
 /* purgecss start ignore */
 html {
   @apply antialiased;
-  background-color: hsl(206, 12%, 95%);
+  background-color: hsl(220, 12%, 95%);
 }
