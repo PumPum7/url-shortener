@@ -11,8 +11,7 @@ import { createShortURL } from "@functions/urlHandlers";
 
 import { URL, AdvancedOptionsStruct } from "@interfaces";
 
-
-const DUPLICATE_NAME = "instance not unique"
+const DUPLICATE_NAME = "instance not unique";
 
 export default function Home() {
     const [inputLink, setInputLink] = useState<string>("");
@@ -25,8 +24,8 @@ export default function Home() {
         customAddress: "",
         expiration: 0,
         length: 5,
-        message: ""
-    }
+        message: "",
+    };
 
     const { user } = useUser();
 
@@ -42,13 +41,13 @@ export default function Home() {
             customAddress: "",
             expiration: 0,
             length: 5,
-            message: ""
-        }
+            message: "",
+        };
         // resets the value of every advanced option field -> causes weird behaviour otherwise
         Array.from(document.getElementsByClassName("advancedOptions")).forEach(
-            inputField => inputField["value"] = ""
-        )
-    }, [shortUrl])
+            (inputField) => (inputField["value"] = "")
+        );
+    }, [shortUrl]);
 
     const shortenUrl = async () => {
         if (!user) {
@@ -70,14 +69,23 @@ export default function Home() {
                     );
                     return;
                 }
-                const result = (await createShortURL(inputLink, advancedOptions.password, advancedOptions.expiration, advancedOptions.length, advancedOptions.message, advancedOptions.customAddress)) as URL;
+                const result = (await createShortURL(
+                    inputLink,
+                    advancedOptions.password,
+                    advancedOptions.expiration,
+                    advancedOptions.length,
+                    advancedOptions.message,
+                    advancedOptions.customAddress
+                )) as URL;
                 // handle specific errors (typescript doesnt like this)
                 if ("error" in result) {
                     // @ts-ignore
                     if (result.error.message === DUPLICATE_NAME) {
-                        setUploadError("This short url already exists! Please choose a different url or try again with a longer length.")
+                        setUploadError(
+                            "This short url already exists! Please choose a different url or try again with a longer length."
+                        );
                     } else {
-                        throw new Error()
+                        throw new Error();
                     }
                 } else {
                     setShortUrl(result.short);
@@ -95,12 +103,13 @@ export default function Home() {
                 <title>URL Shortener ✂️</title>
             </Head>
             <div className="md:container">
-                <h1 className="text-center text-3xl md:text-[2.4rem] pt-8 pb-5 md:pt-10">
-                    Make your links <span className="underline">short</span>
+                <h1 className="pb-5 pt-8 text-center text-3xl md:pt-10 md:text-[2.4rem]">
+                    <span className="block sm:inline">Make your links </span>
+                    <span className="block underline sm:inline">short</span>
                 </h1>
                 <div>
                     <form
-                        className="flex pb-6"
+                        className="flex"
                         onSubmit={async (e) => {
                             e.preventDefault();
                             await shortenUrl();
@@ -112,13 +121,13 @@ export default function Home() {
                             <input
                                 type="text"
                                 placeholder="Paste your long URL"
-                                className="w-full border-transparent bg-transparent rounded-xl selected pt-2"
+                                className="pt-2 w-full bg-transparent border-transparent rounded-xl selected"
                                 onChange={(e) => setInputLink(e.target.value)}
                                 onClick={() => setUploadError(false)}
                             />
                             {loading ? (
                                 <>
-                                    <Loading className="cursor-wait absolute inset-y-0 right-0 flex items-center px-2 rounded-xl text-purple-500" />
+                                    <Loading className="absolute inset-y-0 right-0 flex items-center px-2 text-purple-500 rounded-xl cursor-wait" />
                                 </>
                             ) : uploadError ? (
                                 ""
@@ -126,14 +135,14 @@ export default function Home() {
                                 <>
                                     <Scissors
                                         onClick={async () => shortenUrl()}
-                                        className="cursor-pointer absolute inset-y-0 right-2 top-px flex items-center px-2 rounded-xl hover:shadow-md text-gray-400 hover:text-purple-500 bg-white h-[90%] pt-1"
+                                        className="absolute inset-y-0 right-2 top-px flex items-center pt-1 px-2 text-gray-400 hover:text-purple-500 bg-white rounded-xl hover:shadow-md cursor-pointer h-[90%]"
                                     />
                                 </>
                             )}
                         </div>
                     </form>
                     {shortUrl !== "" ? (
-                        <div className="text-center">
+                        <div className="py-6 text-center overflow-hidden overflow-ellipsis">
                             <p>
                                 <a
                                     href={`${window.location.href}s/${shortUrl}`}
@@ -147,7 +156,7 @@ export default function Home() {
                         ""
                     )}
                     {uploadError ? (
-                        <div className="text-center text-red-500 pb-3">
+                        <div className="pb-3 text-center text-red-500">
                             {typeof uploadError === "string" ? (
                                 <p>{uploadError}</p>
                             ) : (
@@ -160,7 +169,7 @@ export default function Home() {
                     ) : (
                         ""
                     )}
-                    <AdvancedOptions advancedOptions={advancedOptions}/>
+                    <AdvancedOptions advancedOptions={advancedOptions} />
                 </div>
             </div>
         </>

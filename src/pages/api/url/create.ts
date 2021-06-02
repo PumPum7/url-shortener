@@ -23,7 +23,7 @@ export default withApiAuthRequired(async function createUrl(
         const password: string = req.body.password || "";
         const expiration: number = (req.body.expiration as number) || 0;
         const urlLength: number = (req.body.length as number) || 5;
-        const customAddress: string = req.body.customAddress || ""
+        const customAddress: string = req.body.customAddress || "";
         client
             .query(
                 q.Create(

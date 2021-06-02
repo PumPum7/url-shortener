@@ -6,13 +6,13 @@ export const Header = (): JSX.Element => {
     const { user } = useUser();
 
     return (
-        <div className="max-w-screen-lg mx-auto px-3 py-6">
-            <div className="flex flex-wrap justify-between items-center">
+        <div className="mx-auto px-3 py-6 max-w-screen-lg">
+            <div className="flex flex-wrap items-center justify-between">
                 <div>
                     <a href="/">
-                        <span className="text-gray-900 inline-flex items-center font-semibold text-xl md:text-3xl">
+                        <span className="inline-flex items-center text-gray-900 text-xl font-semibold md:text-3xl">
                             <Image
-                                src="/scissors.png"
+                                src="/assets/scissors.png"
                                 width="44"
                                 height="44"
                                 alt="Logo image"
@@ -22,8 +22,8 @@ export const Header = (): JSX.Element => {
                     </a>
                 </div>
                 <nav>
-                    <ul className="navbar flex items-center font-medium text-xl text-gray-800">
-                        <li className="mr-5 hidden md:block">
+                    <ul className="flex items-center text-gray-800 text-xl font-medium navbar">
+                        <li className="hidden mr-5 md:block">
                             <a
                                 href="https://github.com/PumPum7/url-shortener"
                                 target="_blank"
@@ -32,11 +32,11 @@ export const Header = (): JSX.Element => {
                             </a>
                         </li>
                         {user && (
-                            <li className="mr-5 hidden md:block">
+                            <li className="hidden mr-5 md:block">
                                 <a href="/api/auth/logout">Logout</a>
                             </li>
                         )}
-                        <li className="rounded-md bg-gradient-to-r from-blue-400 to-indigo-400 py-2 px-3 transform hover:scale-[1.10] hover:shadow-md">
+                        <li className="px-3 py-2 bg-gradient-to-r rounded-md hover:shadow-md from-blue-400 to-indigo-400 transform hover:scale-[1.10]">
                             {user ? (
                                 <a href="/profile">{user.nickname}</a>
                             ) : (

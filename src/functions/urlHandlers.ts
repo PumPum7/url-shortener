@@ -20,14 +20,14 @@ export const createShortURL = async (
             expiration: expiration,
             length: length,
             message: message,
-            customAddress: customAddress
+            customAddress: customAddress,
         }),
         headers: { "Content-Type": "application/json" },
     })
         .then((res) => res.json())
         .catch((err) => {
             console.error(err);
-            return err
+            return err;
         });
 };
 
