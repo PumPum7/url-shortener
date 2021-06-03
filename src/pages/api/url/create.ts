@@ -34,7 +34,7 @@ export default withApiAuthRequired(async function createUrl(
                             long: url,
                             usage: 0,
                             password,
-                            user: user.user_id,
+                            user: user.sub,
                         },
                         // adds the set expiration time to the cooldown
                         ttl:

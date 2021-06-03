@@ -6,6 +6,7 @@ import { useUser } from "@auth0/nextjs-auth0";
 
 import { Scissors, Loading } from "@components/Icons";
 import { AdvancedOptions } from "@components/homepage/Options";
+import { RecentLinks } from "@components/homepage/RecentLinks";
 
 import { createShortURL } from "@functions/urlHandlers";
 
@@ -170,6 +171,7 @@ export default function Home() {
                         ""
                     )}
                     <AdvancedOptions advancedOptions={advancedOptions} />
+                    {user ? <RecentLinks /> : ""}
                 </div>
             </div>
         </>

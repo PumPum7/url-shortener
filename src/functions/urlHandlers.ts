@@ -46,14 +46,17 @@ export const getLongUrl = async ({
         .catch((e) => console.error(e));
 };
 
-export const deleteShortURL = async (shortURL: string): Promise<object> => {
-    return await fetch(`/api/deleteUrl`, {
-        method: "DELETE",
-        body: JSON.stringify({
-            short: shortURL,
-            headers: { "Content-Type": "application/json" },
-        }),
-    })
-        .then((res) => res.json())
-        .catch((err) => console.error(err));
+export const getUserUrls = async (
+    amount: number = 10,
+    skip: number = 0,
+    search: string = ""
+): Promise<any> => {
+    return fetch(
+        `${FUNCTIONS_DOMAIN}/api/url/user?amount=${amount}&skip=${skip}&search=${search}`,
+        {}
+    )
+        .then((res) => {
+            res.json().then((res) => console.log(res));
+        })
+        .catch((e) => console.error(e));
 };
