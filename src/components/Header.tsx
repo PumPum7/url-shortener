@@ -17,7 +17,7 @@ export const Header = (): JSX.Element => {
                                 height="44"
                                 alt="Logo image"
                             />
-                            URL Shortener
+                            <h1 className="pl-2">URL Shortener</h1>
                         </span>
                     </a>
                 </div>
