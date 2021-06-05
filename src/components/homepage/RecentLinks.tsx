@@ -1,9 +1,14 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useUser } from "@auth0/nextjs-auth0";
+import { toClipboard } from "copee";
 
 import { getUserUrls } from "@functions/urlHandlers";
 import { timeDifference } from "@functions/time";
+
+import { CopyIcon, CheckIcon } from "@components/Icons";
+
+import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
 
 interface RecentLinkInterface {
     long: string;
@@ -64,41 +69,29 @@ export const RecentLinks = (): JSX.Element => {
                                     </th>
                                 </tr>
                                 <tr className="justify-between">
-                                    <th
-                                        scope="col"
-                                        className="px-6 py-4 text-left text-gray-700 text-xs font-medium tracking-wider uppercase">
-                                        Original URL
-                                    </th>
-                                    <th
-                                        scope="col"
-                                        className="px-6 py-4 text-left text-gray-700 text-xs font-medium tracking-wider uppercase">
-                                        Short
-                                    </th>
-                                    <th
-                                        scope="col"
-                                        className="px-6 py-4 text-left text-gray-700 text-xs font-medium tracking-wider uppercase">
+                                    <TableHeading>Original URL</TableHeading>
+                                    <TableHeading>Short URL</TableHeading>
+                                    <TableHeading direction="text-center">
                                         Date
-                                    </th>
-                                    <th
-                                        scope="col"
-                                        className="px-6 py-4 text-left text-gray-700 text-xs font-medium tracking-wider uppercase">
-                                        Usage
-                                    </th>
-                                    <th
-                                        scope="col"
-                                        className="px-6 py-4 text-right text-gray-700 text-xs font-medium tracking-wider uppercase">
+                                    </TableHeading>
+                                    <TableHeading>Usage</TableHeading>
+                                    <TableHeading direction="text-right">
                                         Actions
-                                    </th>
+                                    </TableHeading>
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-gray-200 divide-y">
                                 {recentLinks.map(
-                                    (link: RecentLinkInterface) => (
+                                    (
+                                        link: RecentLinkInterface,
+                                        index: number
+                                    ) => (
                                         <RecentLink
                                             longUrl={link.long}
                                             shortUrl={link.short}
                                             timestamp={link.timeStamp}
                                             usage={link.usage}
+                                            key={index}
                                         />
                                     )
                                 )}
@@ -120,6 +113,25 @@ export const RecentLinks = (): JSX.Element => {
     );
 };
 
+export const TableHeading = ({
+    direction = "text-left",
+    children,
+}: {
+    direction?: string;
+    children: React.ReactNode;
+}): JSX.Element => {
+    return (
+        <th
+            scope="col"
+            className={
+                "px-6 py-4 text-gray-700 text-xs font-medium tracking-wider uppercase " +
+                direction
+            }>
+            {children}
+        </th>
+    );
+};
+
 export const RecentLink = ({
     longUrl,
     shortUrl,
@@ -132,25 +144,55 @@ export const RecentLink = ({
     usage: number;
 }): JSX.Element => {
     const timeDifString = timeDifference(timestamp);
+    const [copySuccess, setCopySuccess] = useState<boolean>(false);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setCopySuccess(false);
+        }, 1500);
+    }, [copySuccess]);
 
     return (
-        <tr key={shortUrl}>
+        <tr>
             <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-gray-900 text-sm">{longUrl}</div>
+                <div className="text-sm link">
+                    <a href={longUrl} rel="noreferrer" target="_blank">
+                        {longUrl}
+                    </a>
+                </div>
             </td>
             <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-gray-900 text-sm">{shortUrl}</div>
+                <div className="flex text-sm link">
+                    <span
+                        className={`copy-icon ${!copySuccess ? "active" : ""}`}
+                        onClick={() => {
+                            const success = toClipboard(
+                                `${FUNCTIONS_DOMAIN}/s/${shortUrl}`
+                            );
+                            if (success) {
+                                setCopySuccess(true);
+                            }
+                        }}>
+                        {copySuccess ? <CheckIcon /> : <CopyIcon />}
+                    </span>
+
+                    <a href={"/s/" + shortUrl} rel="noreferrer" target="_blank">
+                        {FUNCTIONS_DOMAIN.replace("http://", "").replace(
+                            "https://",
+                            ""
+                        )}
+                        /s/{shortUrl}
+                    </a>
+                </div>
             </td>
             <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-gray-900 text-sm">{timeDifString}</div>
             </td>
-            <td className="px-6 py-4 text-gray-500 whitespace-nowrap text-sm">
+            <td className="px-6 py-4 text-right text-gray-500 whitespace-nowrap text-sm">
                 {usage}
             </td>
             <td className="px-6 py-4 text-right whitespace-nowrap text-sm font-medium">
-                <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                    Action
-                </a>
+                13 46 79 11
             </td>
         </tr>
     );

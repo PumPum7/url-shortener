@@ -10,3 +10,22 @@ html {
     @apply antialiased;
     background-color: hsl(220, 12%, 95%);
 }
+
+@layer components {
+    div .link {
+        @apply text-blue-500;
+    }
+    div .link > a {
+        @apply hover:border-b-2;
+        @apply hover:border-blue-500;
+        @apply hover:border-dotted;
+    }
+
+    .copy-icon {
+        @apply mr-2 p-1 text-green-600 bg-green-100 rounded-full duration-500 ring-green-50 ring-2 motion-reduce:transition-none transition-all;
+    }
+
+    .copy-icon.active {
+        @apply hover:cursor-pointer hover:transform hover:-translate-y-1 hover:scale-110;
+    }
+}
