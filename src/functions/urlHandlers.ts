@@ -51,12 +51,15 @@ export const getUserUrls = async (
     skip: number = 0,
     search: string = ""
 ): Promise<any> => {
-    return fetch(
+    return await fetch(
         `${FUNCTIONS_DOMAIN}/api/url/user?amount=${amount}&skip=${skip}&search=${search}`,
         {}
     )
         .then((res) => {
-            res.json().then((res) => console.log(res));
+            if (res.status === 200) {
+                return res.json();
+            }
+            return undefined;
         })
         .catch((e) => console.error(e));
 };

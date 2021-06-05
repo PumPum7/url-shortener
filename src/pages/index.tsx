@@ -120,7 +120,7 @@ export default function Home() {
                                 uploadError ? "border-2 border-red-500" : ""
                             }`}>
                             <input
-                                type="text"
+                                type="url"
                                 placeholder="Paste your long URL"
                                 className="pt-2 w-full bg-transparent border-transparent rounded-xl selected"
                                 onChange={(e) => setInputLink(e.target.value)}
@@ -171,7 +171,7 @@ export default function Home() {
                         ""
                     )}
                     <AdvancedOptions advancedOptions={advancedOptions} />
-                    {user ? <RecentLinks /> : ""}
+                    <div>{user ? <RecentLinks /> : ""}</div>
                 </div>
             </div>
         </>

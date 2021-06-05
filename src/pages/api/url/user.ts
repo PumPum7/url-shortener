@@ -19,7 +19,6 @@ export default withApiAuthRequired(async function createUrl(
     let { amount, skip, search } = req.query;
 
     try {
-        console.log(amount, skip, search);
         // Paginate then map get through them
         await client
             .query(
@@ -56,10 +55,10 @@ export default withApiAuthRequired(async function createUrl(
                             long: link[1],
                             short: link[2],
                             usage: link[3],
-                            timeStamp: link[4],
+                            // Used to convert microseconds to milliseconds
+                            timeStamp: link[4] / 1000,
                         });
                     });
-                console.log(result);
                 res.send({ links: recentLinks, total: totalLinks });
             });
     } catch (err) {
@@ -78,7 +77,6 @@ const getUrlCount = async (
             q.Count(q.Paginate(q.Match(q.Index("user"), user), { size: 10000 }))
         )
         .then((res) => {
-            console.log(res.data[0]);
             return res.data[0] as number;
         })
         .catch((e) => {
