@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { unstable_batchedUpdates as batchedUpdates } from "react-dom";
 
 import { useUser } from "@auth0/nextjs-auth0";
 import { toClipboard } from "copee";
@@ -6,8 +7,17 @@ import { toClipboard } from "copee";
 import { getUserUrls } from "@functions/urlHandlers";
 import { timeDifference } from "@functions/time";
 
-import { CopyIcon, CheckIcon } from "@components/Icons";
+import { QRCodeModal } from "@components/util/QRCodeModal";
+import {
+    CopyIcon,
+    CheckIcon,
+    QRCodeIcon,
+    TrashIcon,
+    PencilIcon,
+    ChartPieIcon,
+} from "@components/Icons";
 
+import { useModalStore } from "@functions/globalZustand";
 import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
 
 interface RecentLinkInterface {
@@ -26,7 +36,7 @@ export const RecentLinks = (): JSX.Element => {
 
     const { user } = useUser();
 
-    // TODO: fix error handling
+    // TODO: improve error handling
     useEffect(() => {
         if (!user) {
             return;
@@ -145,6 +155,33 @@ export const RecentLink = ({
 }): JSX.Element => {
     const timeDifString = timeDifference(timestamp);
     const [copySuccess, setCopySuccess] = useState<boolean>(false);
+    const [isOpenQrCode, setIsOpenQrCode] = useState<boolean>(false);
+
+    const { setModal, removeModal } = useModalStore((state) => ({
+        setModal: state.setModal,
+        removeModal: state.removeModal,
+    }));
+
+    function closeModal() {
+        console.log("close");
+        removeModal();
+        setIsOpenQrCode(false);
+    }
+
+    function openModal() {
+        batchedUpdates(() => {
+            console.log("open");
+            setModal(
+                <QRCodeModal
+                    qrcodeValue={shortUrl}
+                    closeFunc={closeModal}
+                    openFunc={openModal}
+                    isOpen={isOpenQrCode}
+                />
+            );
+            setIsOpenQrCode(true);
+        });
+    }
 
     useEffect(() => {
         setTimeout(() => {
@@ -153,47 +190,73 @@ export const RecentLink = ({
     }, [copySuccess]);
 
     return (
-        <tr>
-            <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm link">
-                    <a href={longUrl} rel="noreferrer" target="_blank">
-                        {longUrl}
-                    </a>
-                </div>
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap">
-                <div className="flex text-sm link">
-                    <span
-                        className={`copy-icon ${!copySuccess ? "active" : ""}`}
-                        onClick={() => {
-                            const success = toClipboard(
-                                `${FUNCTIONS_DOMAIN}/s/${shortUrl}`
-                            );
-                            if (success) {
-                                setCopySuccess(true);
-                            }
-                        }}>
-                        {copySuccess ? <CheckIcon /> : <CopyIcon />}
-                    </span>
+        <>
+            <tr>
+                <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm link">
+                        <a href={longUrl} rel="noreferrer" target="_blank">
+                            {longUrl}
+                        </a>
+                    </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex text-sm link">
+                        <button
+                            className={`text-green-600 bg-green-100 ring-green-50 action-icon ${
+                                !copySuccess ? "active" : ""
+                            }`}
+                            onClick={() => {
+                                const success = toClipboard(
+                                    `${FUNCTIONS_DOMAIN}/s/${shortUrl}`
+                                );
+                                if (success) {
+                                    setCopySuccess(true);
+                                }
+                            }}>
+                            {copySuccess ? <CheckIcon /> : <CopyIcon />}
+                        </button>
 
-                    <a href={"/s/" + shortUrl} rel="noreferrer" target="_blank">
-                        {FUNCTIONS_DOMAIN.replace("http://", "").replace(
-                            "https://",
-                            ""
-                        )}
-                        /s/{shortUrl}
-                    </a>
-                </div>
-            </td>
-            <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-gray-900 text-sm">{timeDifString}</div>
-            </td>
-            <td className="px-6 py-4 text-right text-gray-500 whitespace-nowrap text-sm">
-                {usage}
-            </td>
-            <td className="px-6 py-4 text-right whitespace-nowrap text-sm font-medium">
-                13 46 79 11
-            </td>
-        </tr>
+                        <a
+                            href={"/s/" + shortUrl}
+                            rel="noreferrer"
+                            target="_blank">
+                            {FUNCTIONS_DOMAIN.replace("http://", "").replace(
+                                "https://",
+                                ""
+                            )}
+                            /s/{shortUrl}
+                        </a>
+                    </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-gray-900 text-sm">{timeDifString}</div>
+                </td>
+                <td className="px-6 py-4 text-right text-gray-500 whitespace-nowrap text-sm">
+                    {usage}
+                </td>
+                <td className="px-6 py-4 text-right whitespace-nowrap text-sm font-medium">
+                    <button
+                        onClick={() => alert("stats maybe link in the future")}
+                        className="text-purple-600 bg-purple-100 ring-purple-50 action-icon active">
+                        <ChartPieIcon />
+                    </button>
+                    <button
+                        onClick={() => openModal()}
+                        className="text-gray-600 bg-gray-100 ring-gray-50 action-icon active">
+                        <QRCodeIcon />
+                    </button>
+                    <button
+                        onClick={() => alert("edit window")}
+                        className="text-yellow-600 bg-yellow-100 ring-yellow-50 action-icon active">
+                        <PencilIcon />
+                    </button>
+                    <button
+                        onClick={() => alert("delete modal here")}
+                        className="text-red-600 bg-red-100 ring-red-50 action-icon active">
+                        <TrashIcon />
+                    </button>
+                </td>
+            </tr>
+        </>
     );
 };
