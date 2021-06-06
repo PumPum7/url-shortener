@@ -4,9 +4,9 @@ import Head from "next/head";
 
 import { useUser } from "@auth0/nextjs-auth0";
 
-import { Scissors, Loading } from "@components/Icons";
-import { AdvancedOptions } from "@components/homepage/Options";
-import { RecentLinks } from "@components/homepage/RecentLinks";
+import { Scissors, Loading } from "@components/Layout/Icons";
+import { AdvancedOptions } from "@components/links/Options";
+import { RecentLinks } from "@components/links/RecentLinks";
 
 import { createShortURL } from "@functions/urlHandlers";
 
@@ -19,14 +19,16 @@ export default function Home() {
     const [shortUrl, setShortUrl] = useState<string>("");
     const [uploadError, setUploadError] = useState<boolean | string>(false);
     const [loading, setLoading] = useState<boolean>(false);
-
-    let advancedOptions: AdvancedOptionsStruct = {
-        password: "",
-        customAddress: "",
-        expiration: 0,
-        length: 5,
-        message: "",
-    };
+    const [showOptions, setShowOptions] = useState<boolean>(false);
+    const [showOptionsError, setShowOptionsError] = useState<string>("");
+    const [advancedOptions, setAdvancedOptions] =
+        useState<AdvancedOptionsStruct>({
+            customAddress: "",
+            expiration: 0,
+            length: 5,
+            message: "",
+            password: "",
+        });
 
     const { user } = useUser();
 
@@ -37,13 +39,13 @@ export default function Home() {
     }, [uploadError]);
 
     useEffect(() => {
-        advancedOptions = {
+        setAdvancedOptions({
             password: "",
             customAddress: "",
             expiration: 0,
             length: 5,
             message: "",
-        };
+        });
         // resets the value of every advanced option field -> causes weird behaviour otherwise
         Array.from(document.getElementsByClassName("advancedOptions")).forEach(
             (inputField) => (inputField["value"] = "")
@@ -143,7 +145,7 @@ export default function Home() {
                         </div>
                     </form>
                     {shortUrl !== "" ? (
-                        <div className="py-6 text-center overflow-hidden overflow-ellipsis">
+                        <div className="pt-6 text-center overflow-hidden overflow-ellipsis">
                             <p>
                                 <a
                                     href={`${window.location.href}s/${shortUrl}`}
@@ -170,10 +172,41 @@ export default function Home() {
                     ) : (
                         ""
                     )}
-                    <AdvancedOptions advancedOptions={advancedOptions} />
+                    <div className="pt-6">
+                        <label className="hover:cursor-pointer">
+                            <input
+                                type="checkbox"
+                                className="rounded hover:cursor-pointer"
+                                onChange={() =>
+                                    user
+                                        ? setShowOptions(!showOptions)
+                                        : setShowOptionsError(
+                                              "You need to log in to view the advanced options!"
+                                          )
+                                }
+                            />
+                            <span className="pl-4">Show advanced options</span>
+                        </label>
+                    </div>
+                    {showOptionsError ? (
+                        <p className="text-red-600">{showOptionsError}</p>
+                    ) : (
+                        ""
+                    )}
+                    {showOptions ? (
+                        <AdvancedOptions
+                            advancedOptions={advancedOptions}
+                            setAdvancedOptions={setAdvancedOptions}
+                        />
+                    ) : (
+                        ""
+                    )}
+
                     <div>{user ? <RecentLinks /> : ""}</div>
                 </div>
             </div>
         </>
     );
 }
+
+// TODO: fix the link showcase (maybe also include the svg button)

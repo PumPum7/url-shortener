@@ -12,7 +12,7 @@ export const createShortURL = async (
     message = "",
     customAddress = ""
 ): Promise<string | unknown> => {
-    return await fetch(`/api/url/create`, {
+    return await fetch(`${FUNCTIONS_DOMAIN}/api/url/create`, {
         method: "POST",
         body: JSON.stringify({
             long: longURL,
@@ -52,8 +52,7 @@ export const getUserUrls = async (
     search: string = ""
 ): Promise<any> => {
     return await fetch(
-        `${FUNCTIONS_DOMAIN}/api/url/user?amount=${amount}&skip=${skip}&search=${search}`,
-        {}
+        `${FUNCTIONS_DOMAIN}/api/url/user?amount=${amount}&skip=${skip}&search=${search}`
     )
         .then((res) => {
             if (res.status === 200) {
@@ -62,4 +61,37 @@ export const getUserUrls = async (
             return undefined;
         })
         .catch((e) => console.error(e));
+};
+
+export const getUserUrl = async (shortUrl: string): Promise<any> => {
+    return await fetch(
+        `${FUNCTIONS_DOMAIN}/api/url/information?url=${shortUrl}`
+    ).then((res) => res.json());
+};
+
+export const editUserUrl = async (
+    short: string,
+    password: string = "",
+    customAddress: string = "",
+    expiration: number = 0,
+    length: number = 0,
+    message: string = ""
+): Promise<any> => {
+    return await fetch(`${FUNCTIONS_DOMAIN}/api/url/edit`, {
+        method: "POST",
+        body: JSON.stringify({
+            short: short,
+            password: password,
+            customAddress: customAddress,
+            expiration: expiration,
+            length: length,
+            message: message,
+        }),
+        headers: { "Content-Type": "application/json" },
+    })
+        .then((res) => res.json())
+        .catch((err) => {
+            console.error(err);
+            return err;
+        });
 };
