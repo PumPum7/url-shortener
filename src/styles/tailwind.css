@@ -11,9 +11,21 @@ html {
     background-color: hsl(220, 12%, 95%);
 }
 
+@layer base {
+    h1 {
+        @apply text-2xl;
+    }
+    h2 {
+        @apply text-xl;
+    }
+    h3 {
+        @apply text-lg;
+    }
+}
+
 @layer components {
     div .link {
-        @apply text-blue-500;
+        @apply text-blue-600;
     }
     div .link > a {
         @apply hover:border-b-2;
@@ -23,6 +35,7 @@ html {
 
     .action-icon {
         @apply mr-2 p-1 rounded-full duration-500 ring-2 motion-reduce:transition-none transition-all;
+        @apply focus:outline-none focus-visible:outline-none;
     }
 
     .action-icon.active {
