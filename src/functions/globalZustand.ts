@@ -1,5 +1,7 @@
 import create from "zustand";
 
+import { AdvancedOptionsStruct } from "@interfaces";
+
 interface ModalStore {
     showModal: boolean;
     currentModal: JSX.Element;
