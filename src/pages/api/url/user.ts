@@ -27,7 +27,6 @@ export default withApiAuthRequired(async function createUrl(
                     size: parseInt(<string>amount),
                 })
             )
-            ///
             .then(async (result) => {
                 res.status(200);
                 let totalLinks = 0;
@@ -74,7 +73,9 @@ const getUrlCount = async (
 ): Promise<number> => {
     return await client
         .query(
-            q.Count(q.Paginate(q.Match(q.Index("user"), user), { size: 10000 }))
+            q.Count(
+                q.Paginate(q.Match(q.Index("user_id"), user), { size: 10000 })
+            )
         )
         .then((res) => {
             return res.data[0] as number;

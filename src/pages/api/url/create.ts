@@ -21,9 +21,11 @@ export default withApiAuthRequired(async function createUrl(
             res.status(404).send({ error: "invalid url provided" });
         }
         const password: string = req.body.password || "";
-        const expiration: number = (req.body.expiration as number) || 0;
+        const expiration: number = parseInt(req.body.expiration) || 0;
         const urlLength: number = (req.body.length as number) || 5;
         const customAddress: string = req.body.customAddress || "";
+        const message: string = req.body.message || "";
+
         client
             .query(
                 q.Create(
@@ -34,6 +36,7 @@ export default withApiAuthRequired(async function createUrl(
                             long: url,
                             usage: 0,
                             password,
+                            message,
                             user: user.sub,
                         },
                         // adds the set expiration time to the cooldown

@@ -9,7 +9,6 @@ export const QRCodeModal = ({
     isOpen,
 }: {
     qrcodeValue: string;
-    openFunc: () => void;
     closeFunc: () => void;
     isOpen: boolean;
 }): JSX.Element => {
@@ -18,19 +17,10 @@ export const QRCodeModal = ({
             <Transition appear show={isOpen} as={Fragment}>
                 <Dialog
                     as="div"
-                    className="fixed z-10 inset-0 bg-gray-500 bg-opacity-60 overflow-y-auto transition-opacity"
+                    className="fixed z-10 inset-0 overflow-y-auto transition-opacity"
                     onClose={closeFunc}>
                     <div className="px-4 min-h-screen text-center">
-                        <Transition.Child
-                            as={Fragment}
-                            enter="ease-out duration-300"
-                            enterFrom="opacity-0"
-                            enterTo="opacity-100"
-                            leave="ease-in duration-200"
-                            leaveFrom="opacity-100"
-                            leaveTo="opacity-0">
-                            <Dialog.Overlay className="fixed inset-0" />
-                        </Transition.Child>
+                        <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
 
                         {/* This element is to trick the browser into centering the modal contents. */}
                         <span
@@ -71,5 +61,3 @@ export const QRCodeModal = ({
         </>
     );
 };
-
-// TODO: fix qr code modal overlay

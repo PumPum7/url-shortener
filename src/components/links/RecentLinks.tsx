@@ -15,10 +15,11 @@ import {
     TrashIcon,
     PencilIcon,
     ChartPieIcon,
-} from "@components/Icons";
+} from "@components/Layout/Icons";
 
 import { useModalStore } from "@functions/globalZustand";
 import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
+import { EditLinkModal } from "@components/util/EditModal";
 
 interface RecentLinkInterface {
     long: string;
@@ -28,7 +29,8 @@ interface RecentLinkInterface {
 }
 
 export const RecentLinks = (): JSX.Element => {
-    const [recentLinks, setRecentLinks] = useState<[object]>([[]]);
+    const [recentLinks, setRecentLinks] = useState<[object]>([{}]);
+    const [totalLinks, setTotalLinks] = useState<number>(0);
     const [page, setPage] = useState<number>(0);
     const [amount, setAmount] = useState<number>(10);
     const [search, setSearch] = useState<string>("");
@@ -44,6 +46,7 @@ export const RecentLinks = (): JSX.Element => {
             try {
                 getUserUrls(amount, amount * page, search).then((res) => {
                     setRecentLinks(res.links);
+                    setTotalLinks(res.total);
                 });
             } catch (e) {
                 console.error(e);
@@ -54,6 +57,7 @@ export const RecentLinks = (): JSX.Element => {
 
     return (
         <div className="flex flex-col pt-8 w-full xl:transform xl:-translate-x-48 xl:w-[1200px]">
+            <h2 className="pb-4">Recently shortened links</h2>
             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div className="inline-block align-middle py-2 min-w-full sm:px-6 lg:px-8">
                     <div className="border-b border-gray-200 shadow overflow-hidden sm:rounded-lg">
@@ -91,19 +95,25 @@ export const RecentLinks = (): JSX.Element => {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-gray-200 divide-y">
-                                {recentLinks.map(
-                                    (
-                                        link: RecentLinkInterface,
-                                        index: number
-                                    ) => (
-                                        <RecentLink
-                                            longUrl={link.long}
-                                            shortUrl={link.short}
-                                            timestamp={link.timeStamp}
-                                            usage={link.usage}
-                                            key={index}
-                                        />
+                                {Object.keys(recentLinks[0]) ? (
+                                    recentLinks.map(
+                                        (
+                                            link: RecentLinkInterface,
+                                            index: number
+                                        ) => (
+                                            <RecentLink
+                                                longUrl={link.long}
+                                                shortUrl={link.short}
+                                                timestamp={link.timeStamp}
+                                                usage={link.usage}
+                                                key={index}
+                                            />
+                                        )
                                     )
+                                ) : (
+                                    <tr>
+                                        <td></td>
+                                    </tr>
                                 )}
                             </tbody>
                             <tfoot>
@@ -142,6 +152,12 @@ export const TableHeading = ({
     );
 };
 
+interface ModalShowTypes {
+    qrcode: boolean;
+    edit: boolean;
+    delete: boolean;
+}
+
 export const RecentLink = ({
     longUrl,
     shortUrl,
@@ -155,32 +171,28 @@ export const RecentLink = ({
 }): JSX.Element => {
     const timeDifString = timeDifference(timestamp);
     const [copySuccess, setCopySuccess] = useState<boolean>(false);
-    const [isOpenQrCode, setIsOpenQrCode] = useState<boolean>(false);
-
     const { setModal, removeModal } = useModalStore((state) => ({
         setModal: state.setModal,
         removeModal: state.removeModal,
     }));
 
-    function closeModal() {
-        console.log("close");
+    let isModalOpen: ModalShowTypes = {
+        qrcode: false,
+        edit: false,
+        delete: false,
+    };
+
+    function closeModal(modalType: "qrcode" | "edit" | "delete") {
         removeModal();
-        setIsOpenQrCode(false);
+        isModalOpen = { ...isModalOpen, [modalType]: false };
     }
 
-    function openModal() {
-        batchedUpdates(() => {
-            console.log("open");
-            setModal(
-                <QRCodeModal
-                    qrcodeValue={shortUrl}
-                    closeFunc={closeModal}
-                    openFunc={openModal}
-                    isOpen={isOpenQrCode}
-                />
-            );
-            setIsOpenQrCode(true);
-        });
+    function setActiveModal(modal: JSX.Element) {
+        setModal(modal);
+    }
+
+    function openModal(modalType: "qrcode" | "edit" | "delete") {
+        isModalOpen = { ...isModalOpen, [modalType]: true };
     }
 
     useEffect(() => {
@@ -235,28 +247,62 @@ export const RecentLink = ({
                     {usage}
                 </td>
                 <td className="px-6 py-4 text-right whitespace-nowrap text-sm font-medium">
-                    <button
-                        onClick={() => alert("stats maybe link in the future")}
-                        className="text-purple-600 bg-purple-100 ring-purple-50 action-icon active">
-                        <ChartPieIcon />
-                    </button>
-                    <button
-                        onClick={() => openModal()}
-                        className="text-gray-600 bg-gray-100 ring-gray-50 action-icon active">
-                        <QRCodeIcon />
-                    </button>
-                    <button
-                        onClick={() => alert("edit window")}
-                        className="text-yellow-600 bg-yellow-100 ring-yellow-50 action-icon active">
-                        <PencilIcon />
-                    </button>
-                    <button
-                        onClick={() => alert("delete modal here")}
-                        className="text-red-600 bg-red-100 ring-red-50 action-icon active">
-                        <TrashIcon />
-                    </button>
+                    <dfn title="Stats">
+                        <button
+                            onClick={() =>
+                                alert("stats maybe link in the future")
+                            }
+                            className="text-purple-600 bg-purple-100 ring-purple-50 action-icon active"
+                            aria-label="open stats modal">
+                            <ChartPieIcon />
+                        </button>
+                    </dfn>
+                    <dfn title="QR Code">
+                        <button
+                            onClick={() => {
+                                openModal("qrcode");
+                                setActiveModal(
+                                    <QRCodeModal
+                                        qrcodeValue={shortUrl}
+                                        closeFunc={() => closeModal("qrcode")}
+                                        isOpen={isModalOpen.qrcode}
+                                    />
+                                );
+                            }}
+                            className="text-gray-600 bg-gray-100 ring-gray-50 action-icon active"
+                            aria-label="open qrcode modal">
+                            <QRCodeIcon />
+                        </button>
+                    </dfn>
+                    <dfn title="Edit">
+                        <button
+                            onClick={() => {
+                                openModal("edit");
+                                setActiveModal(
+                                    <EditLinkModal
+                                        shortUrl={shortUrl}
+                                        closeFunc={() => closeModal("edit")}
+                                        isOpen={isModalOpen.edit}
+                                    />
+                                );
+                            }}
+                            className="text-yellow-600 bg-yellow-100 ring-yellow-50 action-icon active"
+                            aria-label="Open edit modal">
+                            <PencilIcon />
+                        </button>
+                    </dfn>
+                    <dfn title="Delete">
+                        <button
+                            onClick={() => alert("delete modal here")}
+                            className="text-red-600 bg-red-100 ring-red-50 action-icon active"
+                            aria-label={"Open delete modal"}>
+                            <TrashIcon />
+                        </button>
+                    </dfn>
                 </td>
             </tr>
         </>
     );
 };
+
+// TODO: show a loader instead of a blank/one wrong link table

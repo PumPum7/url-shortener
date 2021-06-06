@@ -34,11 +34,11 @@ export default async function getUrl(
                 });
             })
             .catch((e) => {
-                console.error(e);
                 res.status(404);
-                res.json({ error: e });
+                res.send({ error: e });
             });
     } catch (e) {
-        res.status(400).json({ error: e });
+        res.status(400)
+        res.send({ error: e });
     }
 }
