@@ -57,7 +57,9 @@ export const RecentLinks = (): JSX.Element => {
 
     return (
         <div className="flex flex-col pt-8 w-full xl:transform xl:-translate-x-48 xl:w-[1200px]">
-            <h2 className="pb-4">Recently shortened links</h2>
+            <h2 className="pb-2 pl-2 md:pb-4 md:pl-0">
+                Recently shortened links
+            </h2>
             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div className="inline-block align-middle py-2 min-w-full sm:px-6 lg:px-8">
                     <div className="border-b border-gray-200 shadow overflow-hidden sm:rounded-lg">
