@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { AppProps } from "next/app";
 
 import { UserProvider } from "@auth0/nextjs-auth0";
+import { Toaster } from "react-hot-toast";
 
 import { Layout } from "@components/Layout/Layout";
 
@@ -19,6 +20,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     return (
         <UserProvider>
             <Layout>
+                <Toaster position={"top-right"} />
                 <Component {...pageProps} />
             </Layout>
             {showModal ? currentModal : ""}
