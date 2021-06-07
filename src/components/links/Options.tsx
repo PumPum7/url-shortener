@@ -67,11 +67,11 @@ export function AdvancedOptions({
                     optionId="length"
                     inputPlaceholder="5"
                     inputType="number"
-                    value={advancedOptions.length}
+                    value={advancedOptions.urlLength}
                     onChange={(e) =>
                         setAdvancedOptions({
                             ...advancedOptions,
-                            length: e.target.value,
+                            urlLength: e.target.value,
                         })
                     }
                     check={(e) =>
@@ -154,4 +154,48 @@ export function AdvancedOption({
         </div>
     );
 }
-// TODO: fixed advanced option updates
+
+export const AdvancedOptionsPlaceholder = ({
+    midScreenAdapted,
+}: {
+    midScreenAdapted: boolean;
+}): JSX.Element => {
+    return (
+        <div className="content-center pl-4">
+            <div
+                className={`grid gap-4 grid-cols-2 pr-2 pt-6 animate-pulse ${
+                    midScreenAdapted ? "md:grid-cols-3 md:pr-0" : ""
+                }`}>
+                <AdvancedOptionPlaceholder
+                    category={"Password"}
+                    className="col-span-2 md:col-span-1"
+                />
+                <AdvancedOptionPlaceholder
+                    category={`${FUNCTIONS_DOMAIN}/`}
+                    className="col-span-2 md:col-span-1"
+                />
+                <AdvancedOptionPlaceholder category={"Expiration"} />
+                <AdvancedOptionPlaceholder category={"Length"} />
+                <AdvancedOptionPlaceholder
+                    category={"Message"}
+                    className="col-span-2"
+                />
+            </div>
+        </div>
+    );
+};
+
+export const AdvancedOptionPlaceholder = ({
+    category,
+    className = "",
+}: {
+    category: string;
+    className?: string;
+}): JSX.Element => {
+    return (
+        <div className="flex flex-col">
+            <p className="text-lg font-semibold">{category}</p>
+            <div className={`h-4 bg-blue-400 rounded-full ${className}`} />
+        </div>
+    );
+};

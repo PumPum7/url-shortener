@@ -10,6 +10,6 @@ export interface AdvancedOptionsStruct {
     password: string;
     customAddress: string;
     expiration: number;
-    length: number;
+    urlLength: number;
     message: string;
 }

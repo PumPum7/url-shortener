@@ -25,7 +25,7 @@ export default function Home() {
         useState<AdvancedOptionsStruct>({
             customAddress: "",
             expiration: 0,
-            length: 5,
+            urlLength: 5,
             message: "",
             password: "",
         });
@@ -43,7 +43,7 @@ export default function Home() {
             password: "",
             customAddress: "",
             expiration: 0,
-            length: 5,
+            urlLength: 5,
             message: "",
         });
         // resets the value of every advanced option field -> causes weird behaviour otherwise
@@ -76,7 +76,7 @@ export default function Home() {
                     inputLink,
                     advancedOptions.password,
                     advancedOptions.expiration,
-                    advancedOptions.length,
+                    advancedOptions.urlLength,
                     advancedOptions.message,
                     advancedOptions.customAddress
                 )) as URL;
@@ -172,7 +172,7 @@ export default function Home() {
                     ) : (
                         ""
                     )}
-                    <div className="pt-6">
+                    <div className="pl-2 pt-6 md:pl-0">
                         <label className="hover:cursor-pointer">
                             <input
                                 type="checkbox"

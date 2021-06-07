@@ -1,8 +1,12 @@
 import { Fragment, useEffect, useState } from "react";
 
 import { Dialog, Transition } from "@headlessui/react";
+import toast from "react-hot-toast";
 
-import { AdvancedOptions } from "@components/links/Options";
+import {
+    AdvancedOptions,
+    AdvancedOptionsPlaceholder,
+} from "@components/links/Options";
 
 import {
     getUserUrl,
@@ -25,12 +29,11 @@ export const EditLinkModal = ({
         useState<AdvancedOptionsStruct>({
             customAddress: "",
             expiration: 0,
-            length: 5,
+            urlLength: 5,
             message: "",
             password: "",
         });
-    const [status, setStatus] =
-        useState<"editing" | "loading" | "success">("editing");
+    const [status, setStatus] = useState<"editing" | "loading">("editing");
 
     useEffect(() => {
         getUserUrl(shortUrl).then((response) => {
@@ -40,30 +43,47 @@ export const EditLinkModal = ({
                 password: data.password || "",
                 customAddress: data.short,
                 expiration: response.tls,
-                length: shortUrl.length,
+                urlLength: data.short.length,
                 message: data.message || "",
             });
         });
     }, []);
 
-    useEffect(() => {
-        if (status === "success") {
-            setTimeout(() => {
-                setStatus("editing");
-            }, 2000);
-        }
-    }, [status]);
-
     const editLink = () => {
         setStatus("loading");
-        editUserUrl(
+        const editLinkStatus = editUserUrl(
             shortUrl,
             advancedOptions.password,
             advancedOptions.customAddress,
             advancedOptions.expiration,
-            advancedOptions.length,
+            advancedOptions.urlLength,
             advancedOptions.message
-        ).then(() => setStatus("success"));
+        );
+        toast.promise(
+            editLinkStatus,
+            {
+                loading: "Loading...",
+                success: (response) => {
+                    setStatus("editing");
+                    return `Successfully edited the link ${response.data.short}`;
+                },
+                error: () => "An error occurred while editing the link.",
+            },
+            {
+                style: {
+                    minWidth: "250px",
+                },
+                success: {
+                    duration: 3000,
+                    icon: "✔️",
+                },
+                error: {
+                    duration: 3000,
+                    icon: "❌",
+                },
+                id: "editLinkToast",
+            }
+        );
     };
 
     return (
@@ -95,21 +115,26 @@ export const EditLinkModal = ({
                                     as="h3"
                                     className="pb-2 text-gray-900 text-lg font-bold leading-6">
                                     Edit Link{" "}
-                                    {advancedOptions.customAddress === shortUrl
-                                        ? "right stuff"
-                                        : "not right"}
                                 </Dialog.Title>
                                 <Dialog.Description as="p">
                                     Change the settings below to update the link{" "}
                                     {FUNCTIONS_DOMAIN}/s/{shortUrl}
                                 </Dialog.Description>
-                                <div className="mt-2">
-                                    <AdvancedOptions
+                                {advancedOptions.customAddress !== "" ? (
+                                    <div className="mt-2">
+                                        <AdvancedOptions
+                                            midScreenAdapted={false}
+                                            advancedOptions={advancedOptions}
+                                            setAdvancedOptions={
+                                                setAdvancedOptions
+                                            }
+                                        />
+                                    </div>
+                                ) : (
+                                    <AdvancedOptionsPlaceholder
                                         midScreenAdapted={false}
-                                        advancedOptions={advancedOptions}
-                                        setAdvancedOptions={setAdvancedOptions}
                                     />
-                                </div>
+                                )}
                                 <div className="flex justify-around mt-4">
                                     <button
                                         type="button"
@@ -122,11 +147,7 @@ export const EditLinkModal = ({
                                         className="px-4 py-2 text-white font-medium bg-blue-600 hover:bg-blue-700 border border-transparent rounded-md focus:outline-none focus-visible:outline-none disabled:opacity-50 hover:cursor-pointer hover:ring-blue-300 hover:ring-2"
                                         onClick={editLink}
                                         disabled={status !== "editing"}>
-                                        {status === "editing"
-                                            ? "Edit Link"
-                                            : status === "loading"
-                                            ? "Loading..."
-                                            : "Successfully edited!"}
+                                        Edit link
                                     </button>
                                 </div>
                             </div>
@@ -138,4 +159,5 @@ export const EditLinkModal = ({
     );
 };
 
+// TODO: improved error handling
 // TODO: add loading
