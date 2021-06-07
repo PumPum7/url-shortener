@@ -193,9 +193,9 @@ export const AdvancedOptionPlaceholder = ({
     className?: string;
 }): JSX.Element => {
     return (
-        <div className="flex flex-col">
+        <div className={`flex flex-col ${className}`}>
             <p className="text-lg font-semibold">{category}</p>
-            <div className={`h-4 bg-blue-400 rounded-full ${className}`} />
+            <div className="h-8 bg-blue-400 rounded-full" />
         </div>
     );
 };

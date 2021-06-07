@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { unstable_batchedUpdates as batchedUpdates } from "react-dom";
 
 import { useUser } from "@auth0/nextjs-auth0";
 import { toClipboard } from "copee";
+import toast from "react-hot-toast";
 
 import { getUserUrls } from "@functions/urlHandlers";
 import { timeDifference } from "@functions/time";
@@ -29,7 +29,14 @@ interface RecentLinkInterface {
 }
 
 export const RecentLinks = (): JSX.Element => {
-    const [recentLinks, setRecentLinks] = useState<[object]>([{}]);
+    const [recentLinks, setRecentLinks] = useState<[RecentLinkInterface]>([
+        {
+            long: "",
+            short: "",
+            usage: 0,
+            timeStamp: 0,
+        },
+    ]);
     const [totalLinks, setTotalLinks] = useState<number>(0);
     const [page, setPage] = useState<number>(0);
     const [amount, setAmount] = useState<number>(10);
@@ -38,7 +45,6 @@ export const RecentLinks = (): JSX.Element => {
 
     const { user } = useUser();
 
-    // TODO: improve error handling
     useEffect(() => {
         if (!user) {
             return;
@@ -49,7 +55,9 @@ export const RecentLinks = (): JSX.Element => {
                     setTotalLinks(res.total);
                 });
             } catch (e) {
-                console.error(e);
+                toast.error(
+                    "Something went wrong while retrieving recent links!"
+                );
                 setError(true);
             }
         }
@@ -97,7 +105,7 @@ export const RecentLinks = (): JSX.Element => {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-gray-200 divide-y">
-                                {Object.keys(recentLinks[0]) ? (
+                                {recentLinks[0].long !== "" ? (
                                     recentLinks.map(
                                         (
                                             link: RecentLinkInterface,
@@ -113,9 +121,7 @@ export const RecentLinks = (): JSX.Element => {
                                         )
                                     )
                                 ) : (
-                                    <tr>
-                                        <td></td>
-                                    </tr>
+                                    <RecentLinkPlaceholder />
                                 )}
                             </tbody>
                             <tfoot>
@@ -204,106 +210,119 @@ export const RecentLink = ({
     }, [copySuccess]);
 
     return (
-        <>
-            <tr>
-                <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm link">
-                        <a href={longUrl} rel="noreferrer" target="_blank">
-                            {longUrl}
-                        </a>
-                    </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex text-sm link">
-                        <button
-                            className={`text-green-600 bg-green-100 ring-green-50 action-icon ${
-                                !copySuccess ? "active" : ""
-                            }`}
-                            onClick={() => {
-                                const success = toClipboard(
-                                    `${FUNCTIONS_DOMAIN}/s/${shortUrl}`
-                                );
-                                if (success) {
-                                    setCopySuccess(true);
-                                }
-                            }}>
-                            {copySuccess ? <CheckIcon /> : <CopyIcon />}
-                        </button>
-
-                        <a
-                            href={"/s/" + shortUrl}
-                            rel="noreferrer"
-                            target="_blank">
-                            {FUNCTIONS_DOMAIN.replace("http://", "").replace(
-                                "https://",
-                                ""
-                            )}
-                            /s/{shortUrl}
-                        </a>
-                    </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-gray-900 text-sm">{timeDifString}</div>
-                </td>
-                <td className="px-6 py-4 text-right text-gray-500 whitespace-nowrap text-sm">
-                    {usage}
-                </td>
-                <td className="px-6 py-4 text-right whitespace-nowrap text-sm font-medium">
-                    <dfn title="Stats">
-                        <button
-                            onClick={() =>
-                                alert("stats maybe link in the future")
+        <tr>
+            <td className="px-6 py-4 whitespace-nowrap">
+                <div className="text-sm link">
+                    <a href={longUrl} rel="noreferrer" target="_blank">
+                        {longUrl}
+                    </a>
+                </div>
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap">
+                <div className="flex text-sm link">
+                    <button
+                        className={`text-green-600 bg-green-100 ring-green-50 action-icon ${
+                            !copySuccess ? "active" : ""
+                        }`}
+                        onClick={() => {
+                            const success = toClipboard(
+                                `${FUNCTIONS_DOMAIN}/s/${shortUrl}`
+                            );
+                            if (success) {
+                                setCopySuccess(true);
                             }
-                            className="text-purple-600 bg-purple-100 ring-purple-50 action-icon active"
-                            aria-label="open stats modal">
-                            <ChartPieIcon />
-                        </button>
-                    </dfn>
-                    <dfn title="QR Code">
-                        <button
-                            onClick={() => {
-                                openModal("qrcode");
-                                setActiveModal(
-                                    <QRCodeModal
-                                        qrcodeValue={shortUrl}
-                                        closeFunc={() => closeModal("qrcode")}
-                                        isOpen={isModalOpen.qrcode}
-                                    />
-                                );
-                            }}
-                            className="text-gray-600 bg-gray-100 ring-gray-50 action-icon active"
-                            aria-label="open qrcode modal">
-                            <QRCodeIcon />
-                        </button>
-                    </dfn>
-                    <dfn title="Edit">
-                        <button
-                            onClick={() => {
-                                openModal("edit");
-                                setActiveModal(
-                                    <EditLinkModal
-                                        shortUrl={shortUrl}
-                                        closeFunc={() => closeModal("edit")}
-                                        isOpen={isModalOpen.edit}
-                                    />
-                                );
-                            }}
-                            className="text-yellow-600 bg-yellow-100 ring-yellow-50 action-icon active"
-                            aria-label="Open edit modal">
-                            <PencilIcon />
-                        </button>
-                    </dfn>
-                    <dfn title="Delete">
-                        <button
-                            onClick={() => alert("delete modal here")}
-                            className="text-red-600 bg-red-100 ring-red-50 action-icon active"
-                            aria-label={"Open delete modal"}>
-                            <TrashIcon />
-                        </button>
-                    </dfn>
-                </td>
-            </tr>
-        </>
+                        }}>
+                        {copySuccess ? <CheckIcon /> : <CopyIcon />}
+                    </button>
+
+                    <a href={"/s/" + shortUrl} rel="noreferrer" target="_blank">
+                        {FUNCTIONS_DOMAIN.replace("http://", "").replace(
+                            "https://",
+                            ""
+                        )}
+                        /s/{shortUrl}
+                    </a>
+                </div>
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap">
+                <div className="text-gray-900 text-sm">{timeDifString}</div>
+            </td>
+            <td className="px-6 py-4 text-right text-gray-500 whitespace-nowrap text-sm">
+                {usage}
+            </td>
+            <td className="px-6 py-4 text-right whitespace-nowrap text-sm font-medium">
+                <dfn title="Stats">
+                    <button
+                        onClick={() => alert("stats maybe link in the future")}
+                        className="text-purple-600 bg-purple-100 ring-purple-50 action-icon active"
+                        aria-label="open stats modal">
+                        <ChartPieIcon />
+                    </button>
+                </dfn>
+                <dfn title="QR Code">
+                    <button
+                        onClick={() => {
+                            openModal("qrcode");
+                            setActiveModal(
+                                <QRCodeModal
+                                    qrcodeValue={shortUrl}
+                                    closeFunc={() => closeModal("qrcode")}
+                                    isOpen={isModalOpen.qrcode}
+                                />
+                            );
+                        }}
+                        className="text-gray-600 bg-gray-100 ring-gray-50 action-icon active"
+                        aria-label="open qrcode modal">
+                        <QRCodeIcon />
+                    </button>
+                </dfn>
+                <dfn title="Edit">
+                    <button
+                        onClick={() => {
+                            openModal("edit");
+                            setActiveModal(
+                                <EditLinkModal
+                                    shortUrl={shortUrl}
+                                    closeFunc={() => closeModal("edit")}
+                                    isOpen={isModalOpen.edit}
+                                />
+                            );
+                        }}
+                        className="text-yellow-600 bg-yellow-100 ring-yellow-50 action-icon active"
+                        aria-label="Open edit modal">
+                        <PencilIcon />
+                    </button>
+                </dfn>
+                <dfn title="Delete">
+                    <button
+                        onClick={() => alert("delete modal here")}
+                        className="text-red-600 bg-red-100 ring-red-50 action-icon active"
+                        aria-label={"Open delete modal"}>
+                        <TrashIcon />
+                    </button>
+                </dfn>
+            </td>
+        </tr>
+    );
+};
+
+export const RecentLinkPlaceholder = (): JSX.Element => {
+    const Placeholder = (): JSX.Element => {
+        return (
+            <td className="px-6 py-4 whitespace-nowrap">
+                <div className="h-4 bg-blue-400 rounded-full" />
+            </td>
+        );
+    };
+
+    return (
+        <tr className="animate-pulse">
+            <Placeholder />
+            <Placeholder />
+            <Placeholder />
+            <Placeholder />
+            <Placeholder />
+        </tr>
     );
 };
 

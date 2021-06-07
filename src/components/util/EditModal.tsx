@@ -117,8 +117,14 @@ export const EditLinkModal = ({
                                     Edit Link{" "}
                                 </Dialog.Title>
                                 <Dialog.Description as="p">
-                                    Change the settings below to update the link{" "}
-                                    {FUNCTIONS_DOMAIN}/s/{shortUrl}
+                                    Change the settings below to update the
+                                    link:
+                                    <br />
+                                    <a
+                                        className="link"
+                                        href={`${FUNCTIONS_DOMAIN}/s/${shortUrl}`}>
+                                        {FUNCTIONS_DOMAIN}/s/{shortUrl}
+                                    </a>
                                 </Dialog.Description>
                                 {advancedOptions.customAddress !== "" ? (
                                     <div className="mt-2">
