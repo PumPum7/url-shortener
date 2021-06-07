@@ -68,7 +68,7 @@ export const RecentLinks = (): JSX.Element => {
             <h2 className="pb-2 pl-2 md:pb-4 md:pl-0">
                 Recently shortened links
             </h2>
-            <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 xl:overflow-x-visible">
                 <div className="inline-block align-middle py-2 min-w-full sm:px-6 lg:px-8">
                     <div className="border-b border-gray-200 shadow overflow-hidden sm:rounded-lg">
                         <table className="min-w-full divide-gray-200 divide-y">
@@ -105,7 +105,9 @@ export const RecentLinks = (): JSX.Element => {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-gray-200 divide-y">
-                                {recentLinks[0].long !== "" ? (
+                                {recentLinks[0].long === "" ? (
+                                    <RecentLinkPlaceholder />
+                                ) : (
                                     recentLinks.map(
                                         (
                                             link: RecentLinkInterface,
@@ -120,8 +122,6 @@ export const RecentLinks = (): JSX.Element => {
                                             />
                                         )
                                     )
-                                ) : (
-                                    <RecentLinkPlaceholder />
                                 )}
                             </tbody>
                             <tfoot>

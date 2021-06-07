@@ -126,7 +126,11 @@ export const EditLinkModal = ({
                                         {FUNCTIONS_DOMAIN}/s/{shortUrl}
                                     </a>
                                 </Dialog.Description>
-                                {advancedOptions.customAddress !== "" ? (
+                                {advancedOptions.customAddress === "" ? (
+                                    <AdvancedOptionsPlaceholder
+                                        midScreenAdapted={false}
+                                    />
+                                ) : (
                                     <div className="mt-2">
                                         <AdvancedOptions
                                             midScreenAdapted={false}
@@ -136,10 +140,6 @@ export const EditLinkModal = ({
                                             }
                                         />
                                     </div>
-                                ) : (
-                                    <AdvancedOptionsPlaceholder
-                                        midScreenAdapted={false}
-                                    />
                                 )}
                                 <div className="flex justify-around mt-4">
                                     <button
