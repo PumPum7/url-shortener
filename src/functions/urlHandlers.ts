@@ -95,3 +95,14 @@ export const editUserUrl = async (
             return err;
         });
 };
+
+export const deleteUrl = async (url: string) => {
+    return await fetch(`${FUNCTIONS_DOMAIN}/api/url/delete?url=${url}`)
+        .then((res) => {
+            if (res.status === 200) {
+                return res.json();
+            }
+            return undefined;
+        })
+        .catch((e) => console.error(e));
+};
