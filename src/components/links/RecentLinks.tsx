@@ -20,6 +20,7 @@ import {
 import { useModalStore } from "@functions/globalZustand";
 import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
 import { EditLinkModal } from "@components/util/EditModal";
+import { DeleteLinkModal } from "@components/util/DeleteModal";
 
 interface RecentLinkInterface {
     long: string;
@@ -295,7 +296,16 @@ export const RecentLink = ({
                 </dfn>
                 <dfn title="Delete">
                     <button
-                        onClick={() => alert("delete modal here")}
+                        onClick={() => {
+                            openModal("delete");
+                            setActiveModal(
+                                <DeleteLinkModal
+                                    shortUrl={shortUrl}
+                                    closeFunc={() => closeModal("delete")}
+                                    isOpen={isModalOpen.delete}
+                                />
+                            );
+                        }}
                         className="text-red-600 bg-red-100 ring-red-50 action-icon active"
                         aria-label={"Open delete modal"}>
                         <TrashIcon />
@@ -325,5 +335,3 @@ export const RecentLinkPlaceholder = (): JSX.Element => {
         </tr>
     );
 };
-
-// TODO: show a loader instead of a blank/one wrong link table
