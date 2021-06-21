@@ -18,11 +18,5 @@ module.exports = {
             padding: "2rem",
         },
     },
-    variants: {
-        extend: {},
-    },
-    plugins: [
-        // require("@tailwindcss/typography"),
-        require("@tailwindcss/forms"),
-    ],
+    plugins: [require("@tailwindcss/forms")],
 };
