@@ -9,11 +9,13 @@ export const Layout = ({
     children: React.ReactNode;
 }): JSX.Element => {
     return (
-        <div className="mx-auto max-w-sm md:max-w-2xl lg:max-w-screen-md">
-            <Header />
-            {children}
+        <>
+            <div className="mx-auto max-w-sm md:max-w-2xl lg:max-w-screen-md">
+                <Header />
+                {children}
+            </div>
             <Footer />
-        </div>
+        </>
     );
 };
 

@@ -1,6 +1,9 @@
 import React from "react";
 
 import Link from "next/link";
+import Image from "next/image";
+
+import recentLinksPreview from "../../../public/assets/previews/RecentlyShortened.png";
 
 import {
     AdjustmentsIcon,
@@ -15,32 +18,39 @@ export const Landingpage = (): JSX.Element => {
                 <LandingPageHeader>
                     Short urls, custom urls and more!
                 </LandingPageHeader>
-                <p className="pb-4 pt-6 text-center text-gray-600">
+                <p className="pb-4 text-center text-gray-600">
                     Create links to fit your brand. Profit from analytics and
                     shorter link lengths.
                     <br />
                     Share links like a pro!
                 </p>
+                <LandingPagePreview
+                    image={recentLinksPreview}
+                    title={"Keep track of your URLs"}
+                    description={
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+                    }
+                />
+            </article>
+            <article className="pt-6">
+                <LandingPageHeader>Features</LandingPageHeader>
                 <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
-                    <LandingPageFeature
+                    <LandingPageFeatureShort
                         Icon={<LinkIcon className="w-8 h-8" />}
                         title="URL Shortener"
                         description="Easily shorten all your URLs for free and profit from our other features. Links will never expire!"
                     />
-                    <LandingPageFeature
+                    <LandingPageFeatureShort
                         Icon={<AdjustmentsIcon className="w-8 h-8" />}
                         title="Management"
                         description="Keep control of your URLs and change everything about them whenever you want!"
                     />
-                    <LandingPageFeature
+                    <LandingPageFeatureShort
                         Icon={<ChartPieIcon className="w-8 h-8" />}
                         title="Statistics"
                         description="Keep track of the most important statistics of your URL where and whenever you want!"
                     />
                 </div>
-            </article>
-            <article className="pt-6">
-                <LandingPageHeader>Features</LandingPageHeader>
             </article>
         </section>
     );
@@ -51,10 +61,10 @@ const LandingPageHeader = ({
 }: {
     children: React.ReactNode;
 }): JSX.Element => {
-    return <h1 className="text-center font-bold">{children}</h1>;
+    return <h1 className="pb-6 text-center font-bold">{children}</h1>;
 };
 
-const LandingPageFeature = ({
+const LandingPageFeatureShort = ({
     Icon,
     title,
     description,
@@ -64,7 +74,7 @@ const LandingPageFeature = ({
     description: string;
 }): JSX.Element => {
     return (
-        <div className="p-4 border-2 hover:border-blue-600 border-gray-400 rounded-md hover:scale-110">
+        <div className="p-4 border-2 hover:border-blue-600 border-gray-400 rounded-md">
             <div className="w-10 h-10 rounded-full bg-blue-400/25">
                 <p className="text-center text-blue-600 transform translate-x-1 translate-y-1">
                     {Icon}
@@ -77,6 +87,31 @@ const LandingPageFeature = ({
                     Sign up
                 </a>
             </Link>
+        </div>
+    );
+};
+
+const LandingPagePreview = ({
+    title,
+    description,
+    image,
+}: {
+    title: string;
+    description: string;
+    image: StaticImageData;
+}): JSX.Element => {
+    return (
+        <div className="flex flex-col items-center pt-6 md:flex-row">
+            <div>
+                <h1 className="pl-1 text-2xl md:pl-0">{title}</h1>
+                <p className="pl-1 py-3 md:pl-0">{description}</p>
+                <Link href={"/api/auth/login"}>
+                    <a className="block px-1 px-3 py-2 w-full text-center text-blue-600 hover:text-white font-bold hover:bg-blue-600 border-2 border-blue-600 rounded-full md:px-0">
+                        Sign up
+                    </a>
+                </Link>
+            </div>
+            <Image src={image} alt={"Feature preview"} placeholder={"blur"} />
         </div>
     );
 };
