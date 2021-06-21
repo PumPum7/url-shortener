@@ -12,7 +12,7 @@ export const Header = (): JSX.Element => {
         <div className="mx-auto px-3 py-6 max-w-screen-lg">
             <div className="flex flex-wrap items-center justify-between">
                 <div>
-                    <Link href="">
+                    <Link href="/">
                         <a>
                             <span className="inline-flex items-center text-gray-900 text-xl font-semibold md:text-3xl">
                                 <Image
