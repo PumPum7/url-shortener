@@ -4,13 +4,14 @@ import Head from "next/head";
 
 import { useUser } from "@auth0/nextjs-auth0";
 
-import { Scissors, Loading } from "@components/Layout/Icons";
+import { Scissors, Loading } from "@components/util/Icons";
 import { AdvancedOptions } from "@components/links/Options";
 import { RecentLinks } from "@components/links/RecentLinks";
 
 import { createShortURL } from "@functions/urlHandlers";
 
 import { URL, AdvancedOptionsStruct } from "@interfaces";
+import { Landingpage } from "@components/Homepage/Landing";
 
 const DUPLICATE_NAME = "instance not unique";
 
@@ -172,37 +173,46 @@ export default function Home() {
                     ) : (
                         ""
                     )}
-                    <div className="pl-2 pt-6 md:pl-0">
-                        <label className="hover:cursor-pointer">
-                            <input
-                                type="checkbox"
-                                className="rounded hover:cursor-pointer"
-                                onChange={() =>
-                                    user
-                                        ? setShowOptions(!showOptions)
-                                        : setShowOptionsError(
-                                              "You need to log in to view the advanced options!"
-                                          )
-                                }
-                            />
-                            <span className="pl-4">Show advanced options</span>
-                        </label>
-                    </div>
-                    {showOptionsError ? (
-                        <p className="text-red-600">{showOptionsError}</p>
+                    {user ? (
+                        <>
+                            <div className="pl-2 pt-6 md:pl-0">
+                                <label className="hover:cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        className="rounded hover:cursor-pointer"
+                                        onChange={() =>
+                                            user
+                                                ? setShowOptions(!showOptions)
+                                                : setShowOptionsError(
+                                                      "You need to log in to view the advanced options!"
+                                                  )
+                                        }
+                                    />
+                                    <span className="pl-4">
+                                        Show advanced options
+                                    </span>
+                                </label>
+                            </div>
+                            {showOptionsError ? (
+                                <p className="text-red-600">
+                                    {showOptionsError}
+                                </p>
+                            ) : (
+                                ""
+                            )}
+                            {showOptions ? (
+                                <AdvancedOptions
+                                    advancedOptions={advancedOptions}
+                                    setAdvancedOptions={setAdvancedOptions}
+                                />
+                            ) : (
+                                ""
+                            )}
+                            <RecentLinks />
+                        </>
                     ) : (
-                        ""
+                        <Landingpage />
                     )}
-                    {showOptions ? (
-                        <AdvancedOptions
-                            advancedOptions={advancedOptions}
-                            setAdvancedOptions={setAdvancedOptions}
-                        />
-                    ) : (
-                        ""
-                    )}
-
-                    <div>{user ? <RecentLinks /> : ""}</div>
                 </div>
             </div>
         </>
