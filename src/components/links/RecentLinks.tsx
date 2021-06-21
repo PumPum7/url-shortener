@@ -15,7 +15,7 @@ import {
     TrashIcon,
     PencilIcon,
     ChartPieIcon,
-} from "@components/Layout/Icons";
+} from "@components/util/Icons";
 
 import { useModalStore } from "@functions/globalZustand";
 import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
