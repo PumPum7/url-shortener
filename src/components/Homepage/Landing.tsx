@@ -102,9 +102,9 @@ const LandingPagePreview = ({
 }): JSX.Element => {
     return (
         <div className="flex flex-col items-center pt-6 md:flex-row">
-            <div>
-                <h1 className="pl-1 text-2xl md:pl-0">{title}</h1>
-                <p className="pl-1 py-3 md:pl-0">{description}</p>
+            <div className="pb-6 md:pb-0 md:py-6">
+                <h1 className="pl-2 text-2xl md:pl-0">{title}</h1>
+                <p className="pl-2 py-3 md:pl-0">{description}</p>
                 <Link href={"/api/auth/login"}>
                     <a className="block px-1 px-3 py-2 w-full text-center text-blue-600 hover:text-white font-bold hover:bg-blue-600 border-2 border-blue-600 rounded-full md:px-0">
                         Sign up
