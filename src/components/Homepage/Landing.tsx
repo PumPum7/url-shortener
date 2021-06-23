@@ -1,9 +1,11 @@
 import React from "react";
 
 import Link from "next/link";
-import Image from "next/image";
 
-import recentLinksPreview from "../../../public/assets/previews/RecentlyShortened.png";
+import Lottie from "react-lottie";
+
+import * as StatsPreview from "../../../public/assets/previews/StatsPreview.json";
+import * as UrlPreview from "../../../public/assets/previews/UrlPreview.json";
 
 import {
     AdjustmentsIcon,
@@ -25,10 +27,17 @@ export const Landingpage = (): JSX.Element => {
                     Share links like a pro!
                 </p>
                 <LandingPagePreview
-                    image={recentLinksPreview}
+                    image={StatsPreview}
                     title={"Keep track of your URLs"}
                     description={
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+                        "Always be able to track your URLs and get access to those analytics from everywhere!"
+                    }
+                />
+                <LandingPagePreview
+                    image={UrlPreview}
+                    title={"Easily share your URLs"}
+                    description={
+                        "Share your URLs with everyone without filling the whole chat up!"
                     }
                 />
             </article>
@@ -98,20 +107,29 @@ const LandingPagePreview = ({
 }: {
     title: string;
     description: string;
-    image: StaticImageData;
+    image: any;
 }): JSX.Element => {
+    const LottieOptions = {
+        loop: true,
+        autoplay: true,
+        animationData: image,
+        rendererSettings: {
+            preserveAspectRatio: "xMidYMid slice",
+        },
+    };
+
     return (
-        <div className="flex flex-col items-center pt-6 md:flex-row">
+        <div className="flex flex-col-reverse items-center pt-6 md:flex-row md:last-of-type:flex-row-reverse">
             <div className="pb-6 md:pb-0 md:py-6">
                 <h1 className="pl-2 text-2xl md:pl-0">{title}</h1>
                 <p className="pl-2 py-3 md:pl-0">{description}</p>
                 <Link href={"/api/auth/login"}>
-                    <a className="block px-1 px-3 py-2 w-full text-center text-blue-600 hover:text-white font-bold hover:bg-blue-600 border-2 border-blue-600 rounded-full md:px-0">
+                    <a className="block px-1 px-3 py-2 w-full text-center text-blue-600 hover:text-white font-bold hover:bg-blue-600 border-2 border-blue-600 rounded-full md:px-0 md:w-1/2">
                         Sign up
                     </a>
                 </Link>
             </div>
-            <Image src={image} alt={"Feature preview"} placeholder={"blur"} />
+            <Lottie options={LottieOptions} height={300} width={300} />
         </div>
     );
 };

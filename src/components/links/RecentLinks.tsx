@@ -52,7 +52,9 @@ export const RecentLinks = (): JSX.Element => {
         } else {
             try {
                 getUserUrls(amount, amount * page, search).then((res) => {
-                    setRecentLinks(res.links);
+                    if (res.links.length > 0) {
+                        setRecentLinks(res.links);
+                    }
                     setTotalLinks(res.total);
                 });
             } catch (e) {
