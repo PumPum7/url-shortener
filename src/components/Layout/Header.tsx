@@ -51,7 +51,7 @@ export const Header = (): JSX.Element => {
                                 </Link>
                             ) : (
                                 <Link href="/api/auth/login">
-                                    <a>Login</a>
+                                    <a>Sign up</a>
                                 </Link>
                             )}
                         </li>
