@@ -18,9 +18,20 @@ class MyDocument extends Document {
         return (
             <Html lang="en">
                 <Head>
+                    <meta charSet="utf-8" />
+                    <meta name="theme-color" content="#F1F2F4" />
                     <meta
                         name="description"
                         content="Shorten your URLs today! A website made with NextJS, Typescript, TailwindCSS and FaunaDB"
+                    />
+                    <meta property="og:title" content="URL Shortener ✂️" />
+                    <meta
+                        property="og:image"
+                        content="https://openmoji.org/data/color/svg/2702.svg"
+                    />
+                    <meta
+                        name="twitter:card"
+                        content="Shorten your URLs today! A website made with NextJS, Typescript and FaunaDB"
                     />
                     <link
                         rel="apple-touch-icon"
