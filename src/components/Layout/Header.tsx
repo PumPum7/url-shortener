@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { useUser } from "@auth0/nextjs-auth0";
 
-import ScissorLogo from "../../../public/assets/scissors.png";
+import ScissorLogo from "../../../public/assets/scissor.png";
 
 export const Header = (): JSX.Element => {
     const { user } = useUser();
