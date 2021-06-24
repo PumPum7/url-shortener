@@ -4,10 +4,13 @@ import { useUser } from "@auth0/nextjs-auth0";
 import { toClipboard } from "copee";
 import toast from "react-hot-toast";
 
-import { getUserUrls } from "@functions/urlHandlers";
 import { timeDifference } from "@functions/time";
+import { useModalStore } from "@functions/globalZustand";
+import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
 
 import { QRCodeModal } from "@components/util/QRCodeModal";
+import { EditLinkModal } from "@components/util/EditModal";
+import { DeleteLinkModal } from "@components/util/DeleteModal";
 import {
     CopyIcon,
     CheckIcon,
@@ -17,10 +20,7 @@ import {
     ChartPieIcon,
 } from "@components/util/Icons";
 
-import { useModalStore } from "@functions/globalZustand";
-import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
-import { EditLinkModal } from "@components/util/EditModal";
-import { DeleteLinkModal } from "@components/util/DeleteModal";
+import { useUrlStore } from "@functions/globalZustand";
 
 interface RecentLinkInterface {
     long: string;
@@ -30,15 +30,6 @@ interface RecentLinkInterface {
 }
 
 export const RecentLinks = (): JSX.Element => {
-    const [recentLinks, setRecentLinks] = useState<[RecentLinkInterface]>([
-        {
-            long: "",
-            short: "",
-            usage: 0,
-            timeStamp: 0,
-        },
-    ]);
-    const [totalLinks, setTotalLinks] = useState<number>(0);
     const [page, setPage] = useState<number>(0);
     const [amount, setAmount] = useState<number>(10);
     const [search, setSearch] = useState<string>("");
@@ -46,17 +37,17 @@ export const RecentLinks = (): JSX.Element => {
 
     const { user } = useUser();
 
+    const { getUrls, urls } = useUrlStore((state) => ({
+        getUrls: state.getUrls,
+        urls: state.urls,
+    }));
+
     useEffect(() => {
         if (!user) {
             return;
         } else {
             try {
-                getUserUrls(amount, amount * page, search).then((res) => {
-                    if (res.links.length > 0) {
-                        setRecentLinks(res.links);
-                    }
-                    setTotalLinks(res.total);
-                });
+                getUrls(amount, amount * page, search);
             } catch (e) {
                 toast.error(
                     "Something went wrong while retrieving recent links!"
@@ -108,10 +99,10 @@ export const RecentLinks = (): JSX.Element => {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-gray-200 divide-y">
-                                {recentLinks[0].long === "" ? (
+                                {urls[0].long === "" ? (
                                     <RecentLinkPlaceholder />
                                 ) : (
-                                    recentLinks.map(
+                                    urls.map(
                                         (
                                             link: RecentLinkInterface,
                                             index: number

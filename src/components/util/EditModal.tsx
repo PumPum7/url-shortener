@@ -15,6 +15,7 @@ import {
 } from "@functions/urlHandlers";
 
 import { AdvancedOptionsStruct } from "@interfaces";
+import { useUrlStore } from "@functions/globalZustand";
 
 export const EditLinkModal = ({
     shortUrl,
@@ -34,6 +35,10 @@ export const EditLinkModal = ({
             password: "",
         });
     const [status, setStatus] = useState<"editing" | "loading">("editing");
+
+    const { updateUrl } = useUrlStore((state) => ({
+        updateUrl: state.updateUrl,
+    }));
 
     useEffect(() => {
         getUserUrl(shortUrl).then((response) => {
@@ -65,6 +70,7 @@ export const EditLinkModal = ({
                 loading: "Loading...",
                 success: (response) => {
                     setStatus("editing");
+                    updateUrl(shortUrl);
                     return `Successfully edited the link ${response.data.short}`;
                 },
                 error: () => "An error occurred while editing the link.",
@@ -144,13 +150,13 @@ export const EditLinkModal = ({
                                 <div className="flex justify-around mt-4">
                                     <button
                                         type="button"
-                                        className="justify-center px-4 py-2 text-blue-600 font-medium bg-gray-100 hover:bg-gray-200 border border-transparent rounded-md focus:outline-none focus-visible:outline-none hover:cursor-pointer focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-2"
+                                        className="justify-center px-4 py-2 text-blue-600 font-medium bg-gray-100 hover:bg-gray-200 border border-transparent rounded-md focus:outline-none focus-visible:outline-none hover:cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                                         onClick={closeFunc}>
                                         Cancel
                                     </button>
                                     <button
                                         type="button"
-                                        className="px-4 py-2 text-white font-medium bg-blue-600 hover:bg-blue-700 border border-transparent rounded-md focus:outline-none focus-visible:outline-none disabled:opacity-50 hover:cursor-pointer hover:ring-blue-300 hover:ring-2"
+                                        className="px-4 py-2 text-white font-medium bg-blue-600 hover:bg-blue-700 border border-transparent rounded-md focus:outline-none focus-visible:outline-none disabled:opacity-50 hover:cursor-pointer hover:ring-2 hover:ring-blue-300"
                                         onClick={editLink}
                                         disabled={status !== "editing"}>
                                         Edit link
@@ -165,5 +171,4 @@ export const EditLinkModal = ({
     );
 };
 
-// TODO: improved error handling
-// TODO: add loading
+// TODO: fix the link changing

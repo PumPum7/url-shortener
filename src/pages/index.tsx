@@ -7,11 +7,13 @@ import { useUser } from "@auth0/nextjs-auth0";
 import { Scissors, Loading } from "@components/util/Icons";
 import { AdvancedOptions } from "@components/links/Options";
 import { RecentLinks } from "@components/links/RecentLinks";
+import { Landingpage } from "@components/Homepage/Landing";
 
 import { createShortURL } from "@functions/urlHandlers";
 
+import { useUrlStore } from "@functions/globalZustand";
+
 import { URL, AdvancedOptionsStruct } from "@interfaces";
-import { Landingpage } from "@components/Homepage/Landing";
 
 const DUPLICATE_NAME = "instance not unique";
 
@@ -32,6 +34,8 @@ export default function Home() {
         });
 
     const { user } = useUser();
+
+    const { addUrl } = useUrlStore((state) => ({ addUrl: state.addUrl }));
 
     useEffect(() => {
         setTimeout(() => {
@@ -73,7 +77,7 @@ export default function Home() {
                     );
                     return;
                 }
-                const result = (await createShortURL(
+                const result = (await addUrl(
                     inputLink,
                     advancedOptions.password,
                     advancedOptions.expiration,
@@ -81,6 +85,7 @@ export default function Home() {
                     advancedOptions.message,
                     advancedOptions.customAddress
                 )) as URL;
+
                 // handle specific errors (typescript doesnt like this)
                 if ("error" in result) {
                     // @ts-ignore
