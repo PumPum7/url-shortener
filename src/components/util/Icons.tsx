@@ -191,3 +191,19 @@ export const AdjustmentsIcon = ({
         />
     );
 };
+
+export const ChevronLeftIcon = ({
+    className,
+}: {
+    className?: string;
+}): JSX.Element => {
+    return <Icon className={className} d="M15 19l-7-7 7-7" />;
+};
+
+export const ChevronRightIcon = ({
+    className,
+}: {
+    className?: string;
+}): JSX.Element => {
+    return <Icon className={className} d="M9 5l7 7-7 7" />;
+};
