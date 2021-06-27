@@ -1,26 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import { useUser } from "@auth0/nextjs-auth0";
 import { toClipboard } from "copee";
 import toast from "react-hot-toast";
 
 import { timeDifference } from "@functions/time";
-import { useModalStore } from "@functions/globalZustand";
+import { useModalStore, useUrlStore } from "@functions/globalZustand";
 import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
 
 import { QRCodeModal } from "@components/util/QRCodeModal";
 import { EditLinkModal } from "@components/util/EditModal";
 import { DeleteLinkModal } from "@components/util/DeleteModal";
 import {
-    CopyIcon,
+    ChartPieIcon,
     CheckIcon,
+    ChevronLeftIcon,
+    ChevronRightIcon,
+    CopyIcon,
+    PencilIcon,
     QRCodeIcon,
     TrashIcon,
-    PencilIcon,
-    ChartPieIcon,
 } from "@components/util/Icons";
-
-import { useUrlStore } from "@functions/globalZustand";
 
 interface RecentLinkInterface {
     long: string;
@@ -34,31 +34,69 @@ export const RecentLinks = (): JSX.Element => {
     const [amount, setAmount] = useState<number>(10);
     const [search, setSearch] = useState<string>("");
     const [error, setError] = useState<boolean>(false);
+    const [disabledButton, setDisabledButton] = useState<{
+        previous: boolean;
+        next: boolean;
+    }>({ previous: true, next: false });
 
     const { user } = useUser();
 
-    const { getUrls, urls } = useUrlStore((state) => ({
+    const searchField = useRef();
+
+    const { getUrls, urls, total } = useUrlStore((state) => ({
         getUrls: state.getUrls,
         urls: state.urls,
+        total: state.total,
     }));
+
+    const fetchUrls = (specificPage: number = page) => {
+        try {
+            getUrls(
+                amount,
+                amount * specificPage - 1 > 0 ? amount * specificPage - 1 : 0,
+                search
+            );
+        } catch (e) {
+            toast.error("Something went wrong while retrieving recent links!");
+            setError(true);
+        }
+    };
+
+    const changePage = ({ action }: { action: "next" | "previous" }): void => {
+        if (action === "next") {
+            if (page * amount < total - 1) {
+                setPage((prevState) => {
+                    fetchUrls(prevState + 1);
+                    return prevState + 1;
+                });
+            }
+        } else if (action === "previous") {
+            if (page !== 0) {
+                setPage((prevState) => {
+                    fetchUrls(prevState - 1);
+                    return prevState - 1;
+                });
+            }
+        }
+    };
+
+    useEffect(() => {
+        let newDisabledButtons = { next: false, previous: false };
+        newDisabledButtons.previous = page === 0;
+        newDisabledButtons.next = (page + 1) * amount > total;
+        setDisabledButton(newDisabledButtons);
+    }, [page]);
 
     useEffect(() => {
         if (!user) {
             return;
         } else {
-            try {
-                getUrls(amount, amount * page, search);
-            } catch (e) {
-                toast.error(
-                    "Something went wrong while retrieving recent links!"
-                );
-                setError(true);
-            }
+            fetchUrls();
         }
     }, []);
 
     return (
-        <div className="flex flex-col pt-8 w-full xl:transform xl:-translate-x-48 xl:w-[1200px]">
+        <div className="flex flex-col pt-8 w-full xl:transform xl:-translate-x-1/4 xl:w-[1200px]">
             <h2 className="pb-2 pl-2 md:pb-4 md:pl-0">
                 Recently shortened links
             </h2>
@@ -83,7 +121,10 @@ export const RecentLinks = (): JSX.Element => {
                                         scope="col"
                                         colSpan={4}
                                         className="p-4 text-right tracking-wider">
-                                        <div>Placeholder</div>
+                                        <RecentLinkPageSelector
+                                            changePage={changePage}
+                                            disabledButton={disabledButton}
+                                        />
                                     </th>
                                 </tr>
                                 <tr className="justify-between">
@@ -121,8 +162,9 @@ export const RecentLinks = (): JSX.Element => {
                             <tfoot>
                                 <tr>
                                     <th colSpan={5}>
-                                        <div className="p-2 text-right">
-                                            Placeholder
+                                        <div className="p-2 pr-4 text-right">
+                                            Page {page + 1}/
+                                            {Math.ceil(total / amount)}
                                         </div>
                                     </th>
                                 </tr>
@@ -213,7 +255,7 @@ export const RecentLink = ({
                 </div>
             </td>
             <td className="px-6 py-4 whitespace-nowrap">
-                <div className="flex text-sm link">
+                <div className="flex items-center text-sm link">
                     <button
                         className={`text-green-600 bg-green-100 ring-green-50 action-icon ${
                             !copySuccess ? "active" : ""
@@ -326,5 +368,49 @@ export const RecentLinkPlaceholder = (): JSX.Element => {
             <Placeholder />
             <Placeholder />
         </tr>
+    );
+};
+
+interface RecentLinkPageSelectorParams {
+    disabledButton: { previous: boolean; next: boolean };
+    changePage: ({ action }: { action: "next" | "previous" }) => void;
+}
+
+const RecentLinkPageSelector = ({
+    disabledButton,
+    changePage,
+}: RecentLinkPageSelectorParams): JSX.Element => {
+    return (
+        <div className="flex flex-row justify-end">
+            <RecentLinkPageSelectorButton
+                disabled={disabledButton.previous}
+                changePage={() => changePage({ action: "previous" })}>
+                <ChevronLeftIcon />
+            </RecentLinkPageSelectorButton>
+            <RecentLinkPageSelectorButton
+                disabled={disabledButton.next}
+                changePage={() => changePage({ action: "next" })}>
+                <ChevronRightIcon />
+            </RecentLinkPageSelectorButton>
+        </div>
+    );
+};
+
+const RecentLinkPageSelectorButton = ({
+    children,
+    disabled,
+    changePage,
+}: {
+    children: React.ReactNode;
+    disabled: boolean;
+    changePage: () => void;
+}): JSX.Element => {
+    return (
+        <button
+            disabled={disabled}
+            className="ml-2 p-2 px-4 bg-white rounded-md shadow-md disabled:opacity-50 disabled:transform-none hover:-translate-y-1 duration-300"
+            onClick={() => changePage()}>
+            {children}
+        </button>
     );
 };
