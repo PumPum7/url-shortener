@@ -53,7 +53,7 @@ export const RecentLinks = (): JSX.Element => {
         try {
             getUrls(
                 amount,
-                amount * specificPage - 1 > 0 ? amount * specificPage - 1 : 0,
+                amount * specificPage > 0 ? amount * specificPage : 0,
                 search
             );
         } catch (e) {
@@ -64,7 +64,7 @@ export const RecentLinks = (): JSX.Element => {
 
     const changePage = ({ action }: { action: "next" | "previous" }): void => {
         if (action === "next") {
-            if (page * amount < total - 1) {
+            if (page * amount < total) {
                 setPage((prevState) => {
                     fetchUrls(prevState + 1);
                     return prevState + 1;
@@ -83,9 +83,13 @@ export const RecentLinks = (): JSX.Element => {
     useEffect(() => {
         let newDisabledButtons = { next: false, previous: false };
         newDisabledButtons.previous = page === 0;
-        newDisabledButtons.next = (page + 1) * amount > total;
+        newDisabledButtons.next = (page + 1) * amount >= total;
         setDisabledButton(newDisabledButtons);
-    }, [page]);
+    }, [page, total, amount]);
+
+    useEffect(() => {
+        fetchUrls();
+    }, [amount]);
 
     useEffect(() => {
         if (!user) {
@@ -121,10 +125,20 @@ export const RecentLinks = (): JSX.Element => {
                                         scope="col"
                                         colSpan={4}
                                         className="p-4 text-right tracking-wider">
-                                        <RecentLinkPageSelector
-                                            changePage={changePage}
-                                            disabledButton={disabledButton}
-                                        />
+                                        <div className="flex flex-row items-center justify-end">
+                                            <RecentLinkAmountSelector
+                                                setAmount={setAmount}
+                                                amount={amount}
+                                            />
+                                            <span className="ml-2 text-gray-600 opacity-50">
+                                                {" "}
+                                                |{" "}
+                                            </span>
+                                            <RecentLinkPageSelector
+                                                changePage={changePage}
+                                                disabledButton={disabledButton}
+                                            />
+                                        </div>
                                     </th>
                                 </tr>
                                 <tr className="justify-between">
@@ -407,10 +421,57 @@ const RecentLinkPageSelectorButton = ({
 }): JSX.Element => {
     return (
         <button
-            disabled={disabled}
-            className="ml-2 p-2 px-4 bg-white rounded-md shadow-md disabled:opacity-50 disabled:transform-none hover:-translate-y-1 duration-300"
-            onClick={() => changePage()}>
+            className="recent-links-button"
+            onClick={() => changePage()}
+            disabled={disabled}>
             {children}
+        </button>
+    );
+};
+
+const RecentLinkAmountSelector = ({
+    setAmount,
+    amount,
+}: {
+    setAmount: React.Dispatch<React.SetStateAction<number>>;
+    amount: number;
+}): JSX.Element => {
+    return (
+        <div className="flex flex-row justify-end">
+            <RecentLinkAmountSelectorButton
+                amount={"10"}
+                setAmount={() => setAmount(10)}
+                disabled={amount === 10}
+            />
+            <RecentLinkAmountSelectorButton
+                amount={"25"}
+                setAmount={() => setAmount(25)}
+                disabled={amount === 25}
+            />
+            <RecentLinkAmountSelectorButton
+                amount={"50"}
+                setAmount={() => setAmount(50)}
+                disabled={amount === 50}
+            />
+        </div>
+    );
+};
+
+const RecentLinkAmountSelectorButton = ({
+    amount,
+    setAmount,
+    disabled,
+}: {
+    amount: string;
+    setAmount: () => void;
+    disabled: boolean;
+}): JSX.Element => {
+    return (
+        <button
+            className="recent-links-button"
+            onClick={() => setAmount()}
+            disabled={disabled}>
+            {amount}
         </button>
     );
 };
