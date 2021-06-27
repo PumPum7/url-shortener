@@ -24,7 +24,7 @@ export default withApiAuthRequired(async function createUrl(
             .query(
                 q.Paginate(q.Match(q.Index("user_id"), user.sub), {
                     // The type insertion is mainly a workaround against IDE complaints
-                    size: parseInt(<string>amount),
+                    size: parseInt(<string>amount) + parseInt(<string>skip),
                 })
             )
             .then(async (result) => {
@@ -85,3 +85,5 @@ const getUrlCount = async (
             return 0;
         });
 };
+
+// TODO: sort by date
