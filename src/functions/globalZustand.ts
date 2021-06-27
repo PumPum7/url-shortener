@@ -39,7 +39,7 @@ interface UrlStore {
         customAddress: string
     ) => Promise<any>;
     removeUrl: (url: string) => void;
-    updateUrl: (shortUrl: string) => void;
+    updateUrl: (shortUrl: string, newUrlShort: string) => void;
 }
 
 export const useUrlStore = create<UrlStore>((set) => ({
@@ -58,7 +58,7 @@ export const useUrlStore = create<UrlStore>((set) => ({
             if (res.links.length > 0) {
                 set({ urls: res.links });
             }
-            set(res.total);
+            set({ total: res.total });
         });
     },
     addUrl: async (
@@ -107,13 +107,13 @@ export const useUrlStore = create<UrlStore>((set) => ({
             };
         });
     },
-    updateUrl: (shortUrl: string) => {
+    updateUrl: (shortUrl: string, newUrlShort: string) => {
         set((oldState) => {
             let newUrlList = oldState.urls;
             const urlIndex = getUrlIndex(shortUrl, newUrlList);
             if (urlIndex > -1) {
                 newUrlList[urlIndex] = {
-                    short: shortUrl,
+                    short: newUrlShort,
                     long: oldState.urls[urlIndex].long,
                     usage: oldState.urls[urlIndex].usage,
                 };

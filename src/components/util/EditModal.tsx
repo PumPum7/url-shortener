@@ -70,7 +70,7 @@ export const EditLinkModal = ({
                 loading: "Loading...",
                 success: (response) => {
                     setStatus("editing");
-                    updateUrl(shortUrl);
+                    updateUrl(shortUrl, response.data.short);
                     return `Successfully edited the link ${response.data.short}`;
                 },
                 error: () => "An error occurred while editing the link.",
@@ -170,5 +170,3 @@ export const EditLinkModal = ({
         </>
     );
 };
-
-// TODO: fix the link changing
