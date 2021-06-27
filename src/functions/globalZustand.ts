@@ -104,6 +104,7 @@ export const useUrlStore = create<UrlStore>((set) => ({
             }
             return {
                 urls: newUrlList,
+                total: oldState.total - 1,
             };
         });
     },
