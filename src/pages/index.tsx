@@ -141,7 +141,7 @@ export default function Home() {
                             ) : (
                                 <>
                                     <Scissors
-                                        onClick={async () => shortenUrl()}
+                                        onClick={async () => await shortenUrl()}
                                         className="absolute inset-y-0 right-2 top-px flex items-center pt-1 px-2 text-gray-400 hover:text-purple-500 bg-white rounded-xl hover:shadow-md cursor-pointer h-[90%]"
                                     />
                                 </>
