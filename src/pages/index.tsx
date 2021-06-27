@@ -9,8 +9,6 @@ import { AdvancedOptions } from "@components/links/Options";
 import { RecentLinks } from "@components/links/RecentLinks";
 import { Landingpage } from "@components/Homepage/Landing";
 
-import { createShortURL } from "@functions/urlHandlers";
-
 import { useUrlStore } from "@functions/globalZustand";
 
 import { URL, AdvancedOptionsStruct } from "@interfaces";
