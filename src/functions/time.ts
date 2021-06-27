@@ -1,4 +1,7 @@
 export const timeDifference = (timestamp: number): string => {
+    if (!timestamp) {
+        return "0 minutes ago";
+    }
     const curTime = new Date();
     const creationTime = new Date(timestamp);
     const difference = curTime.getTime() - creationTime.getTime();
@@ -23,5 +26,5 @@ export const timeDifference = (timestamp: number): string => {
 
     // minutes are hours are not enough
     const minutes = Math.floor(difference / 1000 / 60);
-    return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+    return `${minutes} minute${minutes > 1 || minutes == 0 ? "s" : ""} ago`;
 };
