@@ -81,6 +81,14 @@ export const RecentLinks = (): JSX.Element => {
     };
 
     useEffect(() => {
+        if (!user) {
+            return;
+        } else {
+            fetchUrls();
+        }
+    }, []);
+
+    useEffect(() => {
         let newDisabledButtons = { next: false, previous: false };
         newDisabledButtons.previous = page === 0;
         newDisabledButtons.next = (page + 1) * amount >= total;
@@ -92,12 +100,8 @@ export const RecentLinks = (): JSX.Element => {
     }, [amount]);
 
     useEffect(() => {
-        if (!user) {
-            return;
-        } else {
-            fetchUrls();
-        }
-    }, []);
+        fetchUrls();
+    }, [search]);
 
     return (
         <div className="flex flex-col pt-8 w-full xl:transform xl:-translate-x-1/4 xl:w-[1200px]">
@@ -113,11 +117,23 @@ export const RecentLinks = (): JSX.Element => {
                                     <th
                                         scope="col"
                                         className="p-4 text-left tracking-wider">
-                                        <form>
+                                        <form
+                                            onSubmit={(e) => {
+                                                e.preventDefault();
+                                                if (searchField.current) {
+                                                    setSearch(
+                                                        // @ts-ignore
+                                                        searchField.current
+                                                            .value
+                                                    );
+                                                    setPage(0);
+                                                }
+                                            }}>
                                             <input
                                                 type="text"
                                                 placeholder="Search..."
                                                 className="py-1 rounded-md"
+                                                ref={searchField}
                                             />
                                         </form>
                                     </th>
