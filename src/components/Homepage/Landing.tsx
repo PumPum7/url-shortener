@@ -14,15 +14,6 @@ import {
 } from "@components/util/Icons";
 
 export const Landingpage = (): JSX.Element => {
-    const defaultOptions = {
-        loop: true,
-        autoplay: true,
-        animationData: PreviewImage,
-        rendererSettings: {
-            preserveAspectRatio: "xMidYMid slice"
-        }
-        };
-
     return (
         <section className="pt-6">
             <article>
