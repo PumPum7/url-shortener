@@ -4,7 +4,7 @@ import Head from "next/head";
 
 import { useUser } from "@auth0/nextjs-auth0";
 
-import { Scissors, Loading } from "@components/util/Icons";
+import { Scissors, Loading, CheckIcon, CopyIcon } from "@components/util/Icons";
 import { AdvancedOptions } from "@components/links/Options";
 import { RecentLinks } from "@components/links/RecentLinks";
 import { Landingpage } from "@components/Homepage/Landing";
@@ -12,15 +12,18 @@ import { Landingpage } from "@components/Homepage/Landing";
 import { useUrlStore } from "@functions/globalZustand";
 
 import { URL, AdvancedOptionsStruct } from "@interfaces";
+import { toClipboard } from "copee";
+import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
 
 const DUPLICATE_NAME = "instance not unique";
 
 export default function Home() {
+    const [loading, setLoading] = useState<boolean>(false);
+    const [copySuccess, setCopySuccess] = useState<boolean>(false);
+    const [showOptions, setShowOptions] = useState<boolean>(false);
+    const [uploadError, setUploadError] = useState<boolean | string>(false);
     const [inputLink, setInputLink] = useState<string>("");
     const [shortUrl, setShortUrl] = useState<string>("");
-    const [uploadError, setUploadError] = useState<boolean | string>(false);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [showOptions, setShowOptions] = useState<boolean>(false);
     const [showOptionsError, setShowOptionsError] = useState<string>("");
     const [advancedOptions, setAdvancedOptions] =
         useState<AdvancedOptionsStruct>({
@@ -149,15 +152,32 @@ export default function Home() {
                         </div>
                     </form>
                     {shortUrl !== "" ? (
-                        <div className="pt-6 text-center overflow-hidden overflow-ellipsis">
-                            <p>
-                                <a
-                                    href={`${window.location.href}s/${shortUrl}`}
-                                    target="_blank"
-                                    rel="noreferrer">
-                                    {window.location.href}s/{shortUrl}
-                                </a>
-                            </p>
+                        <div className="flex items-center justify-center pt-6 text-sm link">
+                            <button
+                                className={`text-green-600 bg-green-100 ring-green-50 action-icon ${
+                                    !copySuccess ? "active" : ""
+                                }`}
+                                onClick={() => {
+                                    const success = toClipboard(
+                                        `${FUNCTIONS_DOMAIN}/s/${shortUrl}`
+                                    );
+                                    if (success) {
+                                        setCopySuccess(true);
+                                    }
+                                }}>
+                                {copySuccess ? <CheckIcon /> : <CopyIcon />}
+                            </button>
+
+                            <a
+                                href={"/s/" + shortUrl}
+                                rel="noreferrer"
+                                target="_blank">
+                                {FUNCTIONS_DOMAIN.replace(
+                                    "http://",
+                                    ""
+                                ).replace("https://", "")}
+                                /s/{shortUrl}
+                            </a>
                         </div>
                     ) : (
                         ""
