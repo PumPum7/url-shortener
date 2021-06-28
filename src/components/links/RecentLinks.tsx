@@ -1,26 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import { useUser } from "@auth0/nextjs-auth0";
 import { toClipboard } from "copee";
 import toast from "react-hot-toast";
 
-import { getUserUrls } from "@functions/urlHandlers";
 import { timeDifference } from "@functions/time";
+import { useModalStore, useUrlStore } from "@functions/globalZustand";
+import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
 
 import { QRCodeModal } from "@components/util/QRCodeModal";
-import {
-    CopyIcon,
-    CheckIcon,
-    QRCodeIcon,
-    TrashIcon,
-    PencilIcon,
-    ChartPieIcon,
-} from "@components/util/Icons";
-
-import { useModalStore } from "@functions/globalZustand";
-import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
 import { EditLinkModal } from "@components/util/EditModal";
 import { DeleteLinkModal } from "@components/util/DeleteModal";
+import {
+    ChartPieIcon,
+    CheckIcon,
+    ChevronLeftIcon,
+    ChevronRightIcon,
+    CopyIcon,
+    PencilIcon,
+    QRCodeIcon,
+    TrashIcon,
+} from "@components/util/Icons";
 
 interface RecentLinkInterface {
     long: string;
@@ -30,42 +30,81 @@ interface RecentLinkInterface {
 }
 
 export const RecentLinks = (): JSX.Element => {
-    const [recentLinks, setRecentLinks] = useState<[RecentLinkInterface]>([
-        {
-            long: "",
-            short: "",
-            usage: 0,
-            timeStamp: 0,
-        },
-    ]);
-    const [totalLinks, setTotalLinks] = useState<number>(0);
     const [page, setPage] = useState<number>(0);
     const [amount, setAmount] = useState<number>(10);
     const [search, setSearch] = useState<string>("");
     const [error, setError] = useState<boolean>(false);
+    const [disabledButton, setDisabledButton] = useState<{
+        previous: boolean;
+        next: boolean;
+    }>({ previous: true, next: false });
 
     const { user } = useUser();
+
+    const searchField = useRef();
+
+    const { getUrls, urls, total } = useUrlStore((state) => ({
+        getUrls: state.getUrls,
+        urls: state.urls,
+        total: state.total,
+    }));
+
+    const fetchUrls = (specificPage: number = page) => {
+        try {
+            getUrls(
+                amount,
+                amount * specificPage > 0 ? amount * specificPage : 0,
+                search
+            );
+        } catch (e) {
+            toast.error("Something went wrong while retrieving recent links!");
+            setError(true);
+        }
+    };
+
+    const changePage = ({ action }: { action: "next" | "previous" }): void => {
+        if (action === "next") {
+            if (page * amount < total) {
+                setPage((prevState) => {
+                    fetchUrls(prevState + 1);
+                    return prevState + 1;
+                });
+            }
+        } else if (action === "previous") {
+            if (page !== 0) {
+                setPage((prevState) => {
+                    fetchUrls(prevState - 1);
+                    return prevState - 1;
+                });
+            }
+        }
+    };
 
     useEffect(() => {
         if (!user) {
             return;
         } else {
-            try {
-                getUserUrls(amount, amount * page, search).then((res) => {
-                    setRecentLinks(res.links);
-                    setTotalLinks(res.total);
-                });
-            } catch (e) {
-                toast.error(
-                    "Something went wrong while retrieving recent links!"
-                );
-                setError(true);
-            }
+            fetchUrls();
         }
     }, []);
 
+    useEffect(() => {
+        let newDisabledButtons = { next: false, previous: false };
+        newDisabledButtons.previous = page === 0;
+        newDisabledButtons.next = (page + 1) * amount >= total;
+        setDisabledButton(newDisabledButtons);
+    }, [page, total, amount]);
+
+    useEffect(() => {
+        fetchUrls();
+    }, [amount]);
+
+    useEffect(() => {
+        fetchUrls();
+    }, [search]);
+
     return (
-        <div className="flex flex-col pt-8 w-full xl:transform xl:-translate-x-48 xl:w-[1200px]">
+        <div className="flex flex-col pt-8 w-full xl:transform xl:-translate-x-1/4 xl:w-[1200px]">
             <h2 className="pb-2 pl-2 md:pb-4 md:pl-0">
                 Recently shortened links
             </h2>
@@ -78,11 +117,23 @@ export const RecentLinks = (): JSX.Element => {
                                     <th
                                         scope="col"
                                         className="p-4 text-left tracking-wider">
-                                        <form>
+                                        <form
+                                            onSubmit={(e) => {
+                                                e.preventDefault();
+                                                if (searchField.current) {
+                                                    setSearch(
+                                                        // @ts-ignore
+                                                        searchField.current
+                                                            .value
+                                                    );
+                                                    setPage(0);
+                                                }
+                                            }}>
                                             <input
                                                 type="text"
                                                 placeholder="Search..."
                                                 className="py-1 rounded-md"
+                                                ref={searchField}
                                             />
                                         </form>
                                     </th>
@@ -90,7 +141,20 @@ export const RecentLinks = (): JSX.Element => {
                                         scope="col"
                                         colSpan={4}
                                         className="p-4 text-right tracking-wider">
-                                        <div>Placeholder</div>
+                                        <div className="flex flex-row items-center justify-end">
+                                            <RecentLinkAmountSelector
+                                                setAmount={setAmount}
+                                                amount={amount}
+                                            />
+                                            <span className="ml-2 text-gray-600 opacity-50">
+                                                {" "}
+                                                |{" "}
+                                            </span>
+                                            <RecentLinkPageSelector
+                                                changePage={changePage}
+                                                disabledButton={disabledButton}
+                                            />
+                                        </div>
                                     </th>
                                 </tr>
                                 <tr className="justify-between">
@@ -106,10 +170,10 @@ export const RecentLinks = (): JSX.Element => {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-gray-200 divide-y">
-                                {recentLinks[0].long === "" ? (
+                                {urls[0].long === "" ? (
                                     <RecentLinkPlaceholder />
                                 ) : (
-                                    recentLinks.map(
+                                    urls.map(
                                         (
                                             link: RecentLinkInterface,
                                             index: number
@@ -128,8 +192,9 @@ export const RecentLinks = (): JSX.Element => {
                             <tfoot>
                                 <tr>
                                     <th colSpan={5}>
-                                        <div className="p-2 text-right">
-                                            Placeholder
+                                        <div className="p-2 pr-4 text-right">
+                                            Page {page + 1}/
+                                            {Math.ceil(total / amount)}
                                         </div>
                                     </th>
                                 </tr>
@@ -220,7 +285,7 @@ export const RecentLink = ({
                 </div>
             </td>
             <td className="px-6 py-4 whitespace-nowrap">
-                <div className="flex text-sm link">
+                <div className="flex items-center text-sm link">
                     <button
                         className={`text-green-600 bg-green-100 ring-green-50 action-icon ${
                             !copySuccess ? "active" : ""
@@ -333,5 +398,96 @@ export const RecentLinkPlaceholder = (): JSX.Element => {
             <Placeholder />
             <Placeholder />
         </tr>
+    );
+};
+
+interface RecentLinkPageSelectorParams {
+    disabledButton: { previous: boolean; next: boolean };
+    changePage: ({ action }: { action: "next" | "previous" }) => void;
+}
+
+const RecentLinkPageSelector = ({
+    disabledButton,
+    changePage,
+}: RecentLinkPageSelectorParams): JSX.Element => {
+    return (
+        <div className="flex flex-row justify-end">
+            <RecentLinkPageSelectorButton
+                disabled={disabledButton.previous}
+                changePage={() => changePage({ action: "previous" })}>
+                <ChevronLeftIcon />
+            </RecentLinkPageSelectorButton>
+            <RecentLinkPageSelectorButton
+                disabled={disabledButton.next}
+                changePage={() => changePage({ action: "next" })}>
+                <ChevronRightIcon />
+            </RecentLinkPageSelectorButton>
+        </div>
+    );
+};
+
+const RecentLinkPageSelectorButton = ({
+    children,
+    disabled,
+    changePage,
+}: {
+    children: React.ReactNode;
+    disabled: boolean;
+    changePage: () => void;
+}): JSX.Element => {
+    return (
+        <button
+            className="recent-links-button"
+            onClick={() => changePage()}
+            disabled={disabled}>
+            {children}
+        </button>
+    );
+};
+
+const RecentLinkAmountSelector = ({
+    setAmount,
+    amount,
+}: {
+    setAmount: React.Dispatch<React.SetStateAction<number>>;
+    amount: number;
+}): JSX.Element => {
+    return (
+        <div className="flex flex-row justify-end">
+            <RecentLinkAmountSelectorButton
+                amount={"10"}
+                setAmount={() => setAmount(10)}
+                disabled={amount === 10}
+            />
+            <RecentLinkAmountSelectorButton
+                amount={"25"}
+                setAmount={() => setAmount(25)}
+                disabled={amount === 25}
+            />
+            <RecentLinkAmountSelectorButton
+                amount={"50"}
+                setAmount={() => setAmount(50)}
+                disabled={amount === 50}
+            />
+        </div>
+    );
+};
+
+const RecentLinkAmountSelectorButton = ({
+    amount,
+    setAmount,
+    disabled,
+}: {
+    amount: string;
+    setAmount: () => void;
+    disabled: boolean;
+}): JSX.Element => {
+    return (
+        <button
+            className="recent-links-button"
+            onClick={() => setAmount()}
+            disabled={disabled}>
+            {amount}
+        </button>
     );
 };

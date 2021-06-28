@@ -1,12 +1,11 @@
 import React from "react";
 
 import Link from "next/link";
-import Image from "next/image";
 
-import Lottie from 'react-lottie';
+import Lottie from "react-lottie";
 
-import recentLinksPreview from "../../../public/assets/previews/RecentlyShortened.png";
-import PreviewImage from "../../../public/assets/previews/65185-data-visualization-horizon-chart.json"
+import * as StatsPreview from "../../../public/assets/previews/StatsPreview.json";
+import * as UrlPreview from "../../../public/assets/previews/UrlPreview.json";
 
 import {
     AdjustmentsIcon,
@@ -15,15 +14,6 @@ import {
 } from "@components/util/Icons";
 
 export const Landingpage = (): JSX.Element => {
-    const defaultOptions = {
-        loop: true,
-        autoplay: true,
-        animationData: PreviewImage,
-        rendererSettings: {
-            preserveAspectRatio: "xMidYMid slice"
-        }
-        };
-
     return (
         <section className="pt-6">
             <article>
@@ -37,10 +27,17 @@ export const Landingpage = (): JSX.Element => {
                     Share links like a pro!
                 </p>
                 <LandingPagePreview
-                    image={<Lottie options={defaultOptions} width={300} height={300}/>}
+                    image={StatsPreview}
                     title={"Keep track of your URLs"}
                     description={
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+                        "Always be able to track your URLs and get access to those analytics from everywhere!"
+                    }
+                />
+                <LandingPagePreview
+                    image={UrlPreview}
+                    title={"Easily share your URLs"}
+                    description={
+                        "Share your URLs with everyone without filling the whole chat up!"
                     }
                 />
             </article>
@@ -112,18 +109,27 @@ const LandingPagePreview = ({
     description: string;
     image: any;
 }): JSX.Element => {
+    const LottieOptions = {
+        loop: true,
+        autoplay: true,
+        animationData: image,
+        rendererSettings: {
+            preserveAspectRatio: "xMidYMid slice",
+        },
+    };
+
     return (
-        <div className="flex flex-col-reverse items-center pt-6 md:flex-row">
+        <div className="flex flex-col-reverse items-center pt-6 md:flex-row md:last-of-type:flex-row-reverse">
             <div className="pb-6 md:pb-0 md:py-6">
                 <h1 className="pl-2 text-2xl md:pl-0">{title}</h1>
                 <p className="pl-2 py-3 md:pl-0">{description}</p>
                 <Link href={"/api/auth/login"}>
-                    <a className="block px-3 py-2 w-full text-center text-blue-600 hover:text-white font-bold hover:bg-blue-600 border-2 border-blue-600 rounded-full md:px-0">
+                    <a className="block px-1 px-3 py-2 w-full text-center text-blue-600 hover:text-white font-bold hover:bg-blue-600 border-2 border-blue-600 rounded-full md:px-0 md:w-1/2">
                         Sign up
                     </a>
                 </Link>
             </div>
-            {image}
+            <Lottie options={LottieOptions} height={300} width={300} />
         </div>
     );
 };

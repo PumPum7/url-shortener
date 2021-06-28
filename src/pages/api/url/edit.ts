@@ -23,6 +23,15 @@ export default withApiAuthRequired(async function editUrl(
     const message: string = req.body.message || "";
     const length: number = (req.body.length as number) || 0;
 
+    let newUrl = "";
+    if (customAddress) {
+        newUrl = customAddress;
+    } else if (length != urlShort.length) {
+        newUrl = generateShortUrl(length);
+    } else {
+        newUrl = urlShort;
+    }
+
     try {
         client
             .query(
@@ -39,10 +48,7 @@ export default withApiAuthRequired(async function editUrl(
                     {
                         data: {
                             password: password,
-                            short:
-                                customAddress || length
-                                    ? generateShortUrl(length)
-                                    : urlShort,
+                            short: newUrl,
                             message: message,
                         },
                         ttl:

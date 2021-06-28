@@ -5,6 +5,8 @@ import toast from "react-hot-toast";
 
 import { deleteUrl, FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
 
+import { useUrlStore } from "@functions/globalZustand";
+
 export const DeleteLinkModal = ({
     shortUrl,
     closeFunc,
@@ -16,6 +18,10 @@ export const DeleteLinkModal = ({
 }): JSX.Element => {
     const [status, setStatus] = useState<"editing" | "loading">("editing");
 
+    const { removeUrl } = useUrlStore((state) => ({
+        removeUrl: state.removeUrl,
+    }));
+
     const deleteLink = () => {
         setStatus("loading");
         const deleteLinkStatus = deleteUrl(shortUrl);
@@ -25,6 +31,8 @@ export const DeleteLinkModal = ({
                 loading: "Loading...",
                 success: () => {
                     setStatus("editing");
+                    removeUrl(shortUrl);
+                    closeFunc();
                     return `Successfully deleted the link ${shortUrl}`;
                 },
                 error: () => "An error occurred while deleting the link.",
@@ -89,13 +97,13 @@ export const DeleteLinkModal = ({
                                 <div className="flex justify-around mt-4">
                                     <button
                                         type="button"
-                                        className="justify-center px-4 py-2 text-blue-600 font-medium bg-gray-100 hover:bg-gray-200 border border-transparent rounded-md focus:outline-none focus-visible:outline-none hover:cursor-pointer focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-2"
+                                        className="justify-center px-4 py-2 text-blue-600 font-medium bg-gray-100 hover:bg-gray-200 border border-transparent rounded-md focus:outline-none focus-visible:outline-none hover:cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                                         onClick={closeFunc}>
                                         Cancel
                                     </button>
                                     <button
                                         type="button"
-                                        className="px-4 py-2 text-white font-medium bg-blue-600 hover:bg-blue-700 border border-transparent rounded-md focus:outline-none focus-visible:outline-none disabled:opacity-50 hover:cursor-pointer hover:ring-blue-300 hover:ring-2"
+                                        className="px-4 py-2 text-white font-medium bg-blue-600 hover:bg-blue-700 border border-transparent rounded-md focus:outline-none focus-visible:outline-none disabled:opacity-50 hover:cursor-pointer hover:ring-2 hover:ring-blue-300"
                                         onClick={deleteLink}
                                         disabled={status !== "editing"}>
                                         Delete link
