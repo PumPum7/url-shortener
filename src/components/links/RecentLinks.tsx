@@ -33,7 +33,6 @@ export const RecentLinks = (): JSX.Element => {
     const [page, setPage] = useState<number>(0);
     const [amount, setAmount] = useState<number>(10);
     const [search, setSearch] = useState<string>("");
-    const [error, setError] = useState<boolean>(false);
     const [disabledButton, setDisabledButton] = useState<{
         previous: boolean;
         next: boolean;
@@ -58,7 +57,6 @@ export const RecentLinks = (): JSX.Element => {
             );
         } catch (e) {
             toast.error("Something went wrong while retrieving recent links!");
-            setError(true);
         }
     };
 

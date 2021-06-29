@@ -87,7 +87,7 @@ export const useUrlStore = create<UrlStore>((set) => ({
             };
             set((oldState) => {
                 let newUrlList = oldState.urls;
-                newUrlList.push(newUrl);
+                newUrlList.unshift(newUrl);
                 return {
                     urls: newUrlList,
                 };
