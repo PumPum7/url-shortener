@@ -34,12 +34,12 @@ A link shortener written in Typescript using NextJS, React and TailwindCSS
 
 - ##### The landing page: 
 
-  ![landing page](.\img\Landingpage.png)
+  ![landing page](./img/Landingpage.png)
 
 - ##### Logged in view 
 
-  ![logged in view](.\img\loggedIn.png)
+  ![logged in view](./img/loggedIn.png)
 
 - ##### Editing Modal
 
-  ![editing modal](.\img\editingModal.png)
+  ![editing modal](./img/editingModal.png)
