@@ -8,6 +8,7 @@ interface URL {
     short: string;
     long: string;
     password: string;
+    message: string;
 }
 
 export default async function getUrl(
@@ -31,6 +32,7 @@ export default async function getUrl(
                     long: data.long,
                     // checks if the url is protected
                     protected: !!data.password,
+                    message: data.message,
                 });
             })
             .catch((e) => {
@@ -38,7 +40,7 @@ export default async function getUrl(
                 res.send({ error: e });
             });
     } catch (e) {
-        res.status(400)
+        res.status(400);
         res.send({ error: e });
     }
 }
