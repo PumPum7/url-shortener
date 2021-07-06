@@ -4,8 +4,9 @@ import Link from "next/link";
 
 import Lottie from "react-lottie";
 
-import * as StatsPreview from "../../../public/assets/previews/StatsPreview.json";
-import * as UrlPreview from "../../../public/assets/previews/UrlPreview.json";
+import * as StatsPreview from "../../../public/assets/StatsAnimation.json";
+import * as UrlPreview from "../../../public/assets/UrlAnimation.json";
+import * as PasswordAnimation from "../../../public/assets/PasswordAnimation.json";
 
 import {
     AdjustmentsIcon,
@@ -39,6 +40,13 @@ export const Landingpage = (): JSX.Element => {
                     description={
                         "Share your URLs with everyone without filling the whole chat up!"
                     }
+                />
+                <LandingPagePreview
+                    title={"Securely share your URLs"}
+                    description={
+                        "Set a password for your URL and keep control on who can access your links!"
+                    }
+                    image={PasswordAnimation}
                 />
             </article>
             <article className="pt-6">
@@ -119,7 +127,7 @@ const LandingPagePreview = ({
     };
 
     return (
-        <div className="flex flex-col-reverse items-center pt-6 md:flex-row md:last-of-type:flex-row-reverse">
+        <div className="flex flex-col-reverse items-center pt-6 md:flex-row md:even:flex-row-reverse">
             <div className="pb-6 md:pb-0 md:py-6">
                 <h1 className="pl-2 text-2xl md:pl-0">{title}</h1>
                 <p className="pl-2 py-3 md:pl-0">{description}</p>

@@ -136,18 +136,14 @@ export default function Home() {
                                 onClick={() => setUploadError(false)}
                             />
                             {loading ? (
-                                <>
-                                    <Loading className="absolute inset-y-0 right-0 flex items-center px-2 text-purple-500 rounded-xl cursor-wait" />
-                                </>
+                                <Loading className="absolute inset-y-0 right-0 flex items-center px-2 text-purple-500 rounded-xl cursor-wait" />
                             ) : uploadError ? (
                                 ""
                             ) : (
-                                <>
-                                    <Scissors
-                                        onClick={async () => await shortenUrl()}
-                                        className="absolute inset-y-0 right-2 top-px flex items-center pt-1 px-2 text-gray-400 hover:text-purple-500 bg-white rounded-xl hover:shadow-md cursor-pointer h-[90%]"
-                                    />
-                                </>
+                                <Scissors
+                                    onClick={async () => await shortenUrl()}
+                                    className="absolute inset-y-0 right-2 top-px flex items-center pt-1 px-2 text-gray-400 hover:text-purple-500 bg-white rounded-xl hover:shadow-md cursor-pointer h-[90%]"
+                                />
                             )}
                         </div>
                     </form>
@@ -241,5 +237,3 @@ export default function Home() {
         </>
     );
 }
-
-// TODO: fix the link showcase (maybe also include the svg button)

@@ -106,3 +106,21 @@ export const deleteUrl = async (url: string) => {
         })
         .catch((e) => console.error(e));
 };
+
+export const checkPasswords = async (url: string, inputPassword: string) => {
+    return await fetch(`${FUNCTIONS_DOMAIN}/api/url/password`, {
+        method: "POST",
+        body: JSON.stringify({
+            url: url,
+            password: inputPassword,
+        }),
+        headers: { "Content-Type": "application/json" },
+    })
+        .then((res) => {
+            if (res.status === 200) {
+                return res.json();
+            }
+            return undefined;
+        })
+        .catch(() => undefined);
+};

@@ -4,14 +4,7 @@ const faunadb = require("faunadb");
 
 const q = faunadb.query;
 
-interface URL {
-    short: string;
-    long: string;
-    password: string;
-    message: string;
-}
-
-export default async function getUrl(
+export default async function confirmPassword(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
@@ -20,7 +13,8 @@ export default async function getUrl(
     });
 
     try {
-        const { url } = req.query;
+        const url = req.body.url;
+        const password = req.body.password;
 
         client
             .query(q.Get(q.Match(q.Index("url_short"), url)))
@@ -28,11 +22,7 @@ export default async function getUrl(
                 const { data }: { data: URL } = ret;
                 res.status(200);
                 res.send({
-                    short: data.short,
-                    long: data.long,
-                    // checks if the url is protected
-                    protected: !!data.password,
-                    message: data.message,
+                    confirmed: data.password === password,
                 });
             })
             .catch((e) => {
