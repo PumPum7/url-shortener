@@ -128,7 +128,9 @@ export const EditLinkModal = ({
                                     <br />
                                     <a
                                         className="link"
-                                        href={`${FUNCTIONS_DOMAIN}/s/${shortUrl}`}>
+                                        href={`${FUNCTIONS_DOMAIN}/s/${shortUrl}`}
+                                        target="_blank"
+                                        rel="noreferrer">
                                         {FUNCTIONS_DOMAIN}/s/{shortUrl}
                                     </a>
                                 </Dialog.Description>
