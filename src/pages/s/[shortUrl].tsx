@@ -59,12 +59,12 @@ const Url = ({ data }): JSX.Element => {
                         e.preventDefault();
                         passwordChecker();
                     }}>
-                    <div className="flex flex-col flex-grow justify-center ml-2 md:flex-row md:ml-0">
+                    <div className="flex flex-col justify-center ml-2 md:flex-row md:ml-0">
                         <input
                             type="password"
                             placeholder={"Password..."}
                             className={`bg-white rounded-xl md:shadow-lg border-b-5 flex-auto ${
-                                error ? "!border-2 !border-red-500" : ""
+                                error ? "!border-2 !border-red-500 !ring-transparent" : ""
                             }`}
                             onChange={(e) => setPassword(e.target.value)}
                             required={true}
@@ -75,7 +75,7 @@ const Url = ({ data }): JSX.Element => {
                         />
                         <button
                             type="submit"
-                            className={`flex flex-row items-center md:ml-6 p-2 bg-blue-400 rounded-xl mt-4 md:mt-0 flex-none  ${
+                            className={`flex flex-row items-center md:ml-6 p-2 bg-blue-400 rounded-xl mt-4 md:mt-0 flex-none focus:outline-none ${
                                 loading ? "cursor-wait" : ""
                             }`}>
                             Submit
