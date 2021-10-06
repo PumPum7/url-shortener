@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { withApiAuthRequired, getSession } from "@auth0/nextjs-auth0";
 
-const faunadb = require("faunadb");
+import faunadb from "faunadb";
 
 const q = faunadb.query;
 

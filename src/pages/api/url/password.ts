@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-const faunadb = require("faunadb");
+import faunadb from "faunadb";
 
 const q = faunadb.query;
 
@@ -19,6 +19,7 @@ export default async function confirmPassword(
         client
             .query(q.Get(q.Match(q.Index("url_short"), url)))
             .then((ret) => {
+                // @ts-ignore
                 const { data }: { data: URL } = ret;
                 res.status(200);
                 res.send({

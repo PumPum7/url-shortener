@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import { withApiAuthRequired, getSession } from "@auth0/nextjs-auth0";
 
-const faunadb = require("faunadb");
+import faunadb from "faunadb";
 
 const q = faunadb.query;
 
@@ -34,6 +34,7 @@ export default withApiAuthRequired(async function createUrl(
                     (urlCount) => (totalLinks = urlCount)
                 );
                 let recentLinks = [];
+                // @ts-ignore
                 result.data
                     .slice(
                         skip,
