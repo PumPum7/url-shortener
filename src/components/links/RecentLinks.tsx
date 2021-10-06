@@ -121,8 +121,7 @@ export const RecentLinks = (): JSX.Element => {
                                                 if (searchField.current) {
                                                     setSearch(
                                                         // @ts-ignore
-                                                        searchField.current
-                                                            .value
+                                                        searchField.current.value
                                                     );
                                                     setPage(0);
                                                 }
