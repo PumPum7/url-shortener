@@ -2,7 +2,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import { withApiAuthRequired, getSession } from "@auth0/nextjs-auth0";
 
-const faunadb = require("faunadb");
+import faunadb from "faunadb";
+
+import cheerio from "cheerio";
 
 const q = faunadb.query;
 
@@ -26,6 +28,14 @@ export default withApiAuthRequired(async function createUrl(
         const customAddress: string = req.body.customAddress || "";
         const message: string = req.body.message || "";
 
+        const siteTitle = fetch(url)
+            .then((res) => res.text())
+            .then((html) => {
+                const parse = cheerio.load(html);
+                return parse("meta[property='og:title']")[0].attribs.content
+                
+            });
+
         client
             .query(
                 q.Create(
@@ -38,6 +48,7 @@ export default withApiAuthRequired(async function createUrl(
                             password,
                             message,
                             user: user.sub,
+                            title: siteTitle
                         },
                         // adds the set expiration time to the cooldown
                         ttl:
@@ -49,6 +60,7 @@ export default withApiAuthRequired(async function createUrl(
             )
             .then((ret) => {
                 res.status(200);
+                // @ts-ignore
                 res.send(ret.data);
             })
             .catch((e) => {
