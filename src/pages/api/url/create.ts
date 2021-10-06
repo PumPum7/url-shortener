@@ -28,12 +28,16 @@ export default withApiAuthRequired(async function createUrl(
         const customAddress: string = req.body.customAddress || "";
         const message: string = req.body.message || "";
 
-        const siteTitle = fetch(url)
+        let siteTitle = "unavailable"
+        await fetch(url)
             .then((res) => res.text())
             .then((html) => {
                 const parse = cheerio.load(html);
-                return parse("meta[property='og:title']")[0].attribs.content
-                
+                siteTitle = parse("meta[property='og:title']")[0].attribs.content
+            })
+            .catch(error => {
+                res.status(400);
+                res.send({ error: error });
             });
 
         client

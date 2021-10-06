@@ -4,6 +4,7 @@ export interface URL {
     usage: number;
     password?: string;
     protected?: boolean;
+    title?: string;
 }
 
 export interface AdvancedOptionsStruct {

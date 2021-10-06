@@ -9,6 +9,7 @@ interface URL {
     long: string;
     password: string;
     message: string;
+    title: string;
 }
 
 export default async function getUrl(
@@ -34,6 +35,7 @@ export default async function getUrl(
                     // checks if the url is protected
                     protected: !!data.password,
                     message: data.message,
+                    title: data.title
                 });
             })
             .catch((e) => {
