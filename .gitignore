@@ -23,7 +23,6 @@
 *.pem
 *.http
 *.sum
-yarn.lock
 
 # debug
 npm-debug.log*
