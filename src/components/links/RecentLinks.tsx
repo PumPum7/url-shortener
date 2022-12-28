@@ -120,8 +120,8 @@ export const RecentLinks = (): JSX.Element => {
                                                 e.preventDefault();
                                                 if (searchField.current) {
                                                     setSearch(
-                                                        // @ts-ignore
                                                         searchField.current
+                                                            // @ts-ignore
                                                             .value
                                                     );
                                                     setPage(0);
