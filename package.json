@@ -19,7 +19,7 @@
     "babel-plugin-module-resolver": "^4.1.0",
     "copee": "^1.0.6",
     "faunadb": "^4.3.0",
-    "next": "13",
+    "next": "14",
     "nextjs-cors": "^1.0.5",
     "postcss": "^8.4.38",
     "qrcode-react": "^0.1.16",
