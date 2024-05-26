@@ -1,18 +1,19 @@
 import React from "react";
 
 import Link from "next/link";
-
-import Lottie from "react-lottie";
-
-import * as StatsPreview from "../../../public/assets/StatsAnimation.json";
-import * as UrlPreview from "../../../public/assets/UrlAnimation.json";
-import * as PasswordAnimation from "../../../public/assets/PasswordAnimation.json";
+import dynamic from "next/dynamic";
 
 import {
     AdjustmentsIcon,
     ChartPieIcon,
     LinkIcon,
 } from "@components/util/Icons";
+
+const Lottie = dynamic(() => import('react-lottie'), { ssr: false });
+
+import * as StatsPreview from "../../../public/assets/StatsAnimation.json";
+import * as UrlPreview from "../../../public/assets/UrlAnimation.json";
+import * as PasswordAnimation from "../../../public/assets/PasswordAnimation.json";
 
 export const Landingpage = (): React.ReactElement  => {
     return (
