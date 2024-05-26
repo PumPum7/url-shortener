@@ -142,6 +142,7 @@ const LandingPagePreview = ({
                     
                 </Link>
             </div>
+            {/* @ts-expect-error: react-lottie has no typing */}
             <Lottie options={LottieOptions} height={300} width={300} />
         </div>
     );
