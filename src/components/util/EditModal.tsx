@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 
 import { Dialog, Transition } from "@headlessui/react";
 import toast from "react-hot-toast";
@@ -25,7 +25,7 @@ export const EditLinkModal = ({
     shortUrl: string;
     closeFunc: () => void;
     isOpen: boolean;
-}): JSX.Element => {
+}): React.ReactElement  => {
     const [advancedOptions, setAdvancedOptions] =
         useState<AdvancedOptionsStruct>({
             customAddress: "",

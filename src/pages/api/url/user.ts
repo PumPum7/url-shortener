@@ -10,7 +10,7 @@ export default withApiAuthRequired(async function createUrl(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const { user } = getSession(req, res);
+    const { user } = await getSession(req, res);
 
     const client = new faunadb.Client({
         secret: process.env.GO_FAUNA_SECRET_KEY_A,

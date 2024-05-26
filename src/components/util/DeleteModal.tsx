@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import React, { Fragment, useState } from "react";
 
 import { Dialog, Transition } from "@headlessui/react";
 import toast from "react-hot-toast";
@@ -15,7 +15,7 @@ export const DeleteLinkModal = ({
     shortUrl: string;
     closeFunc: () => void;
     isOpen: boolean;
-}): JSX.Element => {
+}): React.ReactElement  => {
     const [status, setStatus] = useState<"editing" | "loading">("editing");
 
     const { removeUrl } = useUrlStore((state) => ({

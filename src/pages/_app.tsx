@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import { AppProps } from "next/app";
 
-import { UserProvider } from "@auth0/nextjs-auth0";
+import { UserProvider } from '@auth0/nextjs-auth0/client';
 import { Toaster } from "react-hot-toast";
 
 import { Layout } from "@components/Layout/Layout";

@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import React, { Fragment } from "react";
 
 import { Dialog, Transition } from "@headlessui/react";
 import QRCode from "qrcode-react";
@@ -11,7 +11,7 @@ export const QRCodeModal = ({
     qrcodeValue: string;
     closeFunc: () => void;
     isOpen: boolean;
-}): JSX.Element => {
+}): React.ReactElement  => {
     return (
         <>
             <Transition appear show={isOpen} as={Fragment}>

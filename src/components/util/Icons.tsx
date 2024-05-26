@@ -1,4 +1,6 @@
-export const Loading = ({ className }: { className: string }): JSX.Element => {
+import React from "react";
+
+export const Loading = ({ className }: { className: string }): React.ReactElement  => {
     return (
         <div className={className}>
             <svg
@@ -30,7 +32,7 @@ export const Scissors = ({
 }: {
     onClick: () => void;
     className: string;
-}): JSX.Element => {
+}): React.ReactElement  => {
     return (
         // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/interactive-supports-focus
         <div
@@ -60,7 +62,7 @@ const Icon = ({
 }: {
     className: string;
     d: string;
-}): JSX.Element => {
+}): React.ReactElement  => {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -82,7 +84,7 @@ export const CopyIcon = ({
     className,
 }: {
     className?: string;
-}): JSX.Element => {
+}): React.ReactElement => {
     return (
         <Icon
             className={className}
@@ -95,7 +97,7 @@ export const CheckIcon = ({
     className,
 }: {
     className?: string;
-}): JSX.Element => {
+}): React.ReactElement  => {
     return <Icon className={className} d="M5 13l4 4L19 7" />;
 };
 
@@ -103,7 +105,7 @@ export const QRCodeIcon = ({
     className,
 }: {
     className?: string;
-}): JSX.Element => {
+}): React.ReactElement => {
     return (
         <Icon
             className={className}
@@ -116,7 +118,7 @@ export const TrashIcon = ({
     className,
 }: {
     className?: string;
-}): JSX.Element => {
+}): React.ReactElement  => {
     return (
         <Icon
             className={className}
@@ -129,7 +131,7 @@ export const PencilIcon = ({
     className,
 }: {
     className?: string;
-}): JSX.Element => {
+}): React.ReactElement  => {
     return (
         <Icon
             className={className}
@@ -142,7 +144,7 @@ export const ChartPieIcon = ({
     className,
 }: {
     className?: string;
-}): JSX.Element => {
+}): React.ReactElement  => {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -170,7 +172,7 @@ export const LinkIcon = ({
     className,
 }: {
     className?: string;
-}): JSX.Element => {
+}): React.ReactElement  => {
     return (
         <Icon
             className={className}
@@ -183,7 +185,7 @@ export const AdjustmentsIcon = ({
     className,
 }: {
     className?: string;
-}): JSX.Element => {
+}): React.ReactElement  => {
     return (
         <Icon
             className={className}
@@ -196,7 +198,7 @@ export const ChevronLeftIcon = ({
     className,
 }: {
     className?: string;
-}): JSX.Element => {
+}): React.ReactElement  => {
     return <Icon className={className} d="M15 19l-7-7 7-7" />;
 };
 
@@ -204,6 +206,6 @@ export const ChevronRightIcon = ({
     className,
 }: {
     className?: string;
-}): JSX.Element => {
+}): React.ReactElement  => {
     return <Icon className={className} d="M9 5l7 7-7 7" />;
 };

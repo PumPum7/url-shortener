@@ -3,18 +3,19 @@ import create from "zustand";
 import { createShortURL, getUserUrls } from "@functions/urlHandlers";
 
 import { URL } from "@interfaces";
+import React from "react";
 
 interface ModalStore {
     showModal: boolean;
-    currentModal: JSX.Element;
-    setModal: (modal: JSX.Element) => void;
+    currentModal: React.ReactElement ;
+    setModal: (modal: React.ReactElement ) => void;
     removeModal: () => void;
 }
 
 export const useModalStore = create<ModalStore>((set) => ({
     showModal: true,
     currentModal: undefined,
-    setModal: (modal: JSX.Element) =>
+    setModal: (modal: React.ReactElement ) =>
         set(() => ({
             showModal: true,
             currentModal: modal,

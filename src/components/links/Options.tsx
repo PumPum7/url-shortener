@@ -1,4 +1,4 @@
-import React, { SetStateAction, useEffect, useState } from "react";
+import React, { SetStateAction, useState } from "react";
 
 import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
 
@@ -12,7 +12,7 @@ export function AdvancedOptions({
     midScreenAdapted?: boolean;
     advancedOptions: AdvancedOptionsStruct;
     setAdvancedOptions: React.Dispatch<SetStateAction<AdvancedOptionsStruct>>;
-}): JSX.Element {
+}): React.ReactElement {
     return (
         <div className="content-center pl-4">
             <div
@@ -125,7 +125,7 @@ export function AdvancedOption({
     check,
     errorMsg,
     value,
-}: OptionProps): JSX.Element {
+}: OptionProps): React.ReactElement  {
     const [error, setError] = useState<boolean>(false);
 
     return (
@@ -159,7 +159,7 @@ export const AdvancedOptionsPlaceholder = ({
     midScreenAdapted,
 }: {
     midScreenAdapted: boolean;
-}): JSX.Element => {
+}): React.ReactElement  => {
     return (
         <div className="content-center pl-4">
             <div
@@ -191,7 +191,7 @@ export const AdvancedOptionPlaceholder = ({
 }: {
     category: string;
     className?: string;
-}): JSX.Element => {
+}): React.ReactElement  => {
     return (
         <div className={`flex flex-col ${className}`}>
             <p className="text-lg font-semibold">{category}</p>

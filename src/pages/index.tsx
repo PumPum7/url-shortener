@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import Head from "next/head";
 
-import { useUser } from "@auth0/nextjs-auth0";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 import { Scissors, Loading, CheckIcon, CopyIcon } from "@components/util/Icons";
 import { AdvancedOptions } from "@components/links/Options";

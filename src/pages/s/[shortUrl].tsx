@@ -8,7 +8,7 @@ import { Loading } from "@components/util/Icons";
 
 import { getLongUrl, checkPasswords } from "@functions/urlHandlers";
 
-const Url = ({ data }): JSX.Element => {
+const Url = ({ data }): React.ReactElement  => {
     const [result, setResult] = useState<boolean>(undefined);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);

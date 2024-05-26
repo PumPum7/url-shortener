@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 
-import { useUser } from "@auth0/nextjs-auth0";
+import { useUser } from "@auth0/nextjs-auth0/client";
 import { toClipboard } from "copee";
 import toast from "react-hot-toast";
 
@@ -29,7 +29,7 @@ interface RecentLinkInterface {
     timeStamp: number;
 }
 
-export const RecentLinks = (): JSX.Element => {
+export const RecentLinks = (): React.ReactElement  => {
     const [page, setPage] = useState<number>(0);
     const [amount, setAmount] = useState<number>(10);
     const [search, setSearch] = useState<string>("");
@@ -211,7 +211,7 @@ export const TableHeading = ({
 }: {
     direction?: string;
     children: React.ReactNode;
-}): JSX.Element => {
+}): React.ReactElement  => {
     return (
         <th
             scope="col"
@@ -240,7 +240,7 @@ export const RecentLink = ({
     shortUrl: string;
     timestamp: number;
     usage: number;
-}): JSX.Element => {
+}): React.ReactElement  => {
     const timeDifString = timeDifference(timestamp);
     const [copySuccess, setCopySuccess] = useState<boolean>(false);
     const { setModal, removeModal } = useModalStore((state) => ({
@@ -259,7 +259,7 @@ export const RecentLink = ({
         isModalOpen = { ...isModalOpen, [modalType]: false };
     }
 
-    function setActiveModal(modal: JSX.Element) {
+    function setActiveModal(modal: React.ReactElement ) {
         setModal(modal);
     }
 
@@ -379,8 +379,8 @@ export const RecentLink = ({
     );
 };
 
-export const RecentLinkPlaceholder = (): JSX.Element => {
-    const Placeholder = (): JSX.Element => {
+export const RecentLinkPlaceholder = (): React.ReactElement  => {
+    const Placeholder = (): React.ReactElement  => {
         return (
             <td className="px-6 py-4 whitespace-nowrap">
                 <div className="h-4 bg-blue-400 rounded-full" />
@@ -407,7 +407,7 @@ interface RecentLinkPageSelectorParams {
 const RecentLinkPageSelector = ({
     disabledButton,
     changePage,
-}: RecentLinkPageSelectorParams): JSX.Element => {
+}: RecentLinkPageSelectorParams): React.ReactElement  => {
     return (
         <div className="flex flex-row justify-end">
             <RecentLinkPageSelectorButton
@@ -432,7 +432,7 @@ const RecentLinkPageSelectorButton = ({
     children: React.ReactNode;
     disabled: boolean;
     changePage: () => void;
-}): JSX.Element => {
+}): React.ReactElement  => {
     return (
         <button
             className="recent-links-button"
@@ -449,7 +449,7 @@ const RecentLinkAmountSelector = ({
 }: {
     setAmount: React.Dispatch<React.SetStateAction<number>>;
     amount: number;
-}): JSX.Element => {
+}): React.ReactElement  => {
     return (
         <div className="flex flex-row justify-end">
             <RecentLinkAmountSelectorButton
@@ -479,7 +479,7 @@ const RecentLinkAmountSelectorButton = ({
     amount: string;
     setAmount: () => void;
     disabled: boolean;
-}): JSX.Element => {
+}): React.ReactElement  => {
     return (
         <button
             className="recent-links-button"

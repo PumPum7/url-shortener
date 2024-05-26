@@ -14,7 +14,7 @@ import {
     LinkIcon,
 } from "@components/util/Icons";
 
-export const Landingpage = (): JSX.Element => {
+export const Landingpage = (): React.ReactElement  => {
     return (
         <section className="pt-6">
             <article>
@@ -77,7 +77,7 @@ const LandingPageHeader = ({
     children,
 }: {
     children: React.ReactNode;
-}): JSX.Element => {
+}): React.ReactElement  => {
     return <h1 className="pb-6 text-center font-bold">{children}</h1>;
 };
 
@@ -89,7 +89,7 @@ const LandingPageFeatureShort = ({
     Icon: React.ReactElement;
     title: string;
     description: string;
-}): JSX.Element => {
+}): React.ReactElement  => {
     return (
         <div className="p-4 border-2 hover:border-blue-600 border-gray-400 rounded-md">
             <div className="w-10 h-10 rounded-full bg-blue-400/25">
@@ -99,10 +99,12 @@ const LandingPageFeatureShort = ({
             </div>
             <h2 className="pt-4">{title}</h2>
             <p className="pb-4">{description}</p>
-            <Link href={"/api/auth/login"}>
-                <a className="block px-3 py-2 w-full text-center text-blue-600 hover:text-white font-bold hover:bg-blue-600 border-2 border-blue-600 rounded-full">
+            <Link
+                href={"/api/auth/login"}
+                className="block px-3 py-2 w-full text-center text-blue-600 hover:text-white font-bold hover:bg-blue-600 border-2 border-blue-600 rounded-full">
+                
                     Sign up
-                </a>
+                
             </Link>
         </div>
     );
@@ -116,7 +118,7 @@ const LandingPagePreview = ({
     title: string;
     description: string;
     image: any;
-}): JSX.Element => {
+}): React.ReactElement  => {
     const LottieOptions = {
         loop: true,
         autoplay: true,
@@ -131,10 +133,12 @@ const LandingPagePreview = ({
             <div className="pb-6 md:pb-0 md:py-6">
                 <h1 className="pl-2 text-2xl md:pl-0">{title}</h1>
                 <p className="pl-2 py-3 md:pl-0">{description}</p>
-                <Link href={"/api/auth/login"}>
-                    <a className="block px-1 px-3 py-2 w-full text-center text-blue-600 hover:text-white font-bold hover:bg-blue-600 border-2 border-blue-600 rounded-full md:px-0 md:w-1/2">
+                <Link
+                    href={"/api/auth/login"}
+                    className="block px-1 py-2 w-full text-center text-blue-600 hover:text-white font-bold hover:bg-blue-600 border-2 border-blue-600 rounded-full md:px-0 md:w-1/2">
+                    
                         Sign up
-                    </a>
+                    
                 </Link>
             </div>
             <Lottie options={LottieOptions} height={300} width={300} />

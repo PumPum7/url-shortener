@@ -7,7 +7,7 @@ export const Layout = ({
     children,
 }: {
     children: React.ReactNode;
-}): JSX.Element => {
+}) => {
     return (
         <>
             <div className="mx-auto max-w-sm md:max-w-2xl lg:max-w-screen-md">
