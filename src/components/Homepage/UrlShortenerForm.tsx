@@ -38,11 +38,7 @@ const initialFormState: FormState = {
     },
 };
 
-interface UrlShortenerFormProps {
-    user: any;
-}
-
-export const UrlShortenerForm: React.FC<UrlShortenerFormProps> = ({ user }) => {
+export const UrlShortenerForm: React.FC = () => {
     const [formState, setFormState] =
         React.useState<FormState>(initialFormState);
     const addUrl = useUrlStore((state) => state.addUrl);
@@ -215,16 +211,9 @@ export const UrlShortenerForm: React.FC<UrlShortenerFormProps> = ({ user }) => {
                     <input
                         type="checkbox"
                         className="rounded-sm hover:cursor-pointer"
-                        onChange={() =>
-                            user
-                                ? setFormState((prev) => ({
+                        onChange={() =>setFormState((prev) => ({
                                       ...prev,
                                       showOptions: !formState.showOptions,
-                                  }))
-                                : setFormState((prev) => ({
-                                      ...prev,
-                                      showOptionsError:
-                                          "You need to log in to view the advanced options!",
                                   }))
                         }
                     />

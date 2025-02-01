@@ -1,22 +1,24 @@
 import React from "react";
-import { getSession } from "@auth0/nextjs-auth0";
 import { RecentLinks } from "@components/links/RecentLinks";
 import { UrlShortenerForm } from "@components/Homepage/UrlShortenerForm";
 import { Landingpage } from "@components/Homepage/Landing";
+import { getSession, withPageAuthRequired } from "@auth0/nextjs-auth0/edge";
 
-export default async function Home() {
+export default withPageAuthRequired(async function Home() {
     const session = await getSession();
 
-    if (!session?.user) {
+    if (session?.user) {
         return (
-            <Landingpage />
+            <div className="md:container">
+                <UrlShortenerForm />
+                <RecentLinks />
+            </div>
         );
     }
 
     return (
         <div className="md:container">
-            <UrlShortenerForm user={session.user} />
-            <RecentLinks />
+            <Landingpage />
         </div>
     );
-}
+});

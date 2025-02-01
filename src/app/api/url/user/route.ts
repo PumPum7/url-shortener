@@ -7,7 +7,9 @@ import {
 } from "@auth0/nextjs-auth0";
 import { Client, fql } from "fauna";
 
-const client = new Client();
+const client = new Client({
+    secret: process.env.FAUNA_SECRET,
+});
 
 export const GET = withApiAuthRequired(async (request: NextRequest) => {
     const res = new NextResponse();
@@ -20,14 +22,10 @@ export const GET = withApiAuthRequired(async (request: NextRequest) => {
 
     try {
         const query = fql`
-      Paginate(
-        Match(Index("user_id"), ${user.sub}),
-        { size: ${parseInt(amount) + parseInt(skip)} }
-      )
-    `;
+        urls.where(arg => arg.user == ${user.sub})
+      `;
 
         const result = await client.query<any>(query);
-        console.log(result.data);
 
         const totalLinks = await getUrlCount(client, user.sub);
         let recentLinks: {
@@ -38,23 +36,23 @@ export const GET = withApiAuthRequired(async (request: NextRequest) => {
             timeStamp: number;
         }[] = [];
 
-        result.data
+        result.data.data
             .slice(parseInt(skip), parseInt(skip) + parseInt(amount))
             .forEach((link: any) => {
                 if (search) {
                     if (
-                        !link[1].includes(search) &&
-                        !link[2].includes(search)
+                        !link.short.includes(search) &&
+                        !link.long.includes(search)
                     ) {
                         return;
                     }
                 }
                 recentLinks.push({
-                    ref: link[0],
-                    long: link[1],
-                    short: link[2],
-                    usage: link[3],
-                    timeStamp: link[4] / 1000,
+                    ref: link.id,
+                    long: link.long,
+                    short: link.short,
+                    usage: link.usage,
+                    timeStamp: link.ts.isoString,
                 });
             });
 
@@ -63,6 +61,7 @@ export const GET = withApiAuthRequired(async (request: NextRequest) => {
             { headers: corsHeaders(request) }
         );
     } catch (error: any) {
+        console.error(error);
         return NextResponse.json(
             { error: error.message || error.toString() },
             { status: 400, headers: corsHeaders(request) }
@@ -73,9 +72,7 @@ export const GET = withApiAuthRequired(async (request: NextRequest) => {
 async function getUrlCount(client: Client, user: string): Promise<number> {
     try {
         const query = fql`
-      Count(
-        Paginate(Match(Index("user_id"), ${user}), { size: 10000 })
-      )
+      urls.where(user => user.user == ${user}).count()
     `;
 
         const result = await client.query(query);

@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useRef } from "react";
-import { useUser } from "@auth0/nextjs-auth0/client";
 
 import { TableHeading } from "./TableHeading";
 import { URL } from "@interfaces";
@@ -20,7 +19,8 @@ interface RecentLinkClientWrapperProps {
     initialPage: number;
     initialAmount: number;
     initialSearch: string;
-}
+    isLoading: boolean;
+}   
 
 export function RecentLinkClientWrapper({
     urls,
@@ -28,6 +28,7 @@ export function RecentLinkClientWrapper({
     initialPage,
     initialAmount,
     initialSearch,
+    isLoading
 }: RecentLinkClientWrapperProps): React.ReactElement {
     const [page, setPage] = useState<number>(initialPage);
     const [amount, setAmount] = useState<number>(initialAmount);
@@ -54,6 +55,16 @@ export function RecentLinkClientWrapper({
             setPage(p => p - 1);
         }
     };
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col pt-8 w-full xl:transform xl:-translate-x-1/4 xl:w-[1200px]">
+                <div className="flex justify-center items-center p-4 bg-blue-50 rounded-lg">
+                    <p className="text-blue-500">Loading...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col pt-8 w-full xl:transform xl:-translate-x-1/4 xl:w-[1200px]">
@@ -148,10 +159,14 @@ const RecentLink = ({
 }): React.ReactElement => {
     const timeDifString = timeDifference(timestamp);
     const [copySuccess, setCopySuccess] = useState<boolean>(false);
-    const { setModal, removeModal } = useModalStore((state) => ({
-        setModal: state.setModal,
-        removeModal: state.removeModal,
-    }));
+    // const { setModal, removeModal } = useModalStore((state) => ({
+    //     setModal: state.setModal,
+    //     removeModal: state.removeModal,
+    // }));
+
+    const setModal = (modal: React.ReactElement) => {};
+
+    const removeModal = () => {};
 
     let isModalOpen: ModalShowTypes = {
         qrcode: false,

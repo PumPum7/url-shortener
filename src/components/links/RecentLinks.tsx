@@ -1,23 +1,19 @@
+"use client";
+
 import React from "react";
-import { getSession } from "@auth0/nextjs-auth0";
 import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
 import { RecentLinkClientWrapper } from "./RecentLinkClientWrapper";
+import useSWR from "swr";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
-
-async function getUrls(amount: number, skip: number, search: string, accessToken: string) {
-    "use server";
-    console.log(`Fetching URLs from ${FUNCTIONS_DOMAIN}/api/url/user?amount=${amount}&skip=${skip}&search=${search}`);
-    console.log(`Access token: ${accessToken}`);
+const fetcher = async (url: string) => {
     try {
-        const response = await fetch(
-            `${FUNCTIONS_DOMAIN}/api/url/user?amount=${amount}&skip=${skip}&search=${search}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`
-                },
-                next: { revalidate: 15 } // Revalidate every 15 seconds
-            }
-        );
+        const response = await fetch(url, {
+            headers: {
+                "Content-Type": "application/json"
+            },
+            next: { revalidate: 15 }
+        });
 
         if (!response.ok) {
             console.log(response)
@@ -29,20 +25,50 @@ async function getUrls(amount: number, skip: number, search: string, accessToken
         console.error('Error fetching URLs:', error);
         throw error;
     }
-}
+};
 
-export async function RecentLinks({
-    amount = 10,
-    page = 0,
-    search = ""
-}: {
+interface RecentLinksProps {
     amount?: number;
     page?: number;
     search?: string;
-}): Promise<React.ReactElement> {
-    const session = await getSession();
-    
-    if (!session?.accessToken) {
+}
+
+export function RecentLinks({
+    amount = 10,
+    page = 0,
+    search = ""
+}: RecentLinksProps): React.ReactElement {
+    const { user, error: authError, isLoading: isLoadingAuth } = useUser();
+
+    const { data, error, isLoading } = useSWR(
+        user ? `${FUNCTIONS_DOMAIN}/api/url/user?amount=${amount}&skip=${amount * page}&search=${search}` : null,
+        (url) => fetcher(url),
+        {
+            revalidateOnFocus: true,
+        }
+    );
+
+    if (isLoadingAuth) {
+        return (
+            <div className="flex flex-col pt-8 w-full xl:transform xl:-translate-x-1/4 xl:w-[1200px]">
+                <div className="flex justify-center items-center p-4 bg-red-50 rounded-lg">
+                    <p className="text-red-500">Loading...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (authError) {
+        return (
+            <div className="flex flex-col pt-8 w-full xl:transform xl:-translate-x-1/4 xl:w-[1200px]">
+                <div className="flex justify-center items-center p-4 bg-red-50 rounded-lg">
+                    <p className="text-red-500">Error loading authentication. Please try again later.</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!user) {
         return (
             <div className="flex flex-col pt-8 w-full xl:transform xl:-translate-x-1/4 xl:w-[1200px]">
                 <div className="flex justify-center items-center p-4 bg-red-50 rounded-lg">
@@ -52,27 +78,24 @@ export async function RecentLinks({
         );
     }
 
-    try {
-        const data = await getUrls(amount, amount * page, search, session.accessToken);
-        const urls = data?.links || [];
-        const total = data?.total || 0;
-
-        return (
-            <RecentLinkClientWrapper
-                urls={urls}
-                total={total}
-                initialPage={page}
-                initialAmount={amount}
-                initialSearch={search}
-            />
-        );
-    } catch (error) {
+    if (error) {
         return (
             <div className="flex flex-col pt-8 w-full xl:transform xl:-translate-x-1/4 xl:w-[1200px]">
                 <div className="flex justify-center items-center p-4 bg-red-50 rounded-lg">
-                    <p className="text-red-500">Failed to load recent links. Please try again later.</p>
+                    <p className="text-red-500">Error loading links. Please try again later.</p>
                 </div>
             </div>
         );
     }
+
+    return (
+        <RecentLinkClientWrapper
+            urls={data?.links || []}
+            total={data?.total || 0}
+            initialPage={page}
+            initialAmount={amount}
+            initialSearch={search}
+            isLoading={isLoading}
+        />
+    );
 }
