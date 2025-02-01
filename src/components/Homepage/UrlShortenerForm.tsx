@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useCallback } from "react";
-import { useUrlStore } from "@functions/globalZustand";
+import { useUrlContext } from "@/context/GlobalContext";
 import { CheckIcon, CopyIcon, Loading, Scissors } from "@components/util/Icons";
 import { AdvancedOptions } from "@components/links/Options";
 import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
@@ -41,7 +41,7 @@ const initialFormState: FormState = {
 export const UrlShortenerForm: React.FC = () => {
     const [formState, setFormState] =
         React.useState<FormState>(initialFormState);
-    const addUrl = useUrlStore((state) => state.addUrl);
+    const { addUrl } = useUrlContext();
 
     const resetError = useCallback(() => {
         setFormState((prev) => ({ ...prev, uploadError: false }));

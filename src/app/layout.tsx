@@ -2,6 +2,7 @@ import React from "react";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
 import { Toaster } from "react-hot-toast";
 import { Layout } from "@components/Layout/Layout";
+import { Providers } from "./providers";
 import "../styles/tailwind.css";
 
 export const metadata = {
@@ -15,15 +16,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-      <html lang="en">
-          <UserProvider>
-              <body>
-                  <Layout>
-                      <Toaster position="top-right" />
-                      {children}
-                  </Layout>
-              </body>
-          </UserProvider>
-      </html>
+    <html lang="en">
+      <UserProvider>
+        <Providers>
+          <body>
+            <Layout>
+              <Toaster position="top-right" />
+              {children}
+            </Layout>
+          </body>
+        </Providers>
+      </UserProvider>
+    </html>
   );
 }

@@ -15,7 +15,7 @@ import {
 } from "@functions/urlHandlers";
 
 import { AdvancedOptionsStruct } from "@interfaces";
-import { useUrlStore } from "@functions/globalZustand";
+import { useUrlContext } from "@/context/GlobalContext";
 
 export const EditLinkModal = ({
     shortUrl,
@@ -36,9 +36,7 @@ export const EditLinkModal = ({
         });
     const [status, setStatus] = useState<"editing" | "loading">("editing");
 
-    const { updateUrl } = useUrlStore((state) => ({
-        updateUrl: state.updateUrl,
-    }));
+    const { updateUrl } = useUrlContext();
 
     useEffect(() => {
         getUserUrl(shortUrl).then((response) => {
@@ -136,7 +134,7 @@ export const EditLinkModal = ({
                                 </Description>
                                 {advancedOptions.customAddress === "" ? (
                                     <AdvancedOptionsPlaceholder
-                                        midScreenAdapted={false}
+                                        midScreenAdapted={true}
                                     />
                                 ) : (
                                     <div className="mt-2">

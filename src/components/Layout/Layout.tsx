@@ -1,7 +1,7 @@
 import React from "react";
-
 import Footer from "@components/Layout/Footer";
 import Header from "@components/Layout/Header";
+import { ModalRenderer } from "@components/util/ModalRenderer";
 
 export const Layout = ({
     children,
@@ -14,6 +14,7 @@ export const Layout = ({
                 <Header />
                 {children}
             </div>
+            <ModalRenderer />
             <Footer />
         </>
     );

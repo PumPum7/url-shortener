@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 
 import { TableHeading } from "./TableHeading";
 import { URL } from "@interfaces";
 import { timeDifference } from "@functions/time";
-import { useModalStore } from "@functions/globalZustand";
+import { useModalContext } from "@/context/GlobalContext";
 import { toClipboard } from "copee";
 import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
 import { ChartPieIcon, CheckIcon, CopyIcon, PencilIcon, QRCodeIcon, TrashIcon } from "@components/util/Icons";
@@ -159,35 +159,25 @@ const RecentLink = ({
 }): React.ReactElement => {
     const timeDifString = timeDifference(timestamp);
     const [copySuccess, setCopySuccess] = useState<boolean>(false);
-    // const { setModal, removeModal } = useModalStore((state) => ({
-    //     setModal: state.setModal,
-    //     removeModal: state.removeModal,
-    // }));
+    const { setModal, removeModal } = useModalContext();
 
-    const setModal = (modal: React.ReactElement) => {};
-
-    const removeModal = () => {};
-
-    let isModalOpen: ModalShowTypes = {
+    const [isModalOpen, setIsModalOpen] = useState<ModalShowTypes>({
         qrcode: false,
         edit: false,
         delete: false,
-    };
+    });
 
-    function closeModal(modalType: "qrcode" | "edit" | "delete") {
+    const closeModal = useCallback((modalType: "qrcode" | "edit" | "delete") => {
         removeModal();
-        isModalOpen = { ...isModalOpen, [modalType]: false };
-    }
+        setIsModalOpen(prev => ({ ...prev, [modalType]: false }));
+    }, [removeModal]);
 
-    function setActiveModal(modal: React.ReactElement) {
+    const openModal = useCallback((modalType: "qrcode" | "edit" | "delete", modal: React.ReactElement) => {
+        setIsModalOpen(prev => ({ ...prev, [modalType]: true }));
         setModal(modal);
-    }
+    }, [setModal]);
 
-    function openModal(modalType: "qrcode" | "edit" | "delete") {
-        isModalOpen = { ...isModalOpen, [modalType]: true };
-    }
-
-    React.useEffect(() => {
+    useEffect(() => {
         setTimeout(() => {
             setCopySuccess(false);
         }, 1500);
@@ -197,8 +187,8 @@ const RecentLink = ({
         <tr>
             <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm link">
-                    <a href={longUrl} rel="noreferrer" target="_blank">
-                        {longUrl}
+                    <a href={longUrl} rel="noreferrer" target="_blank" className="truncate block max-w-xs">
+                        {longUrl.length > 50 ? longUrl.substring(0, 50) + '...' : longUrl}
                     </a>
                 </div>
             </td>
@@ -246,12 +236,11 @@ const RecentLink = ({
                 <dfn title="QR Code">
                     <button
                         onClick={() => {
-                            openModal("qrcode");
-                            setActiveModal(
+                            openModal("qrcode", 
                                 <QRCodeModal
                                     qrcodeValue={shortUrl}
                                     closeFunc={() => closeModal("qrcode")}
-                                    isOpen={isModalOpen.qrcode}
+                                    isOpen={true}
                                 />
                             );
                         }}
@@ -263,12 +252,11 @@ const RecentLink = ({
                 <dfn title="Edit">
                     <button
                         onClick={() => {
-                            openModal("edit");
-                            setActiveModal(
+                            openModal("edit",
                                 <EditLinkModal
                                     shortUrl={shortUrl}
                                     closeFunc={() => closeModal("edit")}
-                                    isOpen={isModalOpen.edit}
+                                    isOpen={true}
                                 />
                             );
                         }}
@@ -280,12 +268,11 @@ const RecentLink = ({
                 <dfn title="Delete">
                     <button
                         onClick={() => {
-                            openModal("delete");
-                            setActiveModal(
+                            openModal("delete",
                                 <DeleteLinkModal
                                     shortUrl={shortUrl}
                                     closeFunc={() => closeModal("delete")}
-                                    isOpen={isModalOpen.delete}
+                                    isOpen={true}
                                 />
                             );
                         }}

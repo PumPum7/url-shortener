@@ -36,7 +36,7 @@ export function AdvancedOptions({
                     }
                 />
                 <AdvancedOption
-                    text={`${FUNCTIONS_DOMAIN}/`}
+                    text={`Link`}
                     optionId="customAddress"
                     inputPlaceholder="Custom Address"
                     inputType="text"
@@ -173,7 +173,7 @@ export const AdvancedOptionsPlaceholder = ({
                     className="col-span-2 md:col-span-1"
                 />
                 <AdvancedOptionPlaceholder
-                    category={`${FUNCTIONS_DOMAIN}/`}
+                    category={`Link`}
                     className="col-span-2 md:col-span-1"
                 />
                 <AdvancedOptionPlaceholder category={"Expiration"} />

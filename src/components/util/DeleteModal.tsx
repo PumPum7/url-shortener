@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 
 import { deleteUrl, FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
 
-import { useUrlStore } from "@functions/globalZustand";
+import { useUrlContext } from "@/context/GlobalContext";
 
 export const DeleteLinkModal = ({
     shortUrl,
@@ -20,9 +20,7 @@ export const DeleteLinkModal = ({
 }): React.ReactElement => {
     const [status, setStatus] = useState<"editing" | "loading">("editing");
 
-    const { removeUrl } = useUrlStore((state) => ({
-        removeUrl: state.removeUrl,
-    }));
+    const { removeUrl } = useUrlContext();
 
     const deleteLink = () => {
         setStatus("loading");
