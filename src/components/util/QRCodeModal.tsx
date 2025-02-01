@@ -48,7 +48,7 @@ export const QRCodeModal = ({
                                 <div className="mt-4">
                                     <button
                                         type="button"
-                                        className="inline-flex justify-center px-4 py-2 text-blue-900 text-sm font-medium bg-blue-100 hover:bg-blue-200 border border-transparent rounded-md focus:outline-none hover:cursor-pointer focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-2"
+                                        className="inline-flex justify-center px-4 py-2 text-blue-900 text-sm font-medium bg-blue-100 hover:bg-blue-200 border border-transparent rounded-md focus:outline-hidden hover:cursor-pointer focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-2"
                                         onClick={closeFunc}>
                                         Close
                                     </button>

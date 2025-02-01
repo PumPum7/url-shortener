@@ -59,12 +59,12 @@ const Url = ({ data }): React.ReactElement  => {
                         e.preventDefault();
                         passwordChecker();
                     }}>
-                    <div className="flex flex-col flex-grow justify-center ml-2 md:flex-row md:ml-0">
+                    <div className="flex flex-col grow justify-center ml-2 md:flex-row md:ml-0">
                         <input
                             type="password"
                             placeholder={"Password..."}
                             className={`bg-white rounded-xl md:shadow-lg border-b-5 flex-auto ${
-                                error ? "!border-2 !border-red-500" : ""
+                                error ? "border-2! border-red-500!" : ""
                             }`}
                             onChange={(e) => setPassword(e.target.value)}
                             required={true}

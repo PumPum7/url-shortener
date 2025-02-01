@@ -10,7 +10,7 @@ export const Header = (): React.ReactElement  => {
     const { user } = useUser();
 
     return (
-        <div className="mx-auto px-3 py-6 max-w-screen-lg">
+        <div className="mx-auto px-3 py-6 max-w-(--breakpoint-lg)">
             <div className="flex flex-wrap items-center justify-between">
                 <div>
                     <Link href="/" passHref>
@@ -20,7 +20,7 @@ export const Header = (): React.ReactElement  => {
                                 width="44"
                                 height="44"
                                 alt="Logo image"
-                                placeholder="blur"
+                                placeholder="blur-sm"
                             />
                             <h1 className="pl-2">URL Shortener</h1>
                         </span>
@@ -43,7 +43,7 @@ export const Header = (): React.ReactElement  => {
                                 </Link>
                             </li>
                         )}
-                        <li className="px-3 py-2 bg-gradient-to-r rounded-md hover:shadow-md from-blue-400 to-indigo-400 hover:cursor-pointer transform duration-300 hover:scale-[1.10]">
+                        <li className="px-3 py-2 bg-linear-to-r rounded-md hover:shadow-md from-blue-400 to-indigo-400 hover:cursor-pointer transform duration-300 hover:scale-[1.10]">
                             {user ? (
                                 <Link href="/profile">
                                     {user.nickname}

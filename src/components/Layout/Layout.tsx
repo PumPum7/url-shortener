@@ -10,7 +10,7 @@ export const Layout = ({
 }) => {
     return (
         <>
-            <div className="mx-auto max-w-sm md:max-w-2xl lg:max-w-screen-md">
+            <div className="mx-auto max-w-sm md:max-w-2xl lg:max-w-(--breakpoint-md)">
                 <Header />
                 {children}
             </div>

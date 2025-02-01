@@ -108,7 +108,7 @@ export const RecentLinks = (): React.ReactElement  => {
             </h2>
             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 xl:overflow-x-visible">
                 <div className="inline-block align-middle py-2 min-w-full sm:px-6 lg:px-8">
-                    <div className="border-b border-gray-200 shadow overflow-hidden sm:rounded-lg">
+                    <div className="border-b border-gray-200 shadow-sm overflow-hidden sm:rounded-lg">
                         <table className="min-w-full divide-gray-200 divide-y">
                             <thead>
                                 <tr className="p-4 border-b-2 border-gray-300">

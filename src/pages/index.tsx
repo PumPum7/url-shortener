@@ -198,7 +198,7 @@ export default function Home() {
                                 <label className="hover:cursor-pointer">
                                     <input
                                         type="checkbox"
-                                        className="rounded hover:cursor-pointer"
+                                        className="rounded-sm hover:cursor-pointer"
                                         onChange={() =>
                                             user
                                                 ? setShowOptions(!showOptions)
