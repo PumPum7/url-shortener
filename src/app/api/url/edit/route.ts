@@ -43,20 +43,13 @@ export const POST = withApiAuthRequired(async (request: NextRequest) => {
     }
 
     const query = fql`
-      Update(
-        Select(
-          ["ref"],
-          Get(Match(Index("url_by_short"), [${urlShort}, ${user.sub}]))
-        ),
-        {
-          data: {
-            password: ${password},
-            short: ${newUrl},
-            message: ${message},
-          },
-          ttl: ${expiration} > 0 ? q.TimeAdd(q.Now(), ${expiration}, "hours") : null,
-        }
-      )
+      let url = urls.firstWhere(arg => arg.short == ${urlShort} && arg.user == ${user.sub})
+      
+      url!.updateData({
+          password: ${password},
+          short: ${newUrl},
+          message: ${message},
+        })
     `;
 
     const result = await client.query(

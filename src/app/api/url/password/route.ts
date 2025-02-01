@@ -21,9 +21,7 @@ export const POST = withApiAuthRequired(async (request: NextRequest) => {
     const password: string = body.password;
 
     const query = fql`
-      Get(
-        Match(Index("user_url_ref"), [${url}, ${user.sub}])
-      )
+      urls.firstWhere(arg => arg.short == ${url} && arg.user == ${user.sub})
     `;
 
     const result = await client.query(query);

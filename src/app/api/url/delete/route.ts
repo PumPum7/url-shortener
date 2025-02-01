@@ -26,12 +26,8 @@ export const DELETE = withApiAuthRequired(async (request: NextRequest) => {
   try {
 
     const query = fql`
-      Delete(
-        Select(
-          ["ref"],
-          Get(Match(Index("user_url_ref"), [${url}, ${user.sub}]))
-        )
-      )
+        let url = urls.firstWhere(arg => arg.short == ${url} && arg.user == ${user.sub})
+        url!.delete()
     `;
 
     const result = await client.query(query);

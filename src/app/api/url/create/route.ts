@@ -42,14 +42,15 @@ export const POST = withApiAuthRequired(async (request: NextRequest) => {
     const message: string = body.message || "";
 
     const query = fql`
-  urls.create({
-    short: ${customAddress || generateShortUrl(urlLength)},
-    long: ${url},
-    usage: 0,
-    password: ${password},
-    message: ${message},
-    user: ${user.sub},
-    ttl: ${expiration} > 0 ? Now().add(${expiration}, 'hours') : null})`;
+    urls.create({
+      short: ${customAddress || generateShortUrl(urlLength)},
+      long: ${url},
+      usage: 0,
+      password: ${password},
+      message: ${message},
+      user: ${user.sub},
+      ttl: ${expiration} > 0 ? Time.now().add(${expiration}, 'hours') : null
+    })`;
     
     const result = await client.query(
       query,
