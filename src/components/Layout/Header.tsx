@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -7,7 +9,7 @@ import ScissorLogo from "../../../public/assets/scissor.png";
 import React from "react";
 
 export const Header = (): React.ReactElement  => {
-    const { user } = useUser();
+    const { user, error, isLoading } = useUser();
 
     return (
         <div className="mx-auto px-3 py-6 max-w-(--breakpoint-lg)">
@@ -20,7 +22,6 @@ export const Header = (): React.ReactElement  => {
                                 width="44"
                                 height="44"
                                 alt="Logo image"
-                                placeholder="blur-sm"
                             />
                             <h1 className="pl-2">URL Shortener</h1>
                         </span>
@@ -36,7 +37,15 @@ export const Header = (): React.ReactElement  => {
                                 GitHub
                             </a>
                         </li>
-                        {user && (
+                        {isLoading ? (
+                            <li className="hidden mr-5 hover:border-b-2 hover:border-blue-400 md:block">
+                                Loading...
+                            </li>
+                        ) : error ? (
+                            <li className="hidden mr-5 hover:border-b-2 hover:border-blue-400 md:block">
+                                Error
+                            </li>
+                        ) : user && (
                             <li className="hidden mr-5 hover:border-b-2 hover:border-blue-400 md:block">
                                 <Link href="/api/auth/logout">
                                     Logout

@@ -1,4 +1,4 @@
-import create from "zustand";
+import { create } from "zustand";
 
 import { createShortURL, getUserUrls } from "@functions/urlHandlers";
 
@@ -7,7 +7,7 @@ import React from "react";
 
 interface ModalStore {
     showModal: boolean;
-    currentModal: React.ReactElement ;
+    currentModal: React.ReactElement | undefined;
     setModal: (modal: React.ReactElement ) => void;
     removeModal: () => void;
 }
@@ -28,8 +28,8 @@ export const useModalStore = create<ModalStore>((set) => ({
 }));
 
 interface UrlStore {
-    urls: [URL];
-    total;
+    urls: URL[];
+    total: number;
     getUrls: (amount: number, skip: number, search: string) => void;
     addUrl: (
         longURL: string,
@@ -43,7 +43,7 @@ interface UrlStore {
     updateUrl: (shortUrl: string, newUrlShort: string) => void;
 }
 
-export const useUrlStore = create<UrlStore>((set) => ({
+export const useUrlStore = create<UrlStore>((set, get) => ({
     urls: [
         {
             short: "",
@@ -111,7 +111,7 @@ export const useUrlStore = create<UrlStore>((set) => ({
     },
     updateUrl: (shortUrl: string, newUrlShort: string) => {
         set((oldState) => {
-            let newUrlList = oldState.urls;
+            let newUrlList = [...oldState.urls];
             const urlIndex = getUrlIndex(shortUrl, newUrlList);
             if (urlIndex > -1) {
                 newUrlList[urlIndex] = {
@@ -120,11 +120,15 @@ export const useUrlStore = create<UrlStore>((set) => ({
                     usage: oldState.urls[urlIndex].usage,
                 };
             }
+            return {
+                ...oldState,
+                urls: newUrlList
+            };
         });
     },
 }));
 
-const getUrlIndex = (shortUrl: string, urlList: [URL]): number => {
+const getUrlIndex = (shortUrl: string, urlList: URL[]): number => {
     for (let i = 0; i < urlList.length; i++) {
         if (urlList[i].short == shortUrl) {
             return i;
@@ -132,5 +136,3 @@ const getUrlIndex = (shortUrl: string, urlList: [URL]): number => {
     }
     return -1;
 };
-
-// TODO: fix the updateUrl method

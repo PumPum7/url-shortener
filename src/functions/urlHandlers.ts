@@ -12,23 +12,30 @@ export const createShortURL = async (
     message = "",
     customAddress = ""
 ): Promise<string | unknown> => {
-    return await fetch(`${FUNCTIONS_DOMAIN}/api/url/create`, {
-        method: "POST",
-        body: JSON.stringify({
-            long: longURL,
-            password: password,
-            expiration: expiration,
-            length: length,
-            message: message,
-            customAddress: customAddress,
-        }),
-        headers: { "Content-Type": "application/json" },
-    })
-        .then((res) => res.json())
-        .catch((err) => {
-            console.error(err);
-            return err;
+    try {
+        const response = await fetch(`${FUNCTIONS_DOMAIN}/api/url/create`, {
+            method: "POST",
+            body: JSON.stringify({
+                long: longURL,
+                password: password,
+                expiration: expiration,
+                length: length,
+                message: message,
+                customAddress: customAddress,
+            }),
+            headers: { "Content-Type": "application/json" },
         });
+        
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Failed to create short URL');
+        }
+        
+        return await response.json();
+    } catch (err) {
+        console.error(err);
+        return err;
+    }
 };
 
 export const getLongUrl = async ({
@@ -36,14 +43,16 @@ export const getLongUrl = async ({
 }: {
     shortUrl: string;
 }): Promise<any> => {
-    return fetch(`${FUNCTIONS_DOMAIN}/api/url/${shortUrl}`)
-        .then((res) => {
-            if (res.status === 200) {
-                return res.json();
-            }
+    try {
+        const response = await fetch(`${FUNCTIONS_DOMAIN}/api/url/${shortUrl}`);
+        if (!response.ok) {
             return undefined;
-        })
-        .catch((e) => console.error(e));
+        }
+        return await response.json();
+    } catch (e) {
+        console.error(e);
+        return undefined;
+    }
 };
 
 export const getUserUrls = async (
@@ -51,22 +60,33 @@ export const getUserUrls = async (
     skip: number = 0,
     search: string = ""
 ): Promise<any> => {
-    return await fetch(
-        `${FUNCTIONS_DOMAIN}/api/url/user?amount=${amount}&skip=${skip}&search=${search}`
-    )
-        .then((res) => {
-            if (res.status === 200) {
-                return res.json();
-            }
+    try {
+        const response = await fetch(
+            `${FUNCTIONS_DOMAIN}/api/url/user?amount=${amount}&skip=${skip}&search=${search}`
+        );
+        if (!response.ok) {
             return undefined;
-        })
-        .catch((e) => console.error(e));
+        }
+        return await response.json();
+    } catch (e) {
+        console.error(e);
+        return undefined;
+    }
 };
 
 export const getUserUrl = async (shortUrl: string): Promise<any> => {
-    return await fetch(
-        `${FUNCTIONS_DOMAIN}/api/url/information?url=${shortUrl}`
-    ).then((res) => res.json());
+    try {
+        const response = await fetch(
+            `${FUNCTIONS_DOMAIN}/api/url/information?url=${shortUrl}`
+        );
+        if (!response.ok) {
+            throw new Error('Failed to fetch URL information');
+        }
+        return await response.json();
+    } catch (e) {
+        console.error(e);
+        throw e;
+    }
 };
 
 export const editUserUrl = async (
@@ -77,50 +97,65 @@ export const editUserUrl = async (
     length: number = 0,
     message: string = ""
 ): Promise<any> => {
-    return await fetch(`${FUNCTIONS_DOMAIN}/api/url/edit`, {
-        method: "POST",
-        body: JSON.stringify({
-            short: short,
-            password: password,
-            customAddress: customAddress,
-            expiration: expiration,
-            length: length,
-            message: message,
-        }),
-        headers: { "Content-Type": "application/json" },
-    })
-        .then((res) => res.json())
-        .catch((err) => {
-            console.error(err);
-            return err;
+    try {
+        const response = await fetch(`${FUNCTIONS_DOMAIN}/api/url/edit`, {
+            method: "POST",
+            body: JSON.stringify({
+                short: short,
+                password: password,
+                customAddress: customAddress,
+                expiration: expiration,
+                length: length,
+                message: message,
+            }),
+            headers: { "Content-Type": "application/json" },
         });
+        
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Failed to edit URL');
+        }
+        
+        return await response.json();
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
 };
 
 export const deleteUrl = async (url: string) => {
-    return await fetch(`${FUNCTIONS_DOMAIN}/api/url/delete?url=${url}`)
-        .then((res) => {
-            if (res.status === 200) {
-                return res.json();
-            }
+    try {
+        const response = await fetch(`${FUNCTIONS_DOMAIN}/api/url/delete?url=${url}`, {
+            method: "DELETE"
+        });
+        if (!response.ok) {
             return undefined;
-        })
-        .catch((e) => console.error(e));
+        }
+        return await response.json();
+    } catch (e) {
+        console.error(e);
+        return undefined;
+    }
 };
 
 export const checkPasswords = async (url: string, inputPassword: string) => {
-    return await fetch(`${FUNCTIONS_DOMAIN}/api/url/password`, {
-        method: "POST",
-        body: JSON.stringify({
-            url: url,
-            password: inputPassword,
-        }),
-        headers: { "Content-Type": "application/json" },
-    })
-        .then((res) => {
-            if (res.status === 200) {
-                return res.json();
-            }
+    try {
+        const response = await fetch(`${FUNCTIONS_DOMAIN}/api/url/password`, {
+            method: "POST",
+            body: JSON.stringify({
+                url: url,
+                password: inputPassword,
+            }),
+            headers: { "Content-Type": "application/json" },
+        });
+        
+        if (!response.ok) {
             return undefined;
-        })
-        .catch(() => undefined);
+        }
+        
+        return await response.json();
+    } catch (e) {
+        console.error(e);
+        return undefined;
+    }
 };

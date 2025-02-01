@@ -1,47 +1,68 @@
-import { GetServerSideProps } from "next";
+'use client';
+
+import React from "react";
 import Head from "next/head";
-import Router from "next/router";
-
-import React, { useState, useEffect } from "react";
-
+import { useRouter } from "next/navigation";
 import { Loading } from "@components/util/Icons";
-
 import { getLongUrl, checkPasswords } from "@functions/urlHandlers";
 
-const Url = ({ data }): React.ReactElement  => {
-    const [result, setResult] = useState<boolean>(undefined);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<boolean>(false);
-    const [password, setPassword] = useState<string>("");
+export default function ShortUrlPage({
+  params: { shortUrl },
+}: {
+  params: { shortUrl: string };
+}) {
+    const [result, setResult] = React.useState<boolean>(undefined);
+    const [loading, setLoading] = React.useState<boolean>(false);
+    const [error, setError] = React.useState<boolean>(false);
+    const [password, setPassword] = React.useState<string>("");
+    const [data, setData] = React.useState<any>(null);
+    const router = useRouter();
 
-    const passwordChecker = () => {
-        setLoading(true);
-        checkPasswords(data.short, password).then(
-            function (value) {
-                if (value === undefined) {
-                    setError(true);
-                    setLoading(false);
-                    return;
+    React.useEffect(() => {
+        const fetchData = async () => {
+            const response = await getLongUrl({ shortUrl });
+            if (response?.data) {
+                setData(response.data);
+                if (!response.data.protected) {
+                    router.push(response.data.long.startsWith('http') ? response.data.long : `https://${response.data.long}`);
                 }
-                setResult(value.confirmed);
-                setLoading(false);
-            },
-            function (error) {
+            } else {
+                router.push('/');
+            }
+        };
+        fetchData();
+    }, [shortUrl, router]);
+
+    const passwordChecker = async () => {
+        setLoading(true);
+        try {
+            const value = await checkPasswords(shortUrl, password);
+            if (!value) {
                 setError(true);
                 setLoading(false);
+                return;
             }
-        );
+            setResult(value.success);
+            setLoading(false);
+        } catch {
+            setError(true);
+            setLoading(false);
+        }
     };
 
-    useEffect(() => {
-        if (result) {
-            Router.push(data.long);
+    React.useEffect(() => {
+        if (result && data) {
+            router.push(data.long);
             return;
         }
         if (password !== "") {
             setError(true);
         }
-    }, [result]);
+    }, [result, password, data, router]);
+
+    if (!data?.protected) {
+        return null;
+    }
 
     return (
         <>
@@ -97,37 +118,4 @@ const Url = ({ data }): React.ReactElement  => {
             </div>
         </>
     );
-};
-
-export const getServerSideProps: GetServerSideProps = async (context: any) => {
-    const { shortUrl } = context.params;
-
-    // .then because it would be a promise otherwise
-    const data = await getLongUrl({ shortUrl }).then((response) => {
-        return response;
-    });
-    if (data !== undefined && data.long !== undefined) {
-        if (data.protected) {
-            return { props: { data } };
-        }
-
-        if (!data.long.startsWith("http")) {
-            data.long = `https://${data.long}`;
-        }
-
-        return {
-            redirect: {
-                destination: data.long,
-                permanent: true,
-            },
-        };
-    }
-    return {
-        redirect: {
-            destination: "/",
-            permanent: true,
-        },
-    };
-};
-
-export default Url;
+}
