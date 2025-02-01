@@ -1,12 +1,9 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { corsHeaders } from '../lib/cors';
-import {
-    withMiddlewareAuthRequired,
-} from "@auth0/nextjs-auth0/edge";
 
 
-export default withMiddlewareAuthRequired(async function middleware(request: NextRequest) {
+export default async function middleware(request: NextRequest) {
   try {
     // Handle CORS preflight requests
     if (request.method === 'OPTIONS') {
@@ -30,7 +27,7 @@ export default withMiddlewareAuthRequired(async function middleware(request: Nex
       { status: 500, headers: corsHeaders(request) }
     );
   }
-})
+}
 
 export const config = {
   matcher: [

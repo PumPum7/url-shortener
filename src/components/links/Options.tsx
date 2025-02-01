@@ -1,3 +1,5 @@
+"use client";
+
 import React, { SetStateAction, useState } from "react";
 
 import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
