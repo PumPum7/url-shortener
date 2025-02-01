@@ -16,6 +16,21 @@ export async function GET(
 
     const result = await client.query(query);
 
+    if (!result.data) {
+      return NextResponse.json(
+        { error: "URL not found" },
+        { status: 404, headers: corsHeaders(request) }
+      );
+    }
+
+    // increase usage
+    const usageQuery = fql`
+      let url = urls.where(arg => arg.short == ${url})
+      url!.update({usage: url!.usage + 1})
+    `;
+
+    await client.query(usageQuery);
+
     return NextResponse.json(result, {
       headers: corsHeaders(request),
     });
