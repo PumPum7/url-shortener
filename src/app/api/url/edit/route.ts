@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import faunadb from "faunadb";
 import { corsHeaders } from "@/lib/cors";
-import { getSession } from "@auth0/nextjs-auth0/edge";
+import { withApiAuthRequired, getSession, type Session } from "@auth0/nextjs-auth0";
+import { Client, fql } from "fauna";
 
-const q = faunadb.query;
+const client = new Client();
 
 function generateShortUrl(length: number): string {
   const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -14,9 +14,10 @@ function generateShortUrl(length: number): string {
   return result;
 }
 
-export async function POST(request: NextRequest) {
-  const session = await getSession(request);
-  if (!session?.user) {
+export const POST = withApiAuthRequired(async (request: NextRequest) => {
+  const res = new NextResponse();
+  const {user} = await getSession(request, res) as Session;
+  if (!user) {
     return NextResponse.json(
       { error: "Unauthorized" },
       { status: 401, headers: corsHeaders(request) }
@@ -41,25 +42,25 @@ export async function POST(request: NextRequest) {
       newUrl = urlShort;
     }
 
-    const client = new faunadb.Client({
-      secret: process.env.GO_FAUNA_SECRET_KEY_A as string,
-    });
-
-    const result = await client.query(
-      q.Update(
-        q.Select(
+    const query = fql`
+      Update(
+        Select(
           ["ref"],
-          q.Get(q.Match(q.Index("user_url_ref"), [urlShort, session.user.sub]))
+          Get(Match(Index("url_by_short"), [${urlShort}, ${user.sub}]))
         ),
         {
           data: {
-            password: password,
-            short: newUrl,
-            message: message,
+            password: ${password},
+            short: ${newUrl},
+            message: ${message},
           },
-          ttl: expiration > 0 ? q.TimeAdd(q.Now(), expiration, "hours") : null,
+          ttl: ${expiration} > 0 ? q.TimeAdd(q.Now(), ${expiration}, "hours") : null,
         }
       )
+    `;
+
+    const result = await client.query(
+      query
     );
 
     return NextResponse.json(result, {
@@ -72,7 +73,7 @@ export async function POST(request: NextRequest) {
       { status: 400, headers: corsHeaders(request) }
     );
   }
-}
+})
 
 export function OPTIONS(request: NextRequest) {
   return new NextResponse(null, {

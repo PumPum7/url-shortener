@@ -40,7 +40,7 @@ export const RecentLinks = (): React.ReactElement  => {
 
     const { user } = useUser();
 
-    const searchField = useRef();
+    const searchField = useRef<HTMLInputElement>(null);
 
     const { getUrls, urls, total } = useUrlStore((state) => ({
         getUrls: state.getUrls,

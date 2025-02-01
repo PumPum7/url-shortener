@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import faunadb from "faunadb";
+import { Client, fql } from "fauna";
 import { corsHeaders } from "@/lib/cors";
-import { getSession } from "@auth0/nextjs-auth0/edge";
+import { withApiAuthRequired, Session, getSession } from "@auth0/nextjs-auth0";
 
-const q = faunadb.query;
+const client = new Client();
 
-export async function DELETE(request: NextRequest) {
-  const session = await getSession(request);
-  if (!session?.user) {
+export const DELETE = withApiAuthRequired(async (request: NextRequest) => {
+  const res = new NextResponse();
+  const {user} = await getSession(request, res) as Session;
+  if (!user) {
     return NextResponse.json(
       { error: "Unauthorized" },
       { status: 401, headers: corsHeaders(request) }
@@ -23,18 +24,17 @@ export async function DELETE(request: NextRequest) {
   }
 
   try {
-    const client = new faunadb.Client({
-      secret: process.env.GO_FAUNA_SECRET_KEY_A as string,
-    });
 
-    const result = await client.query(
-      q.Delete(
-        q.Select(
+    const query = fql`
+      Delete(
+        Select(
           ["ref"],
-          q.Get(q.Match(q.Index("user_url_ref"), [url, session.user.sub]))
+          Get(Match(Index("user_url_ref"), [${url}, ${user.sub}]))
         )
       )
-    );
+    `;
+
+    const result = await client.query(query);
 
     return NextResponse.json(result, {
       headers: corsHeaders(request),
@@ -46,7 +46,7 @@ export async function DELETE(request: NextRequest) {
       { status: 400, headers: corsHeaders(request) }
     );
   }
-}
+})
 
 export function OPTIONS(request: NextRequest) {
   return new NextResponse(null, {
