@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 
-import { Dialog, Transition } from "@headlessui/react";
+import { Dialog, DialogBackdrop, DialogTitle, Transition, TransitionChild } from "@headlessui/react";
 import QRCode from "qrcode-react";
 
 export const QRCodeModal = ({
@@ -20,7 +20,7 @@ export const QRCodeModal = ({
                     className="fixed z-10 inset-0 overflow-y-auto transition-opacity"
                     onClose={closeFunc}>
                     <div className="px-4 min-h-screen text-center">
-                        <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+                        <DialogBackdrop className="fixed inset-0 bg-black opacity-30" />
 
                         {/* This element is to trick the browser into centering the modal contents. */}
                         <span
@@ -28,7 +28,7 @@ export const QRCodeModal = ({
                             aria-hidden="true">
                             &#8203;
                         </span>
-                        <Transition.Child
+                        <TransitionChild
                             as={Fragment}
                             enter="ease-out duration-300"
                             enterFrom="opacity-0 scale-95"
@@ -37,11 +37,11 @@ export const QRCodeModal = ({
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95">
                             <div className="inline-block align-middle my-8 p-6 max-w-md text-left bg-white rounded-2xl shadow-xl overflow-hidden transform transition-all">
-                                <Dialog.Title
+                                <DialogTitle
                                     as="h3"
                                     className="text-gray-900 text-lg font-medium leading-6">
                                     QR Code
-                                </Dialog.Title>
+                                </DialogTitle>
                                 <div className="mt-2">
                                     <QRCode value={qrcodeValue} size={192} />
                                 </div>
@@ -54,7 +54,7 @@ export const QRCodeModal = ({
                                     </button>
                                 </div>
                             </div>
-                        </Transition.Child>
+                        </TransitionChild>
                     </div>
                 </Dialog>
             </Transition>

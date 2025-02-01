@@ -1,6 +1,6 @@
 'use client';
 
-import React from "react";
+import React, {useState, useEffect} from "react";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
 import { Loading } from "@components/util/Icons";
@@ -11,14 +11,14 @@ export default function ShortUrlPage({
 }: {
   params: { shortUrl: string };
 }) {
-    const [result, setResult] = React.useState<boolean>(undefined);
-    const [loading, setLoading] = React.useState<boolean>(false);
-    const [error, setError] = React.useState<boolean>(false);
-    const [password, setPassword] = React.useState<string>("");
-    const [data, setData] = React.useState<any>(null);
+    const [result, setResult] = useState<boolean | undefined>(undefined);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<boolean>(false);
+    const [password, setPassword] = useState<string>("");
+    const [data, setData] = useState<any>(null);
     const router = useRouter();
 
-    React.useEffect(() => {
+    useEffect(() => {
         const fetchData = async () => {
             const response = await getLongUrl({ shortUrl });
             if (response?.data) {
@@ -32,6 +32,16 @@ export default function ShortUrlPage({
         };
         fetchData();
     }, [shortUrl, router]);
+
+    useEffect(() => {
+        if (result && data) {
+            router.push(data.long);
+            return;
+        }
+        if (password !== "") {
+            setError(true);
+        }
+    }, [result, password, data, router]);
 
     const passwordChecker = async () => {
         setLoading(true);
@@ -49,16 +59,6 @@ export default function ShortUrlPage({
             setLoading(false);
         }
     };
-
-    React.useEffect(() => {
-        if (result && data) {
-            router.push(data.long);
-            return;
-        }
-        if (password !== "") {
-            setError(true);
-        }
-    }, [result, password, data, router]);
 
     if (!data?.protected) {
         return null;

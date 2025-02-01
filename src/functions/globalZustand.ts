@@ -8,14 +8,14 @@ import React from "react";
 interface ModalStore {
     showModal: boolean;
     currentModal: React.ReactElement | undefined;
-    setModal: (modal: React.ReactElement ) => void;
+    setModal: (modal: React.ReactElement) => void;
     removeModal: () => void;
 }
 
 export const useModalStore = create<ModalStore>((set) => ({
     showModal: true,
     currentModal: undefined,
-    setModal: (modal: React.ReactElement ) =>
+    setModal: (modal: React.ReactElement) =>
         set(() => ({
             showModal: true,
             currentModal: modal,
@@ -30,7 +30,7 @@ export const useModalStore = create<ModalStore>((set) => ({
 interface UrlStore {
     urls: URL[];
     total: number;
-    getUrls: (amount: number, skip: number, search: string) => void;
+    addUrls: (urls: URL[]) => void;
     addUrl: (
         longURL: string,
         password: string,
@@ -54,14 +54,11 @@ export const useUrlStore = create<UrlStore>((set, get) => ({
         },
     ],
     total: 0,
-    getUrls: async (amount = 10, skip = 0, search = "") => {
-        getUserUrls(amount, skip, search).then((res) => {
-            if (res.links.length > 0) {
-                set({ urls: res.links });
-            }
-            set({ total: res.total });
-        });
-    },
+    addUrls: (urls: URL[]) =>
+        set((oldState) => ({
+            urls: [...oldState.urls, ...urls],
+            total: oldState.total + urls.length,
+        })),
     addUrl: async (
         longURL,
         password = "",
@@ -122,7 +119,7 @@ export const useUrlStore = create<UrlStore>((set, get) => ({
             }
             return {
                 ...oldState,
-                urls: newUrlList
+                urls: newUrlList,
             };
         });
     },

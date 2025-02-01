@@ -10,6 +10,7 @@ import { useUrlStore } from "@functions/globalZustand";
 import { URL, AdvancedOptionsStruct } from "@interfaces";
 import { toClipboard } from "copee";
 import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
+import { withPageAuthRequired } from "@auth0/nextjs-auth0/client";
 
 // State types
 interface FormState {
@@ -41,7 +42,7 @@ const initialFormState: FormState = {
     }
 };
 
-export default function Home() {
+export default withPageAuthRequired(function Home() {
     const [formState, setFormState] = React.useState<FormState>(initialFormState);
     const { user } = useUser();
     const addUrl = useUrlStore(state => state.addUrl);
@@ -236,4 +237,4 @@ export default function Home() {
             </div>
         </div>
     );
-}
+})

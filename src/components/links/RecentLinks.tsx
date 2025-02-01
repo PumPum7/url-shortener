@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef } from "react";
-
+import React, { useState, useRef, useEffect } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { toClipboard } from "copee";
 import toast from "react-hot-toast";
+import useSWR from "swr";
 
 import { timeDifference } from "@functions/time";
 import { useModalStore, useUrlStore } from "@functions/globalZustand";
@@ -29,7 +29,15 @@ interface RecentLinkInterface {
     timeStamp: number;
 }
 
-export const RecentLinks = (): React.ReactElement  => {
+const fetcher = async (url: string) => {
+    const res = await fetch(url);
+    if (!res.ok) {
+        throw new Error('Failed to fetch data');
+    }
+    return res.json();
+};
+
+export const RecentLinks = (): React.ReactElement => {
     const [page, setPage] = useState<number>(0);
     const [amount, setAmount] = useState<number>(10);
     const [search, setSearch] = useState<string>("");
@@ -39,67 +47,57 @@ export const RecentLinks = (): React.ReactElement  => {
     }>({ previous: true, next: false });
 
     const { user } = useUser();
-
     const searchField = useRef<HTMLInputElement>(null);
+    const {addUrls} = useUrlStore();
 
-    const { getUrls, urls, total } = useUrlStore((state) => ({
-        getUrls: state.getUrls,
-        urls: state.urls,
-        total: state.total,
-    }));
+    
 
-    const fetchUrls = (specificPage: number = page) => {
-        try {
-            getUrls(
-                amount,
-                amount * specificPage > 0 ? amount * specificPage : 0,
-                search
-            );
-        } catch (e) {
-            toast.error("Something went wrong while retrieving recent links!");
+    const { data, error } = useSWR(
+        user ? `${FUNCTIONS_DOMAIN}/api/url/user?amount=${amount}&skip=${amount * page}&search=${search}` : null,
+        fetcher,
+        {
+            refreshInterval: 15000, // Refresh every 15 seconds
+            revalidateOnFocus: true,
+            enabled: !!user,
         }
-    };
+    );
 
-    const changePage = ({ action }: { action: "next" | "previous" }): void => {
-        if (action === "next") {
-            if (page * amount < total) {
-                setPage((prevState) => {
-                    fetchUrls(prevState + 1);
-                    return prevState + 1;
-                });
-            }
-        } else if (action === "previous") {
-            if (page !== 0) {
-                setPage((prevState) => {
-                    fetchUrls(prevState - 1);
-                    return prevState - 1;
-                });
-            }
-        }
-    };
-
+    // Handle error state
     useEffect(() => {
-        if (!user) {
-            return;
-        } else {
-            fetchUrls();
+        if (error) {
+            toast.error("Failed to load recent links");
         }
-    }, []);
+    }, [error]);
 
     useEffect(() => {
         let newDisabledButtons = { next: false, previous: false };
         newDisabledButtons.previous = page === 0;
-        newDisabledButtons.next = (page + 1) * amount >= total;
+        newDisabledButtons.next = data ? (page + 1) * amount >= data.total : true;
         setDisabledButton(newDisabledButtons);
-    }, [page, total, amount]);
+    }, [page, data?.total, amount]);
 
     useEffect(() => {
-        fetchUrls();
-    }, [amount]);
+        if (data?.links) {
+            addUrls(data.links);
+        }
+    }, [data, addUrls]);
 
-    useEffect(() => {
-        fetchUrls();
-    }, [search]);
+    if (!data && !error) {
+        return <RecentLinkPlaceholder />;
+    }
+
+    if (error) {
+        return (
+            <div className="flex flex-col pt-8 w-full xl:transform xl:-translate-x-1/4 xl:w-[1200px]">
+                <div className="flex justify-center items-center p-4 bg-red-50 rounded-lg">
+                    <p className="text-red-500">Failed to load recent links. Please try again later.</p>
+                </div>
+            </div>
+        );
+    }
+
+    const urls = data?.links || [];
+    const total = data?.total || 0;
 
     return (
         <div className="flex flex-col pt-8 w-full xl:transform xl:-translate-x-1/4 xl:w-[1200px]">
@@ -119,11 +117,7 @@ export const RecentLinks = (): React.ReactElement  => {
                                             onSubmit={(e) => {
                                                 e.preventDefault();
                                                 if (searchField.current) {
-                                                    setSearch(
-                                                        searchField.current
-                                                            // @ts-ignore
-                                                            .value
-                                                    );
+                                                    setSearch(searchField.current.value);
                                                     setPage(0);
                                                 }
                                             }}>
@@ -149,7 +143,13 @@ export const RecentLinks = (): React.ReactElement  => {
                                                 |{" "}
                                             </span>
                                             <RecentLinkPageSelector
-                                                changePage={changePage}
+                                                changePage={({ action }) => {
+                                                    if (action === "next" && !disabledButton.next) {
+                                                        setPage(p => p + 1);
+                                                    } else if (action === "previous" && !disabledButton.previous) {
+                                                        setPage(p => p - 1);
+                                                    }
+                                                }}
                                                 disabledButton={disabledButton}
                                             />
                                         </div>
@@ -168,22 +168,15 @@ export const RecentLinks = (): React.ReactElement  => {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-gray-200 divide-y">
-                                {urls[0].long === "" ? (
-                                    <RecentLinkPlaceholder />
-                                ) : (
-                                    urls.map(
-                                        (
-                                            link: RecentLinkInterface,
-                                            index: number
-                                        ) => (
-                                            <RecentLink
-                                                longUrl={link.long}
-                                                shortUrl={link.short}
-                                                timestamp={link.timeStamp}
-                                                usage={link.usage}
-                                                key={index}
-                                            />
-                                        )
+                                {urls.map(
+                                    (link: RecentLinkInterface, index: number) => (
+                                        <RecentLink
+                                            longUrl={link.long}
+                                            shortUrl={link.short}
+                                            timestamp={link.timeStamp}
+                                            usage={link.usage}
+                                            key={index}
+                                        />
                                     )
                                 )}
                             </tbody>
@@ -211,7 +204,7 @@ export const TableHeading = ({
 }: {
     direction?: string;
     children: React.ReactNode;
-}): React.ReactElement  => {
+}): React.ReactElement => {
     return (
         <th
             scope="col"
@@ -240,7 +233,7 @@ export const RecentLink = ({
     shortUrl: string;
     timestamp: number;
     usage: number;
-}): React.ReactElement  => {
+}): React.ReactElement => {
     const timeDifString = timeDifference(timestamp);
     const [copySuccess, setCopySuccess] = useState<boolean>(false);
     const { setModal, removeModal } = useModalStore((state) => ({
@@ -259,7 +252,7 @@ export const RecentLink = ({
         isModalOpen = { ...isModalOpen, [modalType]: false };
     }
 
-    function setActiveModal(modal: React.ReactElement ) {
+    function setActiveModal(modal: React.ReactElement) {
         setModal(modal);
     }
 
@@ -267,7 +260,7 @@ export const RecentLink = ({
         isModalOpen = { ...isModalOpen, [modalType]: true };
     }
 
-    useEffect(() => {
+    React.useEffect(() => {
         setTimeout(() => {
             setCopySuccess(false);
         }, 1500);
@@ -379,8 +372,8 @@ export const RecentLink = ({
     );
 };
 
-export const RecentLinkPlaceholder = (): React.ReactElement  => {
-    const Placeholder = (): React.ReactElement  => {
+export const RecentLinkPlaceholder = (): React.ReactElement => {
+    const Placeholder = (): React.ReactElement => {
         return (
             <td className="px-6 py-4 whitespace-nowrap">
                 <div className="h-4 bg-blue-400 rounded-full" />
@@ -389,13 +382,36 @@ export const RecentLinkPlaceholder = (): React.ReactElement  => {
     };
 
     return (
-        <tr className="animate-pulse">
-            <Placeholder />
-            <Placeholder />
-            <Placeholder />
-            <Placeholder />
-            <Placeholder />
-        </tr>
+        <div className="flex flex-col pt-8 w-full xl:transform xl:-translate-x-1/4 xl:w-[1200px]">
+            <div className="inline-block min-w-full py-2 align-middle">
+                <div className="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <TableHeading>Long URL</TableHeading>
+                                <TableHeading>Short URL</TableHeading>
+                                <TableHeading direction="text-center">
+                                    Date
+                                </TableHeading>
+                                <TableHeading>Usage</TableHeading>
+                                <TableHeading direction="text-right">
+                                    Actions
+                                </TableHeading>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-gray-200 divide-y">
+                            <tr className="animate-pulse">
+                                <Placeholder />
+                                <Placeholder />
+                                <Placeholder />
+                                <Placeholder />
+                                <Placeholder />
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     );
 };
 
@@ -407,7 +423,7 @@ interface RecentLinkPageSelectorParams {
 const RecentLinkPageSelector = ({
     disabledButton,
     changePage,
-}: RecentLinkPageSelectorParams): React.ReactElement  => {
+}: RecentLinkPageSelectorParams): React.ReactElement => {
     return (
         <div className="flex flex-row justify-end">
             <RecentLinkPageSelectorButton
@@ -432,7 +448,7 @@ const RecentLinkPageSelectorButton = ({
     children: React.ReactNode;
     disabled: boolean;
     changePage: () => void;
-}): React.ReactElement  => {
+}): React.ReactElement => {
     return (
         <button
             className="recent-links-button"
@@ -449,7 +465,7 @@ const RecentLinkAmountSelector = ({
 }: {
     setAmount: React.Dispatch<React.SetStateAction<number>>;
     amount: number;
-}): React.ReactElement  => {
+}): React.ReactElement => {
     return (
         <div className="flex flex-row justify-end">
             <RecentLinkAmountSelectorButton
@@ -479,7 +495,7 @@ const RecentLinkAmountSelectorButton = ({
     amount: string;
     setAmount: () => void;
     disabled: boolean;
-}): React.ReactElement  => {
+}): React.ReactElement => {
     return (
         <button
             className="recent-links-button"

@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 
-import { Dialog, Transition } from "@headlessui/react";
+import { Description, Dialog, DialogBackdrop, DialogTitle, Transition, TransitionChild } from "@headlessui/react";
 import toast from "react-hot-toast";
 
 import {
@@ -100,7 +100,7 @@ export const EditLinkModal = ({
                     className="fixed z-10 inset-0 overflow-y-auto transition-opacity"
                     onClose={closeFunc}>
                     <div className="px-4 min-h-screen text-center">
-                        <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+                        <DialogBackdrop className="fixed inset-0 bg-black opacity-30" />
 
                         {/* This element is to trick the browser into centering the modal contents. */}
                         <span
@@ -108,7 +108,7 @@ export const EditLinkModal = ({
                             aria-hidden="true">
                             &#8203;
                         </span>
-                        <Transition.Child
+                        <TransitionChild
                             as={Fragment}
                             enter="ease-out duration-300"
                             enterFrom="opacity-0 scale-95"
@@ -117,12 +117,12 @@ export const EditLinkModal = ({
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95">
                             <div className="inline-block align-middle my-8 p-6 max-w-md text-left bg-white rounded-2xl shadow-xl overflow-hidden transform transition-all">
-                                <Dialog.Title
+                                <DialogTitle
                                     as="h3"
                                     className="pb-2 text-gray-900 text-lg font-bold leading-6">
                                     Edit Link{" "}
-                                </Dialog.Title>
-                                <Dialog.Description as="p">
+                                </DialogTitle>
+                                <Description as="p">
                                     Change the settings below to update the
                                     link:
                                     <br />
@@ -133,7 +133,7 @@ export const EditLinkModal = ({
                                         rel="noreferrer">
                                         {FUNCTIONS_DOMAIN}/s/{shortUrl}
                                     </a>
-                                </Dialog.Description>
+                                </Description>
                                 {advancedOptions.customAddress === "" ? (
                                     <AdvancedOptionsPlaceholder
                                         midScreenAdapted={false}
@@ -165,7 +165,7 @@ export const EditLinkModal = ({
                                     </button>
                                 </div>
                             </div>
-                        </Transition.Child>
+                        </TransitionChild>
                     </div>
                 </Dialog>
             </Transition>
