@@ -59,7 +59,7 @@ export const EditLinkModal: React.FC<EditLinkModalProps> = ({
                 message: data.message || "",
             });
         });
-    }, []);
+    }, [shortUrl]);
 
     const editLink = () => {
         setStatus("loading");
