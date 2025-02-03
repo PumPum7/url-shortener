@@ -145,12 +145,6 @@ export function RecentLinkClientWrapper({
     );
 }
 
-interface ModalShowTypes {
-    qrcode: boolean;
-    edit: boolean;
-    delete: boolean;
-}
-
 const RecentLink = ({
     longUrl,
     shortUrl,
@@ -166,19 +160,11 @@ const RecentLink = ({
     const [copySuccess, setCopySuccess] = useState<boolean>(false);
     const { setModal, removeModal } = useModalContext();
 
-    const [isModalOpen, setIsModalOpen] = useState<ModalShowTypes>({
-        qrcode: false,
-        edit: false,
-        delete: false,
-    });
-
-    const closeModal = useCallback((modalType: "qrcode" | "edit" | "delete") => {
+    const closeModal = useCallback(() => {
         removeModal();
-        setIsModalOpen(prev => ({ ...prev, [modalType]: false }));
     }, [removeModal]);
 
-    const openModal = useCallback((modalType: "qrcode" | "edit" | "delete", modal: React.ReactElement) => {
-        setIsModalOpen(prev => ({ ...prev, [modalType]: true }));
+    const openModal = useCallback((modal: React.ReactElement) => {
         setModal(modal);
     }, [setModal]);
 
@@ -232,10 +218,10 @@ const RecentLink = ({
                 <dfn title="QR Code">
                     <button
                         onClick={() => {
-                            openModal("qrcode", 
+                            openModal(
                                 <QRCodeModal
                                     qrcodeValue={shortUrl}
-                                    closeFunc={() => closeModal("qrcode")}
+                                    closeFunc={() => closeModal()}
                                     isOpen={true}
                                 />
                             );
@@ -248,10 +234,10 @@ const RecentLink = ({
                 <dfn title="Edit">
                     <button
                         onClick={() => {
-                            openModal("edit",
+                            openModal( 
                                 <EditLinkModal
                                     shortUrl={shortUrl}
-                                    closeFunc={() => closeModal("edit")}
+                                    closeFunc={() => closeModal()}
                                     isOpen={true}
                                 />
                             );
@@ -264,10 +250,10 @@ const RecentLink = ({
                 <dfn title="Delete">
                     <button
                         onClick={() => {
-                            openModal("delete",
+                            openModal(
                                 <DeleteLinkModal
                                     shortUrl={shortUrl}
-                                    closeFunc={() => closeModal("delete")}
+                                    closeFunc={() => closeModal()}
                                     isOpen={true}
                                 />
                             );
