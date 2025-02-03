@@ -16,18 +16,33 @@ export const GET = withApiAuthRequired(async (request: NextRequest) => {
     const { user } = (await getSession(request, res)) as Session;
 
     const searchParams = request.nextUrl.searchParams;
-    const amount = searchParams.get("amount") || "10";
+    const amount = parseInt(searchParams.get("amount") || "10", 10);
     const skip = searchParams.get("skip") || "0";
     const search = searchParams.get("search") || "";
 
     try {
-        const query = fql`
-        urls.where(arg => arg.user == ${user.sub})
-      `;
+        let after: string | undefined;
+        let result;
+        for (let i = 0; i < Math.ceil(parseInt(skip) / amount); i++) {
+            result = await handlePagination(
+                client,
+                amount,
+                user.sub,
+                search,
+                after
+            );
+            after = result.data.after;
+            if (!after) break;
+        }
+        result = await handlePagination(
+            client,
+            amount,
+            user.sub,
+            search,
+            after
+        );
 
-        const result = await client.query<any>(query);
-
-        const totalLinks = await getUrlCount(client, user.sub);
+        const totalLinks = await getUrlCount(client, user.sub, search);
         let recentLinks: {
             ref: string;
             long: string;
@@ -36,25 +51,15 @@ export const GET = withApiAuthRequired(async (request: NextRequest) => {
             timeStamp: number;
         }[] = [];
 
-        result.data.data
-            .slice(parseInt(skip), parseInt(skip) + parseInt(amount))
-            .forEach((link: any) => {
-                if (search) {
-                    if (
-                        !link.short.includes(search) &&
-                        !link.long.includes(search)
-                    ) {
-                        return;
-                    }
-                }
-                recentLinks.push({
-                    ref: link.id,
-                    long: link.long,
-                    short: link.short,
-                    usage: link.usage,
-                    timeStamp: link.ts.isoString,
-                });
+        result.data.data.forEach((link: any) => {
+            recentLinks.push({
+                ref: link.id,
+                long: link.long,
+                short: link.short,
+                usage: link.usage,
+                timeStamp: link.ts.isoString,
             });
+        });
 
         return NextResponse.json(
             { links: recentLinks, total: totalLinks },
@@ -69,11 +74,15 @@ export const GET = withApiAuthRequired(async (request: NextRequest) => {
     }
 });
 
-async function getUrlCount(client: Client, user: string): Promise<number> {
+async function getUrlCount(
+    client: Client,
+    user: string,
+    search?: string
+): Promise<number> {
     try {
-        const query = fql`
-      urls.where(user => user.user == ${user}).count()
-    `;
+        const query = search
+            ? fql`urls.where(arg => arg.user == ${user} && (arg.short.includes(${search}) || arg.long.includes(${search}))).count()`
+            : fql`urls.where(arg => arg.user == ${user}).count()`;
 
         const result = await client.query(query);
         return result.data as number;
@@ -81,6 +90,24 @@ async function getUrlCount(client: Client, user: string): Promise<number> {
         console.error(error);
         return 0;
     }
+}
+
+async function handlePagination(
+    client: Client,
+    amount: number,
+    userId: string,
+    search?: string,
+    after?: string
+) {
+    const query = search
+        ? fql`urls.where(arg => arg.user == ${userId} && (arg.short.includes(${search}) || arg.long.includes(${search}))).pageSize(${amount})`
+        : fql`urls.where(arg => arg.user == ${userId}).pageSize(${amount})`;
+
+    const result = await client.query<any>(
+        after ? fql`Set.paginate(${after})` : query
+    );
+
+    return result;
 }
 
 export function OPTIONS(request: NextRequest) {
