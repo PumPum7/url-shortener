@@ -4,7 +4,7 @@ import { UrlShortenerForm } from "@components/Homepage/UrlShortenerForm";
 import { Landingpage } from "@components/Homepage/Landing";
 import { getSession, withPageAuthRequired } from "@auth0/nextjs-auth0/edge";
 
-export default withPageAuthRequired(async function Home() {
+export default async function Home() {
     const session = await getSession();
 
     if (session?.user) {
@@ -21,4 +21,4 @@ export default withPageAuthRequired(async function Home() {
             <Landingpage />
         </div>
     );
-});
+};
