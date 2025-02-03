@@ -9,36 +9,27 @@ export async function GET(
   { params }: { params: { url: string } }
 ) {
   try {
-    const {url} = await params;
+    const { url } = await params;
+
     const query = fql`
-      urls.firstWhere(arg => arg.short == ${url})
+      let doc = urls.firstWhere(arg => arg.short == ${url});
+      doc!.update({ usage: doc!.usage + 1 });
+      doc
     `;
 
     const result = await client.query(query);
-
-    if (!result.data) {
-      return NextResponse.json(
-        { error: "URL not found" },
-        { status: 404, headers: corsHeaders(request) }
-      );
-    }
-
-    // increase usage
-    const usageQuery = fql`
-      let url = urls.where(arg => arg.short == ${url})
-      url!.update({usage: url!.usage + 1})
-    `;
-
-    await client.query(usageQuery);
 
     return NextResponse.json(result, {
       headers: corsHeaders(request),
     });
     
   } catch (error: any) {
+    const message = error.message || error.toString();
+    // If the document is not found, set a 404; otherwise use 400
+    const status = message.toLowerCase().includes("not found") ? 404 : 400;
     return NextResponse.json(
-      { error: error.message || error.toString() },
-      { status: 400, headers: corsHeaders(request) }
+      { error: message },
+      { status, headers: corsHeaders(request) }
     );
   }
 }
