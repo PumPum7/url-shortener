@@ -23,7 +23,13 @@
         "./src/*"
       ]
     },
-    "incremental": true
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strictNullChecks": true
   },
   "exclude": [
     "node_modules",
@@ -32,7 +38,8 @@
   ],
   "include": [
     "next-env.d.ts",
+    "src/**/*.ts",
     "src/**/*.tsx",
-    "src/**/*.ts"
+    ".next/types/**/*.ts"
   ]
 }

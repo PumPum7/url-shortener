@@ -1,30 +1,26 @@
-export const timeDifference = (timestamp: number): string => {
-    if (!timestamp) {
-        return "0 minutes ago";
-    }
-    const curTime = new Date();
-    const creationTime = new Date(timestamp);
-    const difference = curTime.getTime() - creationTime.getTime();
+export const timeDifference = (timestamp: string): string => {
+    if (!timestamp) return "0 minutes ago";
 
-    // Months
-    const months = Math.floor(difference / 1000 / 60 / (60 * 24) / 30); // uses 30 as default
-    if (months > 0) {
-        return `about ${months} month${months > 1 ? "s" : ""} ago`;
-    }
+    const date = new Date(timestamp);
+    if (isNaN(date.getTime())) return "Invalid date";
 
-    // days if months are not available
-    const days = Math.floor(difference / 1000 / 60 / (60 * 24));
-    if (days > 0) {
-        return `${days} day${days > 1 ? "s" : ""} ago`;
-    }
+    const units = [
+        { label: 'year', seconds: 31536000 },
+        { label: 'month', seconds: 2592000 },
+        { label: 'day', seconds: 86400 },
+        { label: 'hour', seconds: 3600 },
+        { label: 'minute', seconds: 60 },
+        { label: 'second', seconds: 1 }
+    ];
 
-    // hours if days are not enough
-    const hours = Math.floor(difference / 1000 / 60 / 60);
-    if (hours > 0) {
-        return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+    const secondsPast = (Date.now() - date.getTime()) / 1000;
+
+    for (const { label, seconds } of units) {
+        const interval = Math.floor(secondsPast / seconds);
+        if (interval >= 1) {
+            return `${interval} ${label}${interval !== 1 ? 's' : ''} ago`;
+        }
     }
 
-    // minutes are hours are not enough
-    const minutes = Math.floor(difference / 1000 / 60);
-    return `${minutes} minute${minutes > 1 || minutes == 0 ? "s" : ""} ago`;
+    return "just now";
 };

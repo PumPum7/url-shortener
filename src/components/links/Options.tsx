@@ -1,3 +1,5 @@
+"use client";
+
 import React, { SetStateAction, useState } from "react";
 
 import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
@@ -34,7 +36,7 @@ export function AdvancedOptions({
                     }
                 />
                 <AdvancedOption
-                    text={`${FUNCTIONS_DOMAIN}/`}
+                    text={`Link`}
                     optionId="customAddress"
                     inputPlaceholder="Custom Address"
                     inputType="text"
@@ -137,7 +139,7 @@ export function AdvancedOption({
                 id={optionId}
                 placeholder={inputPlaceholder}
                 type={inputType}
-                className="rounded-md advancedOptions"
+                className="form-input"
                 defaultValue={value || ""}
                 onChange={(e) => {
                     onChange(e);
@@ -150,7 +152,7 @@ export function AdvancedOption({
                     }
                 }}
             />
-            {error && <p className="text-red-600">{errorMsg}</p>}
+            {error && <p className="form-error">{errorMsg}</p>}
         </div>
     );
 }
@@ -171,7 +173,7 @@ export const AdvancedOptionsPlaceholder = ({
                     className="col-span-2 md:col-span-1"
                 />
                 <AdvancedOptionPlaceholder
-                    category={`${FUNCTIONS_DOMAIN}/`}
+                    category={`Link`}
                     className="col-span-2 md:col-span-1"
                 />
                 <AdvancedOptionPlaceholder category={"Expiration"} />
@@ -199,3 +201,4 @@ export const AdvancedOptionPlaceholder = ({
         </div>
     );
 };
+
