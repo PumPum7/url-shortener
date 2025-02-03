@@ -1,84 +1,85 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
-@plugin '@tailwindcss/forms';
+:root {
+  --color-primary: #4F46E5;        /* Indigo-600 */
+  --color-secondary: #ec4899;      /* Pink-500 */
+  --color-background: #F9FAFB;     /* Light gray background */
+  --color-surface: #FFFFFF;
+  --color-text: #1F2937;           /* Gray-800 */
+  --color-muted: #6B7280;          /* Gray-500/600 */
+}
 
-@theme {
-  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
-    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+@layer base {
+  html {
+    @apply antialiased;
+    background-color: var(--color-background);
+  }
+  body {
+    @apply font-sans text-base text-gray-800;
+  }
+  h1 {
+    @apply text-4xl font-extrabold mb-4;
+    color: var(--color-text);
+  }
+  h2 {
+    @apply text-3xl font-bold mb-3;
+    color: var(--color-text);
+  }
+  h3 {
+    @apply text-2xl font-semibold mb-2;
+    color: var(--color-text);
+  }
+  *,
+  ::before,
+  ::after {
+    border-color: var(--color-muted, currentColor);
+  }
 }
 
 @utility container {
   margin-inline: auto;
-  padding-inline: 2rem;
-}
-
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
-@layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
-  }
+  padding-inline: 1rem;
+  @apply max-w-7xl;
 }
 
 @utility link {
   div & {
-    @apply text-blue-600;
+    @apply text-[var(--color-primary)];
   }
   div & > a {
-    @apply hover:border-b-2;
-    @apply hover:border-blue-500;
-    @apply hover:border-dotted;
+    @apply hover:underline;
   }
-}
-
-@utility action-icon {
-  @apply mr-2 p-1 rounded-full duration-500 ring-2 motion-reduce:transition-none transition-all;
-  @apply focus:outline-hidden focus-visible:outline-hidden;
-
-  &.active {
-    @apply hover:cursor-pointer hover:transform hover:-translate-y-1 hover:scale-110;
-  }
-}
-
-@utility active {
-  &.action-icon {
-    @apply hover:cursor-pointer hover:transform hover:-translate-y-1 hover:scale-110;
-  }
-}
-
-@utility recent-links-button {
-  @apply ml-2 p-2 px-4 bg-white rounded-md shadow-md;
-  @apply disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none;
-  @apply hover:-translate-y-1 duration-300;
-  @apply focus:outline-hidden;
 }
 
 @layer utilities {
-  /* purgecss start ignore */
-  html {
-    @apply antialiased;
-    background-color: hsl(220, 12%, 95%);
+  .transition-smooth {
+    @apply transition ease-in-out duration-300;
   }
 }
 
-@layer base {
-    h1 {
-        @apply text-2xl;
-    }
-    h2 {
-        @apply text-xl;
-    }
-    h3 {
-        @apply text-lg;
-    }
+/* New component classes for consistent form styling */
+@layer components {
+  .form-input {
+    @apply w-full rounded-lg border border-gray-300 p-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200;
+  }
+
+  .form-button {
+    @apply px-4 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 active:scale-95 transition-transform duration-150;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 rounded-lg bg-gray-200 text-gray-800 font-medium hover:bg-gray-300 active:scale-95 transition-transform duration-150;
+  }
+
+  .form-checkbox {
+    @apply rounded cursor-pointer;
+  }
+
+  .form-error {
+    @apply text-red-500 text-sm mt-1;
+  }
+
+  .action-icon {
+    @apply text-gray-500 hover:text-gray-600 transition-colors duration-200 rounded-full;
+  }
 }

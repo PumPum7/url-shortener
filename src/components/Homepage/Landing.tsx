@@ -1,10 +1,8 @@
 "use client";
 
 import React from "react";
-
 import Link from "next/link";
 import dynamic from "next/dynamic";
-
 import {
     AdjustmentsIcon,
     ChartPieIcon,
@@ -19,35 +17,32 @@ import * as PasswordAnimation from "../../../public/assets/PasswordAnimation.jso
 
 export const Landingpage = (): React.ReactElement  => {
     return (
-        <section className="pt-6">
+        <section className="pt-6 space-y-8">
             <article>
                 <LandingPageHeader>
-                    Short urls, custom urls and more!
+                    Short URLs, custom links and more!
                 </LandingPageHeader>
-                <p className="pb-4 text-center text-gray-600">
-                    Create links to fit your brand. Profit from analytics and
-                    shorter link lengths.
-                    <br />
-                    Share links like a pro!
+                <p className="text-center text-gray-600">
+                    Create links that fit your brand. Benefit from analytics, secure links, and smarter sharing.
                 </p>
                 <LandingPagePreview
                     image={StatsPreview}
-                    title={"Keep track of your URLs"}
+                    title={"Track your URLs"}
                     description={
-                        "Always be able to track your URLs and get access to those analytics from everywhere!"
+                        "Access detailed analytics and track performance from anywhere!"
                     }
                 />
                 <LandingPagePreview
                     image={UrlPreview}
-                    title={"Easily share your URLs"}
+                    title={"Instant Sharing"}
                     description={
-                        "Share your URLs with everyone without filling the whole chat up!"
+                        "Share your URLs effortlessly without cluttering your chats."
                     }
                 />
                 <LandingPagePreview
-                    title={"Securely share your URLs"}
+                    title={"Password Protected"}
                     description={
-                        "Set a password for your URL and keep control on who can access your links!"
+                        "Secure your links by setting up a password for controlled access."
                     }
                     image={PasswordAnimation}
                 />
@@ -58,17 +53,17 @@ export const Landingpage = (): React.ReactElement  => {
                     <LandingPageFeatureShort
                         Icon={<LinkIcon className="w-8 h-8" />}
                         title="URL Shortener"
-                        description="Easily shorten all your URLs for free and profit from our other features. Links will never expire!"
+                        description="Easily shorten your URLs for free. Links never expire!"
                     />
                     <LandingPageFeatureShort
                         Icon={<AdjustmentsIcon className="w-8 h-8" />}
                         title="Management"
-                        description="Keep control of your URLs and change everything about them whenever you want!"
+                        description="Control and update your links anytime you want!"
                     />
                     <LandingPageFeatureShort
                         Icon={<ChartPieIcon className="w-8 h-8" />}
                         title="Statistics"
-                        description="Keep track of the most important statistics of your URL where and whenever you want!"
+                        description="Monitor the most important metrics of your URLs."
                     />
                 </div>
             </article>
@@ -81,7 +76,7 @@ const LandingPageHeader = ({
 }: {
     children: React.ReactNode;
 }): React.ReactElement  => {
-    return <h1 className="pb-6 text-center font-bold">{children}</h1>;
+    return <h1 className="mb-6 text-4xl font-extrabold text-center">{children}</h1>;
 };
 
 const LandingPageFeatureShort = ({
@@ -94,20 +89,16 @@ const LandingPageFeatureShort = ({
     description: string;
 }): React.ReactElement  => {
     return (
-        <div className="p-4 border-2 hover:border-blue-600 border-gray-400 rounded-md">
-            <div className="w-10 h-10 rounded-full bg-blue-400/25">
-                <p className="text-center text-blue-600 transform translate-x-1 translate-y-1">
-                    {Icon}
-                </p>
+        <div className="p-6 border rounded-lg shadow hover:shadow-lg transition duration-300">
+            <div className="w-12 h-12 flex items-center justify-center rounded-full bg-indigo-100 mb-4">
+                {Icon}
             </div>
-            <h2 className="pt-4">{title}</h2>
-            <p className="pb-4">{description}</p>
+            <h2 className="text-xl font-bold mb-2">{title}</h2>
+            <p className="text-gray-600 mb-4">{description}</p>
             <Link
                 href={"/api/auth/login"}
-                className="block px-3 py-2 w-full text-center text-blue-600 hover:text-white font-bold hover:bg-blue-600 border-2 border-blue-600 rounded-full">
-                
-                    Sign up
-                
+                className="block px-4 py-2 text-center bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-lg shadow hover:shadow-lg transition-transform transform hover:-translate-y-1">
+                Sign up
             </Link>
         </div>
     );
@@ -133,15 +124,13 @@ const LandingPagePreview = ({
 
     return (
         <div className="flex flex-col-reverse items-center pt-6 md:flex-row md:even:flex-row-reverse">
-            <div className="pb-6 md:pb-0 md:py-6">
+            <div className="pb-6 md:py-6">
                 <h1 className="pl-2 text-2xl md:pl-0">{title}</h1>
                 <p className="pl-2 py-3 md:pl-0">{description}</p>
                 <Link
                     href={"/api/auth/login"}
-                    className="block px-1 py-2 w-full text-center text-blue-600 hover:text-white font-bold hover:bg-blue-600 border-2 border-blue-600 rounded-full md:px-0 md:w-1/2">
-                    
-                        Sign up
-                    
+                    className="block px-4 py-2 w-full text-center bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-lg shadow hover:shadow-lg transition-transform transform hover:-translate-y-1 md:w-1/2">
+                    Sign up
                 </Link>
             </div>
             {/* @ts-expect-error: react-lottie has no typing */}

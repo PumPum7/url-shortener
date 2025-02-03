@@ -2,22 +2,22 @@ import React from "react";
 
 export const Footer = (): React.ReactElement  => {
     return (
-        <footer className="flex mt-6 py-6 h-16 bg-gray-200">
-            <div className="mx-auto max-w-sm md:max-w-2xl lg:max-w-(--breakpoint-md)">
-                <p>
+        <footer className="bg-white shadow-inner py-6">
+            <div className="container mx-auto px-4">
+                <p className="text-center text-gray-600 text-sm">
                     Made with 💚 by{" "}
                     <a
-                        className="link"
+                        className="link hover:text-indigo-600 transition-smooth"
                         rel="noreferrer noopener"
                         href="https://github.com/PumPum7">
                         Pum
                     </a>{" "}
                     |{" "}
                     <a
-                        className="link"
+                        className="link hover:text-indigo-600 transition-smooth"
                         rel="noreferrer noopener"
                         href="https://github.com/PumPum7/url-shortener">
-                        Github
+                        GitHub
                     </a>
                 </p>
             </div>

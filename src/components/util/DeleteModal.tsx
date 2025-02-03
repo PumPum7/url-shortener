@@ -104,13 +104,13 @@ export const DeleteLinkModal: React.FC<DeleteLinkModalProps> = ({
                             <div className="flex justify-around mt-4">
                                 <button
                                     type="button"
-                                    className="justify-center px-4 py-2 text-blue-600 font-medium bg-gray-100 hover:bg-gray-200 border border-transparent rounded-md focus:outline-hidden focus-visible:outline-hidden hover:cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                                    className="btn-secondary"
                                     onClick={closeFunc}>
                                     Cancel
                                 </button>
                                 <button
                                     type="button"
-                                    className="px-4 py-2 text-white font-medium bg-blue-600 hover:bg-blue-700 border border-transparent rounded-md focus:outline-hidden focus-visible:outline-hidden disabled:opacity-50 hover:cursor-pointer hover:ring-2 hover:ring-blue-300"
+                                    className="form-button"
                                     onClick={deleteLink}
                                     disabled={status !== "editing"}>
                                     Delete link

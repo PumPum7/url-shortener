@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback } from "react";
+import React, { useState } from "react";
 import { useUrlContext } from "@/context/GlobalContext";
 import { CheckIcon, CopyIcon, Loading, Scissors } from "@components/util/Icons";
 import { AdvancedOptions } from "@components/links/Options";
@@ -8,7 +8,6 @@ import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
 import { toClipboard } from "copee";
 import { AdvancedOptionsStruct } from "@interfaces";
 
-// State types
 interface FormState {
     loading: boolean;
     copySuccess: boolean;
@@ -20,7 +19,6 @@ interface FormState {
     advancedOptions: AdvancedOptionsStruct;
 }
 
-// Initial state
 const initialFormState: FormState = {
     loading: false,
     copySuccess: false,
@@ -39,13 +37,8 @@ const initialFormState: FormState = {
 };
 
 export const UrlShortenerForm: React.FC = () => {
-    const [formState, setFormState] =
-        React.useState<FormState>(initialFormState);
+    const [formState, setFormState] = useState<FormState>(initialFormState);
     const { addUrl } = useUrlContext();
-
-    const resetError = useCallback(() => {
-        setFormState((prev) => ({ ...prev, uploadError: false }));
-    }, []);
 
     const shortenUrl = async () => {
         if (!formState.inputLink) {
@@ -125,14 +118,11 @@ export const UrlShortenerForm: React.FC = () => {
                     e.preventDefault();
                     await shortenUrl();
                 }}>
-                <div
-                    className={`relative mt-6 mx-auto rounded-xl border-b-5 w-[calc(100%-1rem)] md:shadow-lg bg-white ${
-                        formState.uploadError ? "border-2 border-red-500" : ""
-                    }`}>
+                <div className={`relative mt-6 mx-auto rounded-xl w-[calc(100%-1rem)] md:shadow-lg bg-white ${formState.uploadError ? "border border-red-500" : ""}`}>
                     <input
                         type="url"
                         placeholder="Paste your long URL"
-                        className="pt-2 w-full bg-transparent border-transparent rounded-xl selected"
+                        className={`${formState.uploadError ? "form-input border-red-500" : "form-input"}`}
                         onChange={(e) =>
                             setFormState((prev) => ({
                                 ...prev,
@@ -147,13 +137,13 @@ export const UrlShortenerForm: React.FC = () => {
                         }
                     />
                     {formState.loading ? (
-                        <Loading className="absolute inset-y-0 right-0 flex items-center px-2 text-purple-500 rounded-xl cursor-wait" />
+                        <Loading className="absolute inset-y-0 right-0 flex items-center pr-2 text-purple-500 rounded-lg" />
                     ) : formState.uploadError ? (
                         ""
                     ) : (
                         <Scissors
                             onClick={async () => await shortenUrl()}
-                            className="absolute inset-y-0 right-2 top-px flex items-center pt-1 px-2 text-gray-400 hover:text-purple-500 bg-white rounded-xl hover:shadow-md cursor-pointer h-[90%]"
+                            className="absolute inset-y-0 right-2 flex items-center p-2 text-gray-500 hover:text-purple-600 hover:shadow-lg rounded-full transition-all duration-300 cursor-pointer"
                         />
                     )}
                 </div>
@@ -161,9 +151,7 @@ export const UrlShortenerForm: React.FC = () => {
             {formState.shortUrl !== "" ? (
                 <div className="flex items-center justify-center pt-6 text-sm link">
                     <button
-                        className={`text-green-600 bg-green-100 ring-green-50 action-icon ${
-                            !formState.copySuccess ? "active" : ""
-                        }`}
+                        className={`text-green-600 bg-green-100 ring-green-50 action-icon ${!formState.copySuccess ? "active" : ""}`}
                         onClick={() => {
                             const success = toClipboard(
                                 `${FUNCTIONS_DOMAIN}/s/${formState.shortUrl}`
@@ -182,11 +170,7 @@ export const UrlShortenerForm: React.FC = () => {
                         href={"/s/" + formState.shortUrl}
                         rel="noreferrer"
                         target="_blank">
-                        {FUNCTIONS_DOMAIN.replace("http://", "").replace(
-                            "https://",
-                            ""
-                        )}
-                        /s/{formState.shortUrl}
+                        {FUNCTIONS_DOMAIN.replace("http://", "").replace("https://", "")}/s/{formState.shortUrl}
                     </a>
                 </div>
             ) : (
@@ -198,8 +182,7 @@ export const UrlShortenerForm: React.FC = () => {
                         <p>{formState.uploadError}</p>
                     ) : (
                         <p>
-                            An error occurred please try again! Make sure that
-                            the input URL was valid.
+                            An error occurred – please try again. Make sure the URL is valid.
                         </p>
                     )}
                 </div>
@@ -210,11 +193,12 @@ export const UrlShortenerForm: React.FC = () => {
                 <label className="hover:cursor-pointer">
                     <input
                         type="checkbox"
-                        className="rounded-sm hover:cursor-pointer"
-                        onChange={() =>setFormState((prev) => ({
-                                      ...prev,
-                                      showOptions: !formState.showOptions,
-                                  }))
+                        className="form-checkbox"
+                        onChange={() =>
+                            setFormState((prev) => ({
+                                ...prev,
+                                showOptions: !formState.showOptions,
+                            }))
                         }
                     />
                     <span className="pl-4">Show advanced options</span>
@@ -222,9 +206,7 @@ export const UrlShortenerForm: React.FC = () => {
             </div>
             {formState.showOptionsError ? (
                 <p className="text-red-600">{formState.showOptionsError}</p>
-            ) : (
-                ""
-            )}
+            ) : ""}
             {formState.showOptions ? (
                 <AdvancedOptions
                     advancedOptions={formState.advancedOptions}
@@ -238,9 +220,8 @@ export const UrlShortenerForm: React.FC = () => {
                         }))
                     }
                 />
-            ) : (
-                ""
-            )}
+            ) : ""}
         </div>
     );
 };
+

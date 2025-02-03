@@ -64,9 +64,7 @@ export default function ProtectedUrlPage({
                     <input
                         type="password"
                         placeholder="Enter password..."
-                        className={`p-3 rounded-lg border ${
-                            error ? "border-red-500" : "border-gray-300"
-                        } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        className={`form-input ${error ? "border-red-500" : ""}`}
                         value={password}
                         onChange={(e) => {
                             setPassword(e.target.value);

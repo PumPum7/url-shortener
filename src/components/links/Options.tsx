@@ -139,7 +139,7 @@ export function AdvancedOption({
                 id={optionId}
                 placeholder={inputPlaceholder}
                 type={inputType}
-                className="rounded-md advancedOptions"
+                className="form-input"
                 defaultValue={value || ""}
                 onChange={(e) => {
                     onChange(e);
@@ -152,7 +152,7 @@ export function AdvancedOption({
                     }
                 }}
             />
-            {error && <p className="text-red-600">{errorMsg}</p>}
+            {error && <p className="form-error">{errorMsg}</p>}
         </div>
     );
 }
@@ -201,3 +201,4 @@ export const AdvancedOptionPlaceholder = ({
         </div>
     );
 };
+
