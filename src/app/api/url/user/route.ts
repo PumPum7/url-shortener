@@ -76,7 +76,7 @@ async function getUrlCount(client: Client, user: string): Promise<number> {
     `;
 
         const result = await client.query(query);
-        return result.data[0] as number;
+        return result.data as number;
     } catch (error) {
         console.error(error);
         return 0;
@@ -89,5 +89,3 @@ export function OPTIONS(request: NextRequest) {
         headers: { ...corsHeaders(request), Allow: "GET, OPTIONS" },
     });
 }
-
-// TODO: fix types

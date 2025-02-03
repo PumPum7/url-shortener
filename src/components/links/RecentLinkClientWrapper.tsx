@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from "react";
-
+import React, { useState, useEffect, useCallback } from "react";
 import { TableHeading } from "./TableHeading";
 import { URL } from "@interfaces";
 import { timeDifference } from "@functions/time";
@@ -16,43 +15,47 @@ import { EditLinkModal } from "@components/util/EditModal";
 interface RecentLinkClientWrapperProps {
     urls: URL[];
     total: number;
-    initialPage: number;
-    initialAmount: number;
-    initialSearch: string;
+    page: number;
+    setPage: (page: number) => void;
+    amount: number;
+    setAmount: (amount: number) => void;
+    search: string;
+    setSearch: (search: string) => void;
     isLoading: boolean;
 }   
 
 export function RecentLinkClientWrapper({
     urls,
     total,
-    initialPage,
-    initialAmount,
-    initialSearch,
+    page,
+    setPage,
+    amount,
+    setAmount,
+    search,
+    setSearch,
     isLoading
 }: RecentLinkClientWrapperProps): React.ReactElement {
-    const [page, setPage] = useState<number>(initialPage);
-    const [amount, setAmount] = useState<number>(initialAmount);
-    const [search, setSearch] = useState<string>(initialSearch);
-    const [disabledButton, setDisabledButton] = useState<{
-        previous: boolean;
-        next: boolean;
-    }>({ previous: initialPage === 0, next: (initialPage + 1) * initialAmount >= total });
+    // Compute disabled state based on current page and total records
+    const disabledPrevious = page === 0;
+    const disabledNext = (page + 1) * amount >= total;
 
-    const searchField = useRef<HTMLInputElement>(null);
+    // Use a local state for the search input so that changes are applied only on form submit
+    const [localSearch, setLocalSearch] = useState(search);
+    useEffect(() => {
+        setLocalSearch(search);
+    }, [search]);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
-        if (searchField.current) {
-            setSearch(searchField.current.value);
-            setPage(0);
-        }
+        setPage(0);
+        setSearch(localSearch);
     };
 
     const handlePageChange = (action: 'next' | 'previous') => {
-        if (action === 'next' && !disabledButton.next) {
-            setPage(p => p + 1);
-        } else if (action === 'previous' && !disabledButton.previous) {
-            setPage(p => p - 1);
+        if (action === 'next' && !disabledNext) {
+            setPage(page + 1);
+        } else if (action === 'previous' && !disabledPrevious) {
+            setPage(page - 1);
         }
     };
 
@@ -71,12 +74,11 @@ export function RecentLinkClientWrapper({
             <div className="inline-block min-w-full py-2 align-middle">
                 <div className="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg">
                     <div className="flex justify-between p-4 bg-white">
-                        <form
-                            className="flex items-center"
-                            onSubmit={handleSearch}>
+                        <form className="flex items-center" onSubmit={handleSearch}>
                             <input
                                 type="text"
-                                ref={searchField}
+                                value={localSearch}
+                                onChange={(e) => setLocalSearch(e.target.value)}
                                 placeholder="Search URLs..."
                                 className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -89,7 +91,10 @@ export function RecentLinkClientWrapper({
                         <div className="flex items-center">
                             <select
                                 value={amount}
-                                onChange={(e) => setAmount(Number(e.target.value))}
+                                onChange={(e) => {
+                                    setAmount(Number(e.target.value));
+                                    setPage(0);
+                                }}
                                 className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <option value={10}>10</option>
                                 <option value={25}>25</option>
@@ -99,13 +104,13 @@ export function RecentLinkClientWrapper({
                             <div className="flex space-x-2">
                                 <button
                                     onClick={() => handlePageChange('previous')}
-                                    disabled={disabledButton.previous}
+                                    disabled={disabledPrevious}
                                     className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50">
                                     Previous
                                 </button>
                                 <button
                                     onClick={() => handlePageChange('next')}
-                                    disabled={disabledButton.next}
+                                    disabled={disabledNext}
                                     className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50">
                                     Next
                                 </button>
@@ -123,7 +128,7 @@ export function RecentLinkClientWrapper({
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-gray-200 divide-y">
-                            {urls.map((link: any, index: number) => (
+                            {urls.map((link: URL & { timeStamp: string }) => (
                                 <RecentLink
                                     key={link.short}
                                     longUrl={link.long}
@@ -154,7 +159,7 @@ const RecentLink = ({
 }: {
     longUrl: string;
     shortUrl: string;
-    timestamp: number;
+    timestamp: string;
     usage: number;
 }): React.ReactElement => {
     const timeDifString = timeDifference(timestamp);
@@ -195,26 +200,17 @@ const RecentLink = ({
             <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center text-sm link">
                     <button
-                        className={`text-green-600 bg-green-100 ring-green-50 action-icon ${
-                            !copySuccess ? "active" : ""
-                        }`}
+                        className={`text-green-600 bg-green-100 ring-green-50 action-icon ${!copySuccess ? "active" : ""}`}
                         onClick={() => {
-                            const success = toClipboard(
-                                `${FUNCTIONS_DOMAIN}/s/${shortUrl}`
-                            );
+                            const success = toClipboard(`${FUNCTIONS_DOMAIN}/s/${shortUrl}`);
                             if (success) {
                                 setCopySuccess(true);
                             }
                         }}>
                         {copySuccess ? <CheckIcon /> : <CopyIcon />}
                     </button>
-
                     <a href={"/s/" + shortUrl} rel="noreferrer" target="_blank">
-                        {FUNCTIONS_DOMAIN.replace("http://", "").replace(
-                            "https://",
-                            ""
-                        )}
-                        /s/{shortUrl}
+                        {FUNCTIONS_DOMAIN.replace("http://", "").replace("https://", "")}/s/{shortUrl}
                     </a>
                 </div>
             </td>
