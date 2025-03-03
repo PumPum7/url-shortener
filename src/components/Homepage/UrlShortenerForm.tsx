@@ -96,7 +96,7 @@ export const UrlShortenerForm: React.FC = () => {
                 formState.advancedOptions.urlLength,
                 formState.advancedOptions.message,
                 data.short,
-                false
+                true
             );
         } catch (error: any) {
             setFormState((prev) => ({

@@ -63,7 +63,8 @@ interface UrlContextType {
         expiration?: number,
         length?: number,
         message?: string,
-        customAddress?: string
+        customAddress?: string,
+        isAdded?: boolean
     ) => Promise<any>;
     removeUrl: (shortUrl: string) => void;
     updateUrl: (shortUrl: string, newUrlShort: string) => void;
