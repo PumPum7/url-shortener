@@ -58,7 +58,7 @@ export default function LoginPage() {
             await authClient.signIn.social({
                 provider: "discord",
                 callbackURL: "/dashboard",
-                errorCallbackURL: "/login?error=auth-failed",
+                errorCallbackURL: "/login",
             });
         } catch (err: any) {
             setError(

@@ -73,7 +73,7 @@ export default function RegisterPage() {
             await authClient.signIn.social({
                 provider: "discord",
                 callbackURL: "/dashboard",
-                errorCallbackURL: "/register?error=auth-failed",
+                errorCallbackURL: "/register",
                 newUserCallbackURL: "/dashboard",
             });
         } catch (err: any) {
