@@ -1,0 +1,6 @@
+{
+  "databaseURL": "https://Pum-s-workspace-qcvdmg.eu-central-1.xata.sh/db/url-shortener",
+  "codegen": {
+    "output": "src/lib/xata.ts"
+  }
+}

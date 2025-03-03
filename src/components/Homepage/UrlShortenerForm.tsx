@@ -85,7 +85,7 @@ export const UrlShortenerForm: React.FC = () => {
             const data = await response.json();
             setFormState((prev) => ({
                 ...prev,
-                shortUrl: data.shortId,
+                shortUrl: data.short,
                 loading: false,
                 uploadError: false,
             }));
@@ -95,7 +95,8 @@ export const UrlShortenerForm: React.FC = () => {
                 formState.advancedOptions.expiration,
                 formState.advancedOptions.urlLength,
                 formState.advancedOptions.message,
-                data.shortId
+                data.short,
+                false
             );
         } catch (error: any) {
             setFormState((prev) => ({
@@ -118,7 +119,8 @@ export const UrlShortenerForm: React.FC = () => {
                     e.preventDefault();
                     await shortenUrl();
                 }}>
-                <div className={`relative mt-6 mx-auto rounded-xl w-[calc(100%-1rem)] md:shadow-lg bg-white ${formState.uploadError ? "border border-red-500" : ""}`}>
+                <div
+                    className={`relative mt-6 mx-auto rounded-xl w-[calc(100%-1rem)] md:shadow-lg bg-white ${formState.uploadError ? "border border-red-500" : ""}`}>
                     <input
                         type="url"
                         placeholder="Paste your long URL"
@@ -170,7 +172,11 @@ export const UrlShortenerForm: React.FC = () => {
                         href={"/s/" + formState.shortUrl}
                         rel="noreferrer"
                         target="_blank">
-                        {FUNCTIONS_DOMAIN.replace("http://", "").replace("https://", "")}/s/{formState.shortUrl}
+                        {FUNCTIONS_DOMAIN.replace("http://", "").replace(
+                            "https://",
+                            ""
+                        )}
+                        /s/{formState.shortUrl}
                     </a>
                 </div>
             ) : (
@@ -182,7 +188,8 @@ export const UrlShortenerForm: React.FC = () => {
                         <p>{formState.uploadError}</p>
                     ) : (
                         <p>
-                            An error occurred – please try again. Make sure the URL is valid.
+                            An error occurred – please try again. Make sure the
+                            URL is valid.
                         </p>
                     )}
                 </div>
@@ -206,7 +213,9 @@ export const UrlShortenerForm: React.FC = () => {
             </div>
             {formState.showOptionsError ? (
                 <p className="text-red-600">{formState.showOptionsError}</p>
-            ) : ""}
+            ) : (
+                ""
+            )}
             {formState.showOptions ? (
                 <AdvancedOptions
                     advancedOptions={formState.advancedOptions}
@@ -220,8 +229,9 @@ export const UrlShortenerForm: React.FC = () => {
                         }))
                     }
                 />
-            ) : ""}
+            ) : (
+                ""
+            )}
         </div>
     );
 };
-

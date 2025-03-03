@@ -1,19 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { corsHeaders } from "@/lib/cors";
-import {
-    withApiAuthRequired,
-    getSession,
-    type Session,
-} from "@auth0/nextjs-auth0";
 import { Client, fql } from "fauna";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 const client = new Client({
     secret: process.env.FAUNA_SECRET,
 });
 
-export const GET = withApiAuthRequired(async (request: NextRequest) => {
-    const res = new NextResponse();
-    const { user } = (await getSession(request, res)) as Session;
+export const GET = async (request: NextRequest) => {
+    const { user } = (await auth.api.getSession({
+        headers: await headers(),
+    })) || { user: null };
+
+    if (!user) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     const searchParams = request.nextUrl.searchParams;
     const amount = parseInt(searchParams.get("amount") || "10", 10);
@@ -27,22 +29,16 @@ export const GET = withApiAuthRequired(async (request: NextRequest) => {
             result = await handlePagination(
                 client,
                 amount,
-                user.sub,
+                user.id,
                 search,
                 after
             );
             after = result.data.after;
             if (!after) break;
         }
-        result = await handlePagination(
-            client,
-            amount,
-            user.sub,
-            search,
-            after
-        );
+        result = await handlePagination(client, amount, user.id, search, after);
 
-        const totalLinks = await getUrlCount(client, user.sub, search);
+        const totalLinks = await getUrlCount(client, user.id, search);
         let recentLinks: {
             ref: string;
             long: string;
@@ -72,7 +68,7 @@ export const GET = withApiAuthRequired(async (request: NextRequest) => {
             { status: 400, headers: corsHeaders(request) }
         );
     }
-});
+};
 
 async function getUrlCount(
     client: Client,

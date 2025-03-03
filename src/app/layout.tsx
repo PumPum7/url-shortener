@@ -1,5 +1,4 @@
 import React from "react";
-import { UserProvider } from "@auth0/nextjs-auth0/client";
 import { Toaster } from "react-hot-toast";
 import { Layout } from "@components/Layout/Layout";
 import { Providers } from "./providers";
@@ -17,16 +16,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <UserProvider>
-        <Providers>
-          <body>
-            <Layout>
-              <Toaster position="top-right" />
-              {children}
-            </Layout>
-          </body>
-        </Providers>
-      </UserProvider>
+      <Providers>
+        <body>
+          <Layout>
+            <Toaster position="top-right" />
+            {children}
+          </Layout>
+        </body>
+      </Providers>
     </html>
   );
 }
