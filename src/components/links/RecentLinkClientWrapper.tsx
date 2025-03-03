@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React from "react";
 import { TableHeading } from "./TableHeading";
@@ -18,7 +18,7 @@ interface RecentLinkClientWrapperProps {
     search: string;
     setSearch: (search: string) => void;
     isLoading: boolean;
-}   
+}
 
 export function RecentLinkClientWrapper({
     urls,
@@ -29,21 +29,23 @@ export function RecentLinkClientWrapper({
     setAmount,
     search,
     setSearch,
-    isLoading
+    isLoading,
 }: RecentLinkClientWrapperProps): React.ReactElement {
     if (isLoading) {
         return (
-            <div className="flex flex-col items-center pt-8 w-full xl:transform xl:-translate-x-1/4 xl:w-[1200px]">
+            <div className="flex flex-col items-center pt-8 w-full">
                 <div className="flex flex-col justify-center items-center p-6 bg-blue-50 rounded-lg space-y-2">
                     <Loading className="w-8 h-8 text-blue-500" />
-                    <p className="text-blue-500 font-semibold">Loading your links...</p>
+                    <p className="text-blue-500 font-semibold">
+                        Loading your links...
+                    </p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="flex flex-col pt-8 w-full px-4 md:w-[80vw] md:transform md:-translate-x-1/2 lg:-translate-x-1/4">
+        <div className="flex flex-col pt-8 w-full">
             <SearchAndPagination
                 total={total}
                 page={page}
@@ -58,14 +60,15 @@ export function RecentLinkClientWrapper({
                 <div className="flex flex-col items-center justify-center py-10">
                     <LinkIcon className="w-16 h-16 text-gray-300" />
                     <p className="mt-4 text-gray-500">
-                        No links found. Try adjusting your search or create a new link.
+                        No links found. Try adjusting your search or create a
+                        new link.
                     </p>
                 </div>
             ) : (
                 <>
                     {/* Desktop Table View */}
                     <div className="hidden md:block">
-                        <div className="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg">
+                        <div className="overflow-x-scroll border-b border-gray-200 shadow sm:rounded-lg">
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead className="bg-gray-50">
                                     <tr>
@@ -81,15 +84,24 @@ export function RecentLinkClientWrapper({
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
-                                    {urls.map((link: URL & { timeStamp: string, usage: number, long: string, short: string }) => (
-                                        <RecentLink
-                                            key={link.short}
-                                            longUrl={link.long}
-                                            shortUrl={link.short}
-                                            timestamp={link.timeStamp}
-                                            usage={link.usage}
-                                        />
-                                    ))}
+                                    {urls.map(
+                                        (
+                                            link: URL & {
+                                                timeStamp: string;
+                                                usage: number;
+                                                long: string;
+                                                short: string;
+                                            }
+                                        ) => (
+                                            <RecentLink
+                                                key={link.short}
+                                                longUrl={link.long}
+                                                shortUrl={link.short}
+                                                timestamp={link.timeStamp}
+                                                usage={link.usage}
+                                            />
+                                        )
+                                    )}
                                 </tbody>
                             </table>
                         </div>
@@ -97,15 +109,24 @@ export function RecentLinkClientWrapper({
 
                     {/* Mobile Card View */}
                     <div className="block md:hidden space-y-4">
-                        {urls.map((link: URL & { timeStamp: string, usage: number, long: string, short: string }) => (
-                            <RecentLinkCard
-                                key={link.short}
-                                longUrl={link.long}
-                                shortUrl={link.short}
-                                timestamp={link.timeStamp}
-                                usage={link.usage}
-                            />
-                        ))}
+                        {urls.map(
+                            (
+                                link: URL & {
+                                    timeStamp: string;
+                                    usage: number;
+                                    long: string;
+                                    short: string;
+                                }
+                            ) => (
+                                <RecentLinkCard
+                                    key={link.short}
+                                    longUrl={link.long}
+                                    shortUrl={link.short}
+                                    timestamp={link.timeStamp}
+                                    usage={link.usage}
+                                />
+                            )
+                        )}
                     </div>
                 </>
             )}

@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
 import { RecentLinkClientWrapper } from "./RecentLinkClientWrapper";
 import useSWR from "swr";
-import { useUser } from "@auth0/nextjs-auth0/client";
+import { authClient } from "@lib/auth-client";
 
 const fetcher = async (url: string) => {
     try {
@@ -38,7 +38,7 @@ export function RecentLinks({
     page = 0,
     search = "",
 }: RecentLinksProps): React.ReactElement {
-    const { user, error: authError, isLoading: isLoadingAuth } = useUser();
+    const { data: session, isPending } = authClient.useSession();
 
     // Lift pagination state from the props so that updates trigger a re-fetch
     const [currentPage, setCurrentPage] = useState<number>(page);
@@ -46,7 +46,7 @@ export function RecentLinks({
     const [currentSearch, setCurrentSearch] = useState<string>(search);
 
     const { data, error, isLoading } = useSWR(
-        user
+        session
             ? `${FUNCTIONS_DOMAIN}/api/url/user?amount=${currentAmount}&skip=${currentAmount * currentPage}&search=${currentSearch}`
             : null,
         (url) => fetcher(url),
@@ -55,7 +55,7 @@ export function RecentLinks({
         }
     );
 
-    if (isLoadingAuth) {
+    if (isPending) {
         return (
             <div className="flex flex-col pt-8 w-full xl:transform xl:-translate-x-1/4 xl:w-[1200px]">
                 <div className="flex justify-center items-center p-4 bg-red-50 rounded-lg">
@@ -65,19 +65,7 @@ export function RecentLinks({
         );
     }
 
-    if (authError) {
-        return (
-            <div className="flex flex-col pt-8 w-full xl:transform xl:-translate-x-1/4 xl:w-[1200px]">
-                <div className="flex justify-center items-center p-4 bg-red-50 rounded-lg">
-                    <p className="text-red-500">
-                        Error loading authentication. Please try again later.
-                    </p>
-                </div>
-            </div>
-        );
-    }
-
-    if (!user) {
+    if (!session) {
         return (
             <div className="flex flex-col pt-8 w-full xl:transform xl:-translate-x-1/4 xl:w-[1200px]">
                 <div className="flex justify-center items-center p-4 bg-red-50 rounded-lg">

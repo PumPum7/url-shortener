@@ -2,14 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { authClient } from "@lib/auth-client";
 
-import { useUser } from "@auth0/nextjs-auth0/client";
+import React from "react";
+import { redirect } from "next/navigation";
 
 import ScissorLogo from "../../../public/assets/scissor.png";
-import React from "react";
 
-export const Header = (): React.ReactElement  => {
-    const { user, error, isLoading } = useUser();
+export const Header = (): React.ReactElement => {
+    const { data: session, isPending } = authClient.useSession();
 
     return (
         <header className="container mx-auto px-4 py-6">
@@ -37,30 +38,26 @@ export const Header = (): React.ReactElement  => {
                                 GitHub
                             </a>
                         </li>
-                        {isLoading ? (
-                            <li className="hidden md:block">
-                                Loading...
-                            </li>
-                        ) : error ? (
-                            <li className="hidden md:block">
-                                Error
-                            </li>
-                        ) : user && (
+                        {isPending ? (
+                            <li className="hidden md:block">Loading...</li>
+                        ) : session ? (
                             <li className="hidden md:block hover:text-indigo-600">
-                                <Link href="/api/auth/logout">
+                                <button
+                                    onClick={() => {
+                                        authClient.signOut();
+                                        redirect("/");
+                                    }}>
                                     Logout
-                                </Link>
+                                </button>
                             </li>
-                        )}
+                        ) : null}
                         <li className="px-4 text-white py-2 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-md hover:shadow-lg transition-transform transform hover:-translate-y-1">
-                            {user ? (
-                                <Link href="/profile">
-                                    {user.nickname}
+                            {session ? (
+                                <Link href="/dashboard">
+                                    {session.user.name || session.user.email}
                                 </Link>
                             ) : (
-                                <Link href="/api/auth/login">
-                                    Sign up
-                                </Link>
+                                <Link href="/login">Sign up</Link>
                             )}
                         </li>
                     </ul>

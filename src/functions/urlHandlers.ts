@@ -25,12 +25,12 @@ export const createShortURL = async (
             }),
             headers: { "Content-Type": "application/json" },
         });
-        
+
         if (!response.ok) {
             const error = await response.json();
-            throw new Error(error.error || 'Failed to create short URL');
+            throw new Error(error.error || "Failed to create short URL");
         }
-        
+
         return await response.json();
     } catch (err) {
         console.error(err);
@@ -80,7 +80,7 @@ export const getUserUrl = async (shortUrl: string): Promise<any> => {
             `${FUNCTIONS_DOMAIN}/api/url/information?url=${shortUrl}`
         );
         if (!response.ok) {
-            throw new Error('Failed to fetch URL information');
+            throw new Error("Failed to fetch URL information");
         }
         return await response.json();
     } catch (e) {
@@ -110,12 +110,12 @@ export const editUserUrl = async (
             }),
             headers: { "Content-Type": "application/json" },
         });
-        
+
         if (!response.ok) {
             const error = await response.json();
-            throw new Error(error.error || 'Failed to edit URL');
+            throw new Error(error.error || "Failed to edit URL");
         }
-        
+
         return await response.json();
     } catch (err) {
         console.error(err);
@@ -125,9 +125,12 @@ export const editUserUrl = async (
 
 export const deleteUrl = async (url: string) => {
     try {
-        const response = await fetch(`${FUNCTIONS_DOMAIN}/api/url/delete?url=${url}`, {
-            method: "DELETE"
-        });
+        const response = await fetch(
+            `${FUNCTIONS_DOMAIN}/api/url/delete?url=${url}`,
+            {
+                method: "DELETE",
+            }
+        );
         if (!response.ok) {
             return undefined;
         }
@@ -148,11 +151,11 @@ export const checkPasswords = async (url: string, inputPassword: string) => {
             }),
             headers: { "Content-Type": "application/json" },
         });
-        
+
         if (!response.ok) {
             return undefined;
         }
-        
+
         return await response.json();
     } catch (e) {
         console.error(e);
