@@ -38,14 +38,14 @@ export default function RegisterPage() {
                     email,
                     password,
                     name,
-                    callbackURL: "/",
+                    callbackURL: "/dashboard",
                 },
                 {
                     onRequest: () => {
                         setLoading(true);
                     },
                     onSuccess: () => {
-                        router.push("/");
+                        router.push("/dashboard");
                     },
                     onError: (ctx) => {
                         setError(ctx.error.message);
@@ -72,9 +72,9 @@ export default function RegisterPage() {
         try {
             await authClient.signIn.social({
                 provider: "discord",
-                callbackURL: "/",
+                callbackURL: "/dashboard",
                 errorCallbackURL: "/register?error=auth-failed",
-                newUserCallbackURL: "/",
+                newUserCallbackURL: "/dashboard",
             });
         } catch (err: any) {
             setError(

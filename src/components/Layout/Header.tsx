@@ -4,8 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { authClient } from "@lib/auth-client";
 
-import ScissorLogo from "../../../public/assets/scissor.png";
 import React from "react";
+import { redirect } from "next/navigation";
+
+import ScissorLogo from "../../../public/assets/scissor.png";
 
 export const Header = (): React.ReactElement => {
     const { data: session, isPending } = authClient.useSession();
@@ -40,7 +42,11 @@ export const Header = (): React.ReactElement => {
                             <li className="hidden md:block">Loading...</li>
                         ) : session ? (
                             <li className="hidden md:block hover:text-indigo-600">
-                                <button onClick={() => authClient.signOut()}>
+                                <button
+                                    onClick={() => {
+                                        authClient.signOut();
+                                        redirect("/");
+                                    }}>
                                     Logout
                                 </button>
                             </li>

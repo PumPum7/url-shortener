@@ -22,7 +22,7 @@ export default function LoginPage() {
                 {
                     email,
                     password,
-                    callbackURL: "/",
+                    callbackURL: "/dashboard",
                     rememberMe: true,
                 },
                 {
@@ -30,7 +30,7 @@ export default function LoginPage() {
                         setLoading(true);
                     },
                     onSuccess: () => {
-                        router.push("/");
+                        router.push("/dashboard");
                     },
                     onError: (ctx) => {
                         setError(ctx.error.message);
@@ -57,7 +57,7 @@ export default function LoginPage() {
         try {
             await authClient.signIn.social({
                 provider: "discord",
-                callbackURL: "/",
+                callbackURL: "/dashboard",
                 errorCallbackURL: "/login?error=auth-failed",
             });
         } catch (err: any) {
