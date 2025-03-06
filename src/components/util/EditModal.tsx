@@ -23,6 +23,7 @@ import {
 
 import { AdvancedOptionsStruct } from "@interfaces";
 import { useUrlContext } from "@/context/GlobalContext";
+import { mutate } from "swr";
 
 interface EditLinkModalProps {
     shortUrl: string;
@@ -78,6 +79,9 @@ export const EditLinkModal: React.FC<EditLinkModalProps> = ({
                 success: (response) => {
                     setStatus("editing");
                     updateUrl(shortUrl, response.data.short);
+                    
+                    mutate((key) => typeof key === 'string' && key.includes('/api/url/user'));
+                    
                     return `Successfully edited the link ${response.data.short}`;
                 },
                 error: () => "An error occurred while editing the link.",
