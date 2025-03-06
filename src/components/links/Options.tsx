@@ -1,10 +1,9 @@
 "use client";
 
-import React, { SetStateAction, useState } from "react";
-
 import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
-
 import { AdvancedOptionsStruct } from "@interfaces";
+
+import React, { SetStateAction, useState } from "react";
 
 export function AdvancedOptions({
     midScreenAdapted = true,
@@ -127,7 +126,7 @@ export function AdvancedOption({
     check,
     errorMsg,
     value,
-}: OptionProps): React.ReactElement  {
+}: OptionProps): React.ReactElement {
     const [error, setError] = useState<boolean>(false);
 
     return (
@@ -161,7 +160,7 @@ export const AdvancedOptionsPlaceholder = ({
     midScreenAdapted,
 }: {
     midScreenAdapted: boolean;
-}): React.ReactElement  => {
+}): React.ReactElement => {
     return (
         <div className="content-center pl-4">
             <div
@@ -193,7 +192,7 @@ export const AdvancedOptionPlaceholder = ({
 }: {
     category: string;
     className?: string;
-}): React.ReactElement  => {
+}): React.ReactElement => {
     return (
         <div className={`flex flex-col ${className}`}>
             <p className="text-lg font-semibold">{category}</p>
@@ -201,4 +200,3 @@ export const AdvancedOptionPlaceholder = ({
         </div>
     );
 };
-

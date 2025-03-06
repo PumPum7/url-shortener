@@ -1,12 +1,21 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { timeDifference } from "@functions/time";
-import { toClipboard } from "copee";
-import { useModalContext } from "@/context/GlobalContext";
-import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
-import { QRCodeModal } from "@components/util/QRCodeModal";
 import { DeleteLinkModal } from "@components/util/DeleteModal";
 import { EditLinkModal } from "@components/util/EditModal";
-import { ChartPieIcon, CheckIcon, CopyIcon, PencilIcon, QRCodeIcon, TrashIcon } from "@components/util/Icons";
+import {
+    ChartPieIcon,
+    CheckIcon,
+    CopyIcon,
+    PencilIcon,
+    QRCodeIcon,
+    TrashIcon,
+} from "@components/util/Icons";
+import { QRCodeModal } from "@components/util/QRCodeModal";
+import { timeDifference } from "@functions/time";
+import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
+import { toClipboard } from "copee";
+
+import React, { useCallback, useEffect, useState } from "react";
+
+import { useModalContext } from "@/context/GlobalContext";
 
 interface RecentLinkCardProps {
     longUrl: string;
@@ -29,9 +38,12 @@ export function RecentLinkCard({
         removeModal();
     }, [removeModal]);
 
-    const openModal = useCallback((modal: React.ReactElement) => {
-        setModal(modal);
-    }, [setModal]);
+    const openModal = useCallback(
+        (modal: React.ReactElement) => {
+            setModal(modal);
+        },
+        [setModal]
+    );
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -43,37 +55,46 @@ export function RecentLinkCard({
     return (
         <div className="p-4 bg-white rounded-lg shadow-md">
             <div className="mb-2">
-                <span className="block text-sm text-gray-600 font-medium">Long URL:</span>
+                <span className="block text-sm text-gray-600 font-medium">
+                    Long URL:
+                </span>
                 <a
                     href={longUrl}
                     rel="noreferrer"
                     target="_blank"
-                    className="text-blue-500 truncate block"
-                >
-                    {longUrl.length > 50 ? longUrl.substring(0, 50) + "..." : longUrl}
+                    className="text-blue-500 truncate block">
+                    {longUrl.length > 50
+                        ? longUrl.substring(0, 50) + "..."
+                        : longUrl}
                 </a>
             </div>
             <div className="mb-2">
-                <span className="block text-sm text-gray-600 font-medium">Short URL:</span>
+                <span className="block text-sm text-gray-600 font-medium">
+                    Short URL:
+                </span>
                 <div className="flex items-center">
                     <button
                         onClick={() => {
-                            const success = toClipboard(`${FUNCTIONS_DOMAIN}/s/${shortUrl}`);
+                            const success = toClipboard(
+                                `${FUNCTIONS_DOMAIN}/s/${shortUrl}`
+                            );
                             if (success) {
                                 setCopySuccess(true);
                             }
                         }}
-                        className={`mr-2 text-green-600 bg-green-100 ring-green-50 action-icon ${!copySuccess ? "active" : ""}`}
-                    >
+                        className={`mr-2 text-green-600 bg-green-100 ring-green-50 action-icon ${!copySuccess ? "active" : ""}`}>
                         {copySuccess ? <CheckIcon /> : <CopyIcon />}
                     </button>
                     <a
                         href={"/s/" + shortUrl}
                         rel="noreferrer"
                         target="_blank"
-                        className="text-blue-500"
-                    >
-                        {FUNCTIONS_DOMAIN.replace("http://", "").replace("https://", "")}/s/{shortUrl}
+                        className="text-blue-500">
+                        {FUNCTIONS_DOMAIN.replace("http://", "").replace(
+                            "https://",
+                            ""
+                        )}
+                        /s/{shortUrl}
                     </a>
                 </div>
             </div>
@@ -86,8 +107,7 @@ export function RecentLinkCard({
                     <button
                         onClick={() => alert("Stats feature coming soon")}
                         className="text-purple-600 bg-purple-100 ring-purple-50 action-icon"
-                        aria-label="View Analytics"
-                    >
+                        aria-label="View Analytics">
                         <ChartPieIcon />
                     </button>
                 </dfn>
@@ -103,8 +123,7 @@ export function RecentLinkCard({
                             );
                         }}
                         className="text-gray-600 bg-gray-100 ring-gray-50 action-icon"
-                        aria-label="Show QR Code"
-                    >
+                        aria-label="Show QR Code">
                         <QRCodeIcon />
                     </button>
                 </dfn>
@@ -120,8 +139,7 @@ export function RecentLinkCard({
                             );
                         }}
                         className="text-yellow-600 bg-yellow-100 ring-yellow-50 action-icon"
-                        aria-label="Edit URL"
-                    >
+                        aria-label="Edit URL">
                         <PencilIcon />
                     </button>
                 </dfn>
@@ -137,8 +155,7 @@ export function RecentLinkCard({
                             );
                         }}
                         className="text-red-600 bg-red-100 ring-red-50 action-icon"
-                        aria-label="Delete URL"
-                    >
+                        aria-label="Delete URL">
                         <TrashIcon />
                     </button>
                 </dfn>

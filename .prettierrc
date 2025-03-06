@@ -4,8 +4,19 @@
   "semi": true,
   "singleQuote": false,
   "bracketSpacing": true,
-  "jsxBracketSameLine": true,
+  "bracketSameLine": true,
   "arrowParens": "always",
-  "twConfig": "./tailwind.config.js",
-  "twUnknownClassesPosition": "end"
+  "plugins": ["@trivago/prettier-plugin-sort-imports"],
+  "importOrder": [
+    "^react$",
+    "^next",
+    "^@/lib/(.*)$",
+    "^@/components/(.*)$",
+    "^@/context/(.*)$",
+    "^@/functions/(.*)$",
+    "^@/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
 }

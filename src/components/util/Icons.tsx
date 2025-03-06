@@ -1,6 +1,10 @@
 import React from "react";
 
-export const Loading = ({ className }: { className: string }): React.ReactElement  => {
+export const Loading = ({
+    className,
+}: {
+    className: string;
+}): React.ReactElement => {
     return (
         <div className={className}>
             <svg
@@ -32,7 +36,7 @@ export const Scissors = ({
 }: {
     onClick: () => void;
     className: string;
-}): React.ReactElement  => {
+}): React.ReactElement => {
     return (
         // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/interactive-supports-focus
         <div
@@ -62,7 +66,7 @@ const Icon = ({
 }: {
     className: string;
     d: string;
-}): React.ReactElement  => {
+}): React.ReactElement => {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -97,7 +101,7 @@ export const CheckIcon = ({
     className,
 }: {
     className?: string;
-}): React.ReactElement  => {
+}): React.ReactElement => {
     return <Icon className={className || "w-5 h-5"} d="M5 13l4 4L19 7" />;
 };
 
@@ -118,7 +122,7 @@ export const TrashIcon = ({
     className,
 }: {
     className?: string;
-}): React.ReactElement  => {
+}): React.ReactElement => {
     return (
         <Icon
             className={className || "w-5 h-5"}
@@ -131,7 +135,7 @@ export const PencilIcon = ({
     className,
 }: {
     className?: string;
-}): React.ReactElement  => {
+}): React.ReactElement => {
     return (
         <Icon
             className={className || "w-5 h-5"}
@@ -144,7 +148,7 @@ export const ChartPieIcon = ({
     className,
 }: {
     className?: string;
-}): React.ReactElement  => {
+}): React.ReactElement => {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -172,7 +176,7 @@ export const LinkIcon = ({
     className,
 }: {
     className?: string;
-}): React.ReactElement  => {
+}): React.ReactElement => {
     return (
         <Icon
             className={className || "w-5 h-5"}
@@ -185,7 +189,7 @@ export const AdjustmentsIcon = ({
     className,
 }: {
     className?: string;
-}): React.ReactElement  => {
+}): React.ReactElement => {
     return (
         <Icon
             className={className || "w-5 h-5"}
@@ -198,7 +202,7 @@ export const ChevronLeftIcon = ({
     className,
 }: {
     className?: string;
-}): React.ReactElement  => {
+}): React.ReactElement => {
     return <Icon className={className || "w-5 h-5"} d="M15 19l-7-7 7-7" />;
 };
 
@@ -206,6 +210,6 @@ export const ChevronRightIcon = ({
     className,
 }: {
     className?: string;
-}): React.ReactElement  => {
+}): React.ReactElement => {
     return <Icon className={className || "w-5 h-5"} d="M9 5l7 7-7 7" />;
 };

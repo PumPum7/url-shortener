@@ -1,7 +1,8 @@
-import { betterAuth } from "better-auth";
-import { getXataClient } from "./xata";
 import { XataDialect } from "@xata.io/kysely";
+import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
+
+import { getXataClient } from "./xata";
 
 const xata = getXataClient();
 

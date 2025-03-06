@@ -1,8 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
-import { corsHeaders } from "@/lib/cors";
 import { Client, fql } from "fauna";
-import { auth } from "@/lib/auth";
+
 import { headers } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
+
+import { auth } from "@/lib/auth";
+import { corsHeaders } from "@/lib/cors";
 
 const client = new Client({
     secret: process.env.FAUNA_SECRET,

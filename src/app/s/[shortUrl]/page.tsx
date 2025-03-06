@@ -1,13 +1,14 @@
-"use server"
+"use server";
 
-import { redirect } from 'next/navigation';
 import { getLongUrl } from "@functions/urlHandlers";
+
+import { redirect } from "next/navigation";
 import { notFound } from "next/navigation";
 
 export default async function ShortUrlPage({
-  params,
+    params,
 }: {
-  params: { shortUrl: string };
+    params: { shortUrl: string };
 }) {
     const { shortUrl } = await params;
     const response = await getLongUrl({ shortUrl });
@@ -17,10 +18,12 @@ export default async function ShortUrlPage({
             redirect(`/s/${shortUrl}/protected`);
         }
         const longUrl = response.data.long;
-        const targetUrl = longUrl.startsWith('http') ? longUrl : `https://${longUrl}`;
+        const targetUrl = longUrl.startsWith("http")
+            ? longUrl
+            : `https://${longUrl}`;
         redirect(targetUrl);
     } else {
-        notFound()
+        notFound();
     }
 
     // This return statement is unreachable due to the redirects above,

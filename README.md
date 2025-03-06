@@ -14,21 +14,20 @@ A link shortener written in Typescript using NextJS, React and TailwindCSS
 
 2. Set up a [Fauna Database](https://fauna.com/)
 
+3. Set up the .env file
 
-4. Set up the .env file
-
-5. It's suggested to host this service on [Vercel](https://vercel.com/) to automatically support the serverless functions
+4. It's suggested to host this service on [Vercel](https://vercel.com/) to automatically support the serverless functions
 
 ## Images
 
-- ##### The landing page: 
+- ##### The landing page:
 
-  ![landing page](./img/Landingpage.png)
+    ![landing page](./img/Landingpage.png)
 
-- ##### Logged in view 
+- ##### Logged in view
 
-  ![logged in view](./img/loggedIn.png)
+    ![logged in view](./img/loggedIn.png)
 
 - ##### Editing Modal
 
-  ![editing modal](./img/editingModal.png)
+    ![editing modal](./img/editingModal.png)

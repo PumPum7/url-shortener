@@ -1,7 +1,9 @@
-import React from "react";
-import { RecentLinks } from "@components/links/RecentLinks";
 import { UrlShortenerForm } from "@components/Homepage/UrlShortenerForm";
+import { RecentLinks } from "@components/links/RecentLinks";
 import { auth } from "@lib/auth";
+
+import React from "react";
+
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 

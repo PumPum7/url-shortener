@@ -1,5 +1,4 @@
-import React, { Fragment, useState } from "react";
-
+import { FUNCTIONS_DOMAIN, deleteUrl } from "@functions/urlHandlers";
 import {
     Description,
     Dialog,
@@ -9,11 +8,11 @@ import {
     TransitionChild,
 } from "@headlessui/react";
 import toast from "react-hot-toast";
+import { mutate } from "swr";
 
-import { deleteUrl, FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
+import React, { Fragment, useState } from "react";
 
 import { useUrlContext } from "@/context/GlobalContext";
-import { mutate } from "swr";
 
 interface DeleteLinkModalProps {
     shortUrl: string;
@@ -44,10 +43,14 @@ export const DeleteLinkModal: React.FC<DeleteLinkModalProps> = ({
                     removeUrl(shortUrl);
                     closeFunc();
                     if (onDelete) onDelete();
-                    
+
                     // Revalidate SWR cache to update the table
-                    mutate((key) => typeof key === 'string' && key.includes('/api/url/user'));
-                    
+                    mutate(
+                        (key) =>
+                            typeof key === "string" &&
+                            key.includes("/api/url/user")
+                    );
+
                     return `Successfully deleted the link ${shortUrl}`;
                 },
                 error: () => "An error occurred while deleting the link.",

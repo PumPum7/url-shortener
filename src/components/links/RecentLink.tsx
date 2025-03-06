@@ -1,20 +1,22 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { timeDifference } from "@functions/time";
-import { toClipboard } from "copee";
-import { useModalContext } from "@/context/GlobalContext";
-import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
+import { DeleteLinkModal } from "@components/util/DeleteModal";
+import { EditLinkModal } from "@components/util/EditModal";
 import {
-    Loading,
     ChartPieIcon,
     CheckIcon,
     CopyIcon,
+    Loading,
     PencilIcon,
     QRCodeIcon,
     TrashIcon,
 } from "@components/util/Icons";
 import { QRCodeModal } from "@components/util/QRCodeModal";
-import { DeleteLinkModal } from "@components/util/DeleteModal";
-import { EditLinkModal } from "@components/util/EditModal";
+import { timeDifference } from "@functions/time";
+import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
+import { toClipboard } from "copee";
+
+import React, { useCallback, useEffect, useState } from "react";
+
+import { useModalContext } from "@/context/GlobalContext";
 
 interface RecentLinkProps {
     longUrl: string;
@@ -37,9 +39,12 @@ export function RecentLink({
         removeModal();
     }, [removeModal]);
 
-    const openModal = useCallback((modal: React.ReactElement) => {
-        setModal(modal);
-    }, [setModal]);
+    const openModal = useCallback(
+        (modal: React.ReactElement) => {
+            setModal(modal);
+        },
+        [setModal]
+    );
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -56,9 +61,10 @@ export function RecentLink({
                         href={longUrl}
                         rel="noreferrer"
                         target="_blank"
-                        className="truncate block max-w-xs"
-                    >
-                        {longUrl.length > 50 ? longUrl.substring(0, 50) + "..." : longUrl}
+                        className="truncate block max-w-xs">
+                        {longUrl.length > 50
+                            ? longUrl.substring(0, 50) + "..."
+                            : longUrl}
                     </a>
                 </div>
             </td>
@@ -67,17 +73,22 @@ export function RecentLink({
                     <button
                         className={`text-green-600 bg-green-100 ring-green-50 action-icon ${!copySuccess ? "active" : ""}`}
                         onClick={() => {
-                            const success = toClipboard(`${FUNCTIONS_DOMAIN}/s/${shortUrl}`);
+                            const success = toClipboard(
+                                `${FUNCTIONS_DOMAIN}/s/${shortUrl}`
+                            );
                             if (success) {
                                 setCopySuccess(true);
                             }
                         }}
-                        aria-label="Copy Short URL"
-                    >
+                        aria-label="Copy Short URL">
                         {copySuccess ? <CheckIcon /> : <CopyIcon />}
                     </button>
                     <a href={"/s/" + shortUrl} rel="noreferrer" target="_blank">
-                        {FUNCTIONS_DOMAIN.replace("http://", "").replace("https://", "")}/s/{shortUrl}
+                        {FUNCTIONS_DOMAIN.replace("http://", "").replace(
+                            "https://",
+                            ""
+                        )}
+                        /s/{shortUrl}
                     </a>
                 </div>
             </td>
@@ -92,8 +103,7 @@ export function RecentLink({
                     <button
                         onClick={() => alert("Stats feature coming soon")}
                         className="text-purple-600 bg-purple-100 ring-purple-50 action-icon active"
-                        aria-label="View Analytics"
-                    >
+                        aria-label="View Analytics">
                         <ChartPieIcon />
                     </button>
                 </dfn>
@@ -109,8 +119,7 @@ export function RecentLink({
                             );
                         }}
                         className="text-gray-600 bg-gray-100 ring-gray-50 action-icon active"
-                        aria-label="Show QR Code"
-                    >
+                        aria-label="Show QR Code">
                         <QRCodeIcon />
                     </button>
                 </dfn>
@@ -126,8 +135,7 @@ export function RecentLink({
                             );
                         }}
                         className="text-yellow-600 bg-yellow-100 ring-yellow-50 action-icon active"
-                        aria-label="Edit URL"
-                    >
+                        aria-label="Edit URL">
                         <PencilIcon />
                     </button>
                 </dfn>
@@ -143,8 +151,7 @@ export function RecentLink({
                             );
                         }}
                         className="text-red-600 bg-red-100 ring-red-50 action-icon active"
-                        aria-label="Delete URL"
-                    >
+                        aria-label="Delete URL">
                         <TrashIcon />
                     </button>
                 </dfn>

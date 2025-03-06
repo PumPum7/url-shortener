@@ -1,4 +1,3 @@
-import React, { useRef, useEffect, Fragment } from "react";
 import {
     Dialog,
     DialogBackdrop,
@@ -8,6 +7,8 @@ import {
     TransitionChild,
 } from "@headlessui/react";
 import QRCode from "react-qr-code";
+
+import React, { Fragment, useEffect, useRef } from "react";
 
 interface QRCodeModalProps {
     qrcodeValue: string;

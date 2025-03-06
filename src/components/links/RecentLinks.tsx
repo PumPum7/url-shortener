@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
 import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
-import { RecentLinkClientWrapper } from "./RecentLinkClientWrapper";
-import useSWR from "swr";
 import { authClient } from "@lib/auth-client";
+import useSWR from "swr";
+
+import React, { useState } from "react";
+
+import { RecentLinkClientWrapper } from "./RecentLinkClientWrapper";
 
 const fetcher = async (url: string) => {
     try {

@@ -1,10 +1,11 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { authClient } from "@lib/auth-client";
 
 import React from "react";
+
+import Image from "next/image";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import ScissorLogo from "../../../public/assets/scissor.png";

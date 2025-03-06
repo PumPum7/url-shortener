@@ -1,5 +1,12 @@
-import React, { Fragment, useEffect, useState } from "react";
-
+import {
+    AdvancedOptions,
+    AdvancedOptionsPlaceholder,
+} from "@components/links/Options";
+import {
+    FUNCTIONS_DOMAIN,
+    editUserUrl,
+    getUserUrl,
+} from "@functions/urlHandlers";
 import {
     Description,
     Dialog,
@@ -8,22 +15,13 @@ import {
     Transition,
     TransitionChild,
 } from "@headlessui/react";
-import toast from "react-hot-toast";
-
-import {
-    AdvancedOptions,
-    AdvancedOptionsPlaceholder,
-} from "@components/links/Options";
-
-import {
-    getUserUrl,
-    FUNCTIONS_DOMAIN,
-    editUserUrl,
-} from "@functions/urlHandlers";
-
 import { AdvancedOptionsStruct } from "@interfaces";
-import { useUrlContext } from "@/context/GlobalContext";
+import toast from "react-hot-toast";
 import { mutate } from "swr";
+
+import React, { Fragment, useEffect, useState } from "react";
+
+import { useUrlContext } from "@/context/GlobalContext";
 
 interface EditLinkModalProps {
     shortUrl: string;
@@ -79,9 +77,13 @@ export const EditLinkModal: React.FC<EditLinkModalProps> = ({
                 success: (response) => {
                     setStatus("editing");
                     updateUrl(shortUrl, response.data.short);
-                    
-                    mutate((key) => typeof key === 'string' && key.includes('/api/url/user'));
-                    
+
+                    mutate(
+                        (key) =>
+                            typeof key === "string" &&
+                            key.includes("/api/url/user")
+                    );
+
                     return `Successfully edited the link ${response.data.short}`;
                 },
                 error: () => "An error occurred while editing the link.",

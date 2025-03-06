@@ -1,8 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
-import { Client, fql, Query } from "fauna";
-import { corsHeaders } from "@/lib/cors";
-import { auth } from "@/lib/auth";
+import { Client, Query, fql } from "fauna";
+
 import { headers } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
+
+import { auth } from "@/lib/auth";
+import { corsHeaders } from "@/lib/cors";
 
 const client = new Client();
 

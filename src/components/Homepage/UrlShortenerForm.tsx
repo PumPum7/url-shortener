@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
-import { useUrlContext } from "@/context/GlobalContext";
-import { CheckIcon, CopyIcon, Loading, Scissors } from "@components/util/Icons";
 import { AdvancedOptions } from "@components/links/Options";
+import { CheckIcon, CopyIcon, Loading, Scissors } from "@components/util/Icons";
 import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
-import { toClipboard } from "copee";
 import { AdvancedOptionsStruct } from "@interfaces";
+import { toClipboard } from "copee";
+
+import React, { useState } from "react";
+
+import { useUrlContext } from "@/context/GlobalContext";
 
 interface FormState {
     loading: boolean;

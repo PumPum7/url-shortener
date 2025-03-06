@@ -1,6 +1,6 @@
 import React from "react";
 
-export const Footer = (): React.ReactElement  => {
+export const Footer = (): React.ReactElement => {
     return (
         <footer className="bg-white shadow-inner py-6">
             <div className="container mx-auto px-4">

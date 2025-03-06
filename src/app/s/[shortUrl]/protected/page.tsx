@@ -1,14 +1,16 @@
-'use client';
+"use client";
 
-import React, { useState, use, Usable } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { Loading } from "@components/util/Icons";
 import { checkPasswords } from "@functions/urlHandlers";
 
+import React, { Usable, use, useState } from "react";
+
+import { useRouter, useSearchParams } from "next/navigation";
+
 export default function ProtectedUrlPage({
-  params,
+    params,
 }: {
-  params: Usable<{ shortUrl: string }>;
+    params: Usable<{ shortUrl: string }>;
 }) {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
@@ -16,7 +18,7 @@ export default function ProtectedUrlPage({
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    const {shortUrl} = use(params)
+    const { shortUrl } = use(params);
     const longUrl = searchParams.get("longUrl") || "";
     const message = searchParams.get("message") || "";
 

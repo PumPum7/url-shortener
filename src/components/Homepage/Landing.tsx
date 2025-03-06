@@ -1,8 +1,5 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
-import dynamic from "next/dynamic";
 import {
     AdjustmentsIcon,
     ChartPieIcon,
@@ -10,11 +7,16 @@ import {
 } from "@components/util/Icons";
 import { authClient } from "@lib/auth-client";
 
-const Lottie = dynamic(() => import("react-lottie"), { ssr: false });
+import React from "react";
 
+import dynamic from "next/dynamic";
+import Link from "next/link";
+
+import * as PasswordAnimation from "../../../public/assets/PasswordAnimation.json";
 import * as StatsPreview from "../../../public/assets/StatsAnimation.json";
 import * as UrlPreview from "../../../public/assets/UrlAnimation.json";
-import * as PasswordAnimation from "../../../public/assets/PasswordAnimation.json";
+
+const Lottie = dynamic(() => import("react-lottie"), { ssr: false });
 
 export const Landingpage = (): React.ReactElement => {
     const { data: session, isPending } = authClient.useSession();

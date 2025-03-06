@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 interface SearchAndPaginationProps {
     total: number;
@@ -46,7 +46,9 @@ export function SearchAndPagination({
 
     return (
         <div className="flex flex-col md:flex-row justify-between items-center p-4 bg-white mb-4 rounded-lg shadow">
-            <form className="flex items-center w-full md:w-auto" onSubmit={handleSearch}>
+            <form
+                className="flex items-center w-full md:w-auto"
+                onSubmit={handleSearch}>
                 <input
                     type="text"
                     value={localSearch}

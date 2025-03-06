@@ -1,12 +1,14 @@
 "use client";
 
-import React from "react";
-import { TableHeading } from "./TableHeading";
+import { LinkIcon, Loading } from "@components/util/Icons";
 import { URL } from "@interfaces";
-import { Loading, LinkIcon } from "@components/util/Icons";
-import { SearchAndPagination } from "./SearchAndPagination";
+
+import React from "react";
+
 import { RecentLink } from "./RecentLink";
 import { RecentLinkCard } from "./RecentLinkCard";
+import { SearchAndPagination } from "./SearchAndPagination";
+import { TableHeading } from "./TableHeading";
 
 interface RecentLinkClientWrapperProps {
     urls: URL[];

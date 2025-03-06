@@ -1,5 +1,6 @@
-import React from 'react';
-import { TableHeading } from './TableHeading';
+import React from "react";
+
+import { TableHeading } from "./TableHeading";
 
 export function RecentLinkPlaceholder(): React.ReactElement {
     const Placeholder = (): React.ReactElement => {
@@ -19,9 +20,13 @@ export function RecentLinkPlaceholder(): React.ReactElement {
                             <tr>
                                 <TableHeading>Long URL</TableHeading>
                                 <TableHeading>Short URL</TableHeading>
-                                <TableHeading direction="text-center">Date</TableHeading>
+                                <TableHeading direction="text-center">
+                                    Date
+                                </TableHeading>
                                 <TableHeading>Usage</TableHeading>
-                                <TableHeading direction="text-right">Actions</TableHeading>
+                                <TableHeading direction="text-right">
+                                    Actions
+                                </TableHeading>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-gray-200 divide-y">

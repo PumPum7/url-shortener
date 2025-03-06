@@ -3,11 +3,11 @@
 import { useModalContext } from "@/context/GlobalContext";
 
 export const ModalRenderer = () => {
-  const { showModal, currentModal } = useModalContext();
-  
-  if (!showModal || !currentModal) {
-    return null;
-  }
+    const { showModal, currentModal } = useModalContext();
 
-  return currentModal;
+    if (!showModal || !currentModal) {
+        return null;
+    }
+
+    return currentModal;
 };
