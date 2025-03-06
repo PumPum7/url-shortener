@@ -16,6 +16,7 @@ import { toClipboard } from "copee";
 import React, { useCallback, useEffect, useState } from "react";
 
 import { useModalContext } from "@/context/GlobalContext";
+import { StatsModal } from "@/components/stats/StatsModal";
 
 interface RecentLinkCardProps {
     longUrl: string;
@@ -105,7 +106,15 @@ export function RecentLinkCard({
             <div className="flex justify-end space-x-2">
                 <dfn title="View Analytics">
                     <button
-                        onClick={() => alert("Stats feature coming soon")}
+                        onClick={() => {
+                            openModal(
+                                <StatsModal
+                                    shortUrl={shortUrl}
+                                    closeFunc={closeModal}
+                                    isOpen={true}
+                                />
+                            );
+                        }}
                         className="text-purple-600 bg-purple-100 ring-purple-50 action-icon"
                         aria-label="View Analytics">
                         <ChartPieIcon />

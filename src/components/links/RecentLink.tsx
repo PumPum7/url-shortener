@@ -4,7 +4,6 @@ import {
     ChartPieIcon,
     CheckIcon,
     CopyIcon,
-    Loading,
     PencilIcon,
     QRCodeIcon,
     TrashIcon,
@@ -15,6 +14,8 @@ import { FUNCTIONS_DOMAIN } from "@functions/urlHandlers";
 import { toClipboard } from "copee";
 
 import React, { useCallback, useEffect, useState } from "react";
+
+import { StatsModal } from "@/components/stats/StatsModal";
 
 import { useModalContext } from "@/context/GlobalContext";
 
@@ -101,7 +102,15 @@ export function RecentLink({
             <td className="px-6 py-4 text-right whitespace-nowrap text-sm font-medium space-x-2">
                 <dfn title="View Analytics">
                     <button
-                        onClick={() => alert("Stats feature coming soon")}
+                        onClick={() => {
+                            openModal(
+                                <StatsModal
+                                    shortUrl={shortUrl}
+                                    closeFunc={closeModal}
+                                    isOpen={true}
+                                />
+                            );
+                        }}
                         className="text-purple-600 bg-purple-100 ring-purple-50 action-icon active"
                         aria-label="View Analytics">
                         <ChartPieIcon />

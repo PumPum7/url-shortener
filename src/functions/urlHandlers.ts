@@ -40,11 +40,46 @@ export const createShortURL = async (
 
 export const getLongUrl = async ({
     shortUrl,
+    headers,
+    clientInfo,
 }: {
     shortUrl: string;
+    headers?: Headers;
+    clientInfo?: {
+        userAgent: string;
+        referrer: string;
+    };
 }): Promise<any> => {
     try {
-        const response = await fetch(`${FUNCTIONS_DOMAIN}/api/url/${shortUrl}`);
+        const requestHeaders: HeadersInit = {};
+
+        // If we have server headers, forward them
+        if (headers) {
+            // Forward important headers for tracking
+            const userAgent = headers.get("user-agent");
+            const referer = headers.get("referer");
+            const forwardedFor = headers.get("x-forwarded-for");
+
+            if (userAgent) requestHeaders["user-agent"] = userAgent;
+            if (referer) requestHeaders["referer"] = referer;
+            if (forwardedFor) requestHeaders["x-forwarded-for"] = forwardedFor;
+        }
+
+        // If we have client info (from client components), use that
+        if (clientInfo) {
+            if (clientInfo.userAgent)
+                requestHeaders["user-agent"] = clientInfo.userAgent;
+            if (clientInfo.referrer)
+                requestHeaders["referer"] = clientInfo.referrer;
+        }
+
+        const response = await fetch(
+            `${FUNCTIONS_DOMAIN}/api/url/${shortUrl}`,
+            {
+                headers: requestHeaders,
+            }
+        );
+
         if (!response.ok) {
             return undefined;
         }
