@@ -18,14 +18,16 @@ export const Header = (): React.ReactElement => {
             <div className="flex items-center justify-between">
                 <div>
                     <Link href="/" passHref>
-                        <span className="inline-flex items-center text-gray-900 text-xl font-semibold md:text-3xl transition-smooth">
+                        <span className="inline-flex items-center text-gray-900 text-lg font-semibold lg:text-3xl transition-smooth">
                             <Image
                                 src={ScissorLogo}
                                 width="44"
                                 height="44"
                                 alt="Logo image"
                             />
-                            <h1 className="pl-2 my-auto">URL Shortener</h1>
+                            <h1 className="pl-2 my-auto text-lg lg:text-3xl">
+                                URL Shortener
+                            </h1>
                         </span>
                     </Link>
                 </div>
@@ -52,7 +54,7 @@ export const Header = (): React.ReactElement => {
                                 </button>
                             </li>
                         ) : null}
-                        <li className="px-4 text-white py-2 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-md hover:shadow-lg transition-transform transform hover:-translate-y-1">
+                        <li className="px-1 md:px-4 text-white py-1 md:py-2 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-md hover:shadow-lg transition-transform transform hover:-translate-y-1">
                             {session ? (
                                 <Link href="/dashboard">
                                     {session.user.name || session.user.email}

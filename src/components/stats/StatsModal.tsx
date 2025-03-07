@@ -33,13 +33,14 @@ export const StatsModal: React.FC<StatsModalProps> = ({
         <Transition appear show={isOpen} as={Fragment}>
             <Dialog
                 as="div"
-                className="fixed inset-0 z-10 overflow-y-auto"
+                className="fixed z-10 inset-0 overflow-y-auto"
                 onClose={closeFunc}>
-                <div className="px-4 min-h-screen text-center">
+                <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
                     <DialogBackdrop className="fixed inset-0 bg-black opacity-30" />
+
                     {/* This element is to trick the browser into centering the modal contents. */}
                     <span
-                        className="inline-block align-middle h-screen"
+                        className="hidden sm:inline-block sm:align-middle sm:h-screen"
                         aria-hidden="true">
                         &#8203;
                     </span>
@@ -52,14 +53,14 @@ export const StatsModal: React.FC<StatsModalProps> = ({
                         leave="ease-in duration-200"
                         leaveFrom="opacity-100 scale-100"
                         leaveTo="opacity-0 scale-95">
-                        <div className="inline-block align-middle my-8 p-6 max-w-2xl text-left bg-white rounded-2xl shadow-xl overflow-hidden transform transition-all">
+                        <div className="inline-block w-full max-w-md md:max-w-lg align-bottom sm:align-middle my-2 p-3 sm:p-6 text-left bg-white rounded-2xl shadow-xl overflow-hidden transform transition-all">
                             <DialogTitle
                                 as="h3"
                                 className="text-lg font-medium leading-6 text-gray-900">
                                 Statistics for {shortUrl}
                             </DialogTitle>
 
-                            <div className="mt-4">
+                            <div className="mt-4 max-h-[70vh] overflow-y-auto">
                                 {isLoading && (
                                     <div className="flex justify-center">
                                         <Loading className="w-8 h-8 text-blue-500" />

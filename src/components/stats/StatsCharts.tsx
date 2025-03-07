@@ -12,7 +12,7 @@ import { Bar } from "react-chartjs-2";
 
 import React from "react";
 
-import { URLStats } from "@/interfaces";
+import { URLClickStats, URLStats } from "@/interfaces";
 
 ChartJS.register(
     CategoryScale,
@@ -31,7 +31,11 @@ interface StatsChartsProps {
 export const StatsCharts: React.FC<StatsChartsProps> = ({ stats }) => {
     // Prepare data for country chart
     const countryLabels = Object.keys(stats.clicksByCountry)
-        .sort((a, b) => stats.clicksByCountry[b] - stats.clicksByCountry[a])
+        .sort(
+            (a, b) =>
+                stats.clicksByCountry[b].length -
+                stats.clicksByCountry[a].length
+        )
         .slice(0, 10);
 
     const countryData = {
@@ -50,8 +54,6 @@ export const StatsCharts: React.FC<StatsChartsProps> = ({ stats }) => {
     // Prepare data for timeline chart
     const timelineData = prepareTimelineData(stats.clicksByDay);
 
-    console.log(timelineData);
-
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white p-4 rounded-lg shadow">
@@ -67,7 +69,7 @@ export const StatsCharts: React.FC<StatsChartsProps> = ({ stats }) => {
     );
 };
 
-function prepareTimelineData(clicksByDay: Record<string, number>) {
+function prepareTimelineData(clicksByDay: Record<string, URLClickStats[]>) {
     // Get last 14 days
     const days: string[] = [];
     const today = new Date();
@@ -78,31 +80,16 @@ function prepareTimelineData(clicksByDay: Record<string, number>) {
         days.push(day.toISOString().split("T")[0]);
     }
 
-    console.log(clicksByDay);
-
     return {
         labels: days.map((day) => day.split("-").slice(1).join("/")), // Format as MM/DD
         datasets: [
             {
                 label: "Clicks",
-                data: days.map((day) => {
-                    console.log(
-                        `${today.getFullYear()}-${day
-                            .replace("0", "")
-                            .split("/")
-                            .join("-")}`
-                    );
-
-                    return (
-                        clicksByDay[
-                            `${today.getFullYear()}-${day
-                                .replace("0", "")
-                                .split("/")
-                                .slice(1)
-                                .join("-")}`
-                        ]?.length || 0
-                    );
-                }),
+                data: days.map(
+                    (day) =>
+                        clicksByDay[`${day.replace(/(?<!^2)\b0/g, "")}`]
+                            ?.length || 0
+                ),
                 backgroundColor: "rgba(75, 192, 192, 0.5)",
             },
         ],

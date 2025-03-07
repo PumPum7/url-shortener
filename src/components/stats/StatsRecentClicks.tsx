@@ -59,12 +59,12 @@ export const StatsRecentClicks: React.FC<StatsRecentClicksProps> = ({
     );
 };
 
-function formatTimestamp(timestamp: number) {
+function formatTimestamp(timestamp: { isoString: string }) {
     return new Date(timestamp.isoString).toLocaleString();
 }
 
 function formatLocation(click: URLClickStats) {
-    const parts = [];
+    const parts: string[] = [];
     if (click.city) parts.push(click.city);
     if (click.region) parts.push(click.region);
     if (click.country) parts.push(click.country);

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { URLStats } from "@/interfaces";
+import { URLClickStats, URLStats } from "@/interfaces";
 
 interface StatsOverviewProps {
     stats: URLStats;
@@ -33,7 +33,9 @@ export const StatsOverview: React.FC<StatsOverviewProps> = ({ stats }) => {
     );
 };
 
-function calculateLast30DaysClicks(clicksByDay: Record<string, number>) {
+function calculateLast30DaysClicks(
+    clicksByDay: Record<string, URLClickStats[]>
+) {
     let totalClicks = 0;
     const today = new Date();
 
@@ -52,8 +54,6 @@ function calculateLast30DaysClicks(clicksByDay: Record<string, number>) {
             totalClicks += clicksByDay[dayStr].length;
         }
     }
-
-    console.log(`Total clicks in last 30 days: ${totalClicks}`);
 
     return totalClicks;
 }
