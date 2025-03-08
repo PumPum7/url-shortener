@@ -1,4 +1,5 @@
 import { Layout } from "@components/Layout/Layout";
+import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "react-hot-toast";
 
 import React from "react";
@@ -20,6 +21,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <Providers>
+                <Analytics />
                 <body>
                     <Layout>
                         <Toaster position="top-right" />
