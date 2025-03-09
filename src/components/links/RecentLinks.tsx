@@ -18,7 +18,6 @@ const fetcher = async (url: string) => {
         });
 
         if (!response.ok) {
-            console.log(response);
             throw new Error("Failed to fetch data");
         }
 

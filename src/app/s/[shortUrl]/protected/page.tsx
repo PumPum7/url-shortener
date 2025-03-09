@@ -1,7 +1,7 @@
 "use client";
 
 import { Loading } from "@components/util/Icons";
-import { checkPasswords } from "@functions/urlHandlers";
+import { checkPasswords, getLongUrl } from "@functions/urlHandlers";
 
 import React, { Usable, use, useState } from "react";
 
@@ -31,6 +31,15 @@ export default function ProtectedUrlPage({
                 setLoading(false);
                 return;
             }
+
+            await getLongUrl({
+                shortUrl,
+                clientInfo: {
+                    userAgent: navigator.userAgent,
+                    referrer: document.referrer,
+                },
+            });
+
             const targetUrl = longUrl.startsWith("http")
                 ? longUrl
                 : `https://${longUrl}`;
