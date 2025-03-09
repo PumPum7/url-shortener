@@ -21,8 +21,8 @@ export default function RootLayout({
     return (
         <html lang="en">
             <Providers>
-                <Analytics />
                 <body>
+                    <Analytics />
                     <Layout>
                         <Toaster position="top-right" />
                         {children}
